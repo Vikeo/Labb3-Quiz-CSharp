@@ -13,19 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Labb3
+namespace Labb3.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MakeQuizView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MakeQuizView : UserControl
     {
-        public MainWindow()
+        public MakeQuizView()
         {
             InitializeComponent();
-
-
         }
-        
     }
 }
