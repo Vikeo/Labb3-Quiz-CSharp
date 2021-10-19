@@ -180,19 +180,15 @@
 
             <TextBlock
                 Grid.Row="0"
-                Grid.Column="1"
-                Grid.ColumnSpan="3"
+                Grid.Column="2"
                 Margin="5,0,0,0"
                 HorizontalAlignment="Center"
-                Text="Correct Option" />
-            <ComboBox
+                Text="Correct Answer" />
+            <TextBox
                 Grid.Row="1"
                 Grid.Column="2"
                 Margin="5,5,5,0"
-                Text="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged}"
-
-                ItemsSource="{Binding Options, UpdateSourceTrigger=PropertyChanged}">
-            </ComboBox>
+                Text="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
 
         <StackPanel
