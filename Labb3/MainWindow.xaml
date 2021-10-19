@@ -9,9 +9,11 @@
     Title="Quiz Game"
     Width="800"
     Height="450"
-    FontSize="14"
     mc:Ignorable="d">
+    <!--  FontSize="14"  -->
     <Grid MaxWidth="600" Margin="20,10">
-        <views:PlayQuizView DataContext="{Binding CurrentViewModel}"/>
+
+        <views:MakeQuizView DataContext="{Binding CurrentViewModel}" />
+
     </Grid>
 </Window>

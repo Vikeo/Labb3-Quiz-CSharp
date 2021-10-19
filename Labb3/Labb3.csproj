@@ -6,4 +6,12 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="States\" />
+  </ItemGroup>
+
 </Project>

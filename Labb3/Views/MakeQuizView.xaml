@@ -8,8 +8,11 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
     <Grid IsSharedSizeScope="True">
+
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -17,94 +20,186 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
         <TextBlock
             Grid.Row="0"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
             FontSize="24"
-            Text="Create Quiz" />
+            Text="Create / Edit Quiz" />
 
         <Grid Grid.Row="1" Margin="0,25,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Question" />
-            <TextBox
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="1"
+                Text="Quiz" />
+            <ComboBox
                 Grid.Row="1"
-                Margin="0,5,0,0"
-                Text="{Binding Question, UpdateSourceTrigger=PropertyChanged}" />
+                Grid.Column="1"
+                Margin="0,5,0,0" />
+            <TextBox
+                Grid.Row="2"
+                Grid.Column="1"
+                Text="{Binding Quiz, UpdateSourceTrigger=PropertyChanged}" />
+            <Button
+                Grid.Row="2"
+                Grid.Column="2"
+                Content="Add" />
         </Grid>
 
         <Grid Grid.Row="2" Margin="0,10,0,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" SharedSizeGroup="FirstColumn" />
-                <RowDefinition Height="Auto" SharedSizeGroup="SecondColumn" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
             <TextBlock
                 Grid.Row="0"
-                Grid.Column="0"
-                Text="Correct Option1" />
-            <TextBox
+                Grid.Column="1"
+                Text="Statement" />
+            <ComboBox
                 Grid.Row="1"
-                Grid.Column="0"
-                Margin="0,5,0,0"
-                Text="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged}" />
+                Grid.Column="1"
+                Margin="0,5,0,0" />
+            <TextBox
+                Grid.Row="2"
+                Grid.Column="1"
+                Text="{Binding Statement, UpdateSourceTrigger=PropertyChanged}" />
+            <Button
+                Grid.Row="2"
+                Grid.Column="2"
+                Content="Add" />
 
             <TextBlock
                 Grid.Row="0"
-                Grid.Column="1"
-                Margin="5,0,0,0"
-                Text="Other Option1" />
+                Grid.Column="4"
+                Text="Theme" />
             <TextBox
-                Grid.Row="1"
-                Grid.Column="1"
-                Margin="0,5,0,0"
-                Text="{Binding OtherAnswer, UpdateSourceTrigger=PropertyChanged}" />
+                Grid.Row="2"
+                Grid.Column="4"
+                Text="{Binding Theme, UpdateSourceTrigger=PropertyChanged}" />
+            <Button
+                Grid.Row="2"
+                Grid.Column="5"
+                Content="Add" />
         </Grid>
 
         <Grid Grid.Row="3" Margin="0,10,0,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="20" SharedSizeGroup="FirstColumn" />
+                <RowDefinition Height="30" SharedSizeGroup="SecondColumn" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" SharedSizeGroup="FirstColumn" />
-                <ColumnDefinition Width="Auto" SharedSizeGroup="SecondColumn" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
             <TextBlock
                 Grid.Row="0"
-                Grid.Column="0"
-                Text="Other Option1 2" />
+                Grid.Column="1"
+                HorizontalAlignment="Center"
+                Text="Option 1" />
             <TextBox
                 Grid.Row="1"
-                Grid.Column="0"
-                Margin="0,5,0,0"
-                Text="{Binding OtherAnswer, UpdateSourceTrigger=PropertyChanged}" />
+                Grid.Column="1"
+                Margin="5,5,5,0"
+                Text="{Binding Option1, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="2"
+                Margin="5,0,0,0"
+                HorizontalAlignment="Center"
+                Text="Option 2" />
+
+            <TextBox
+                Grid.Row="1"
+                Grid.Column="2"
+                Margin="5,5,5,0"
+                Text="{Binding Option2, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="3"
+                Margin="5,0,0,0"
+                HorizontalAlignment="Center"
+                Text="Option 3" />
+            <TextBox
+                Grid.Row="1"
+                Grid.Column="3"
+                Margin="5,5,5,0"
+                Text="{Binding Option3, UpdateSourceTrigger=PropertyChanged}" />
+        </Grid>
+
+        <Grid Grid.Row="4" Margin="0,10,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20" SharedSizeGroup="FirstColumn" />
+                <RowDefinition Height="30" SharedSizeGroup="SecondColumn" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="1"
+                Grid.ColumnSpan="3"
                 Margin="5,0,0,0"
-                Text="Other Option1 3" />
-            <TextBox
+                HorizontalAlignment="Center"
+                Text="Correct Option" />
+            <ComboBox
                 Grid.Row="1"
-                Grid.Column="1"
-                Margin="0,5,0,0"
-                Text="{Binding OtherAnswer, UpdateSourceTrigger=PropertyChanged}" />
+                Grid.Column="2"
+                Margin="5,5,5,0"
+                Text="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged}"
+
+                ItemsSource="{Binding Options, UpdateSourceTrigger=PropertyChanged}">
+            </ComboBox>
         </Grid>
 
         <StackPanel
-            Grid.Row="4"
+            Grid.Row="5"
             Margin="0,25,0,0"
             Orientation="Horizontal">
-            <Button Command="{Binding AddCommand}" Content="Add quesion" />
+            <Button Command="{Binding AddCommand}" Content="Add to quiz" />
             <Button
                 Margin="5,0,0,0"
                 Command="{Binding CancelCommand}"

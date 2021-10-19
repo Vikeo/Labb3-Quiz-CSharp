@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Labb3.Models;
+using Microsoft.Toolkit.Mvvm;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Labb3.ViewModels
 {
-    class MainViewModel : ViewModelBase
+    class MainViewModel : ObservableObject
     {
 
-        public ViewModelBase CurrentViewModel { get; }
+        public ObservableObject CurrentViewModel { get; }
 
-        public MainViewModel()
+        public MainViewModel(Quiz quiz)
         {
-            CurrentViewModel = new PlayQuizViewModel();
+            CurrentViewModel = new MakeQuizViewModel(quiz);
         }
-        
     }
 }

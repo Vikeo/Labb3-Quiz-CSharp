@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Labb3.Models;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Labb3.ViewModels
 {
-    class QuestionViewModel : ViewModelBase
+    class QuestionViewModel : ObservableObject
     {
         private readonly Question _question;
         public string Statement => _question.Statement;

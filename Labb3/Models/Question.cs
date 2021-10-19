@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Labb3.Models
 {
-    class Question
+    public class Question
     {
         //Fullprops
         private string _statement;
@@ -43,7 +43,6 @@ namespace Labb3.Models
         }
 
         public string _theme;
-
         public string Theme
         {
             get { return _theme;  }
