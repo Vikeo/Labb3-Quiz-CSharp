@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Labb3.Commands;
+using Labb3.Managers;
 using Labb3.Models;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
@@ -13,8 +15,6 @@ namespace Labb3.ViewModels
 {
     public class MakeQuizViewModel : ObservableObject
     {
-        
-
         private string _statement;
         public string Statement
         {
@@ -37,7 +37,7 @@ namespace Labb3.ViewModels
             }
         }
 
-        //TODO göra så att CorrectAnswer comboboxen listar de tre alternativ som man har skrivit in.
+        //CorrectAnswer comboboxen listar de tre alternativ som man har skrivit in.
         private string _correctAnswer;
         public string CorrectAnswer
         {
@@ -49,8 +49,8 @@ namespace Labb3.ViewModels
             }
         }
 
-        private string[] _options = new string[] { "1", "2", "3" };
-        public string[] Options
+        private ObservableCollection<string> _options = new ObservableCollection<string>() { "", "", "" };
+        public ObservableCollection<string> Options
         {
             get { return _options; }
             set
@@ -107,8 +107,20 @@ namespace Labb3.ViewModels
             }
         }
 
+        private ObservableCollection<Quiz> _listOfQuizzes;
+        public ObservableCollection<Quiz> ListOfQuizzes
+        {
+            get { return _listOfQuizzes; }
+            set
+            {
+                //_listOfQuizzes = QuizManager._allQuizzes;
+                OnPropertyChanged(nameof(ListOfQuizzes));
+            }
+        }
+
         public ICommand AddCommand { get; }
         public ICommand CancelCommand { get; }
+        public ICommand CreateQuizCommand { get; }
 
         public MakeQuizViewModel(Quiz quiz)
         {
