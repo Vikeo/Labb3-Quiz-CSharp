@@ -67,7 +67,6 @@ namespace Labb3.ViewModels
             set
             {
                 _option1 = value;
-                _options[0] = value;
                 OnPropertyChanged(nameof(Option1));
             }
         }
@@ -79,7 +78,6 @@ namespace Labb3.ViewModels
             set
             {
                 _option2 = value;
-                _options[1] = value;
                 OnPropertyChanged(nameof(Option2));
             }
         }
@@ -91,7 +89,6 @@ namespace Labb3.ViewModels
             set
             {
                 _option3 = value;
-                _options[2] = value;
                 OnPropertyChanged(nameof(Option3));
             }
         }
