@@ -49,7 +49,7 @@ namespace Labb3.ViewModels
             }
         }
 
-        private ObservableCollection<string> _options = new ObservableCollection<string>() { "", "", "" };
+        private ObservableCollection<string> _options = new ObservableCollection<string>() { "1", "1", "1" };
         public ObservableCollection<string> Options
         {
             get { return _options; }
@@ -67,6 +67,7 @@ namespace Labb3.ViewModels
             set
             {
                 _option1 = value;
+                _options[0] = _option1;
                 OnPropertyChanged(nameof(Option1));
             }
         }
@@ -78,6 +79,7 @@ namespace Labb3.ViewModels
             set
             {
                 _option2 = value;
+                _options[1] = _option2;
                 OnPropertyChanged(nameof(Option2));
             }
         }
@@ -89,6 +91,7 @@ namespace Labb3.ViewModels
             set
             {
                 _option3 = value;
+                _options[2] = _option3;
                 OnPropertyChanged(nameof(Option3));
             }
         }
