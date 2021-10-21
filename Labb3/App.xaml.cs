@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Labb3.Managers;
 using Labb3.Models;
 using Labb3.ViewModels;
 
@@ -28,7 +30,15 @@ namespace Labb3
         {
             base.OnStartup(e);
 
+            //TODO kanske ska instansiera Question och Quiz här, tomma. Och ett ObservableCollection<string> objekt?
+            
             //Här ska man instansiera allt som man vill kunna visa. Flera olika view, om de ska leva över applikationens livstid.
+
+            //TODO Är det här rätt? Borde JAG göra såhär?
+
+
+            var questions = new ObservableCollection<Question>();
+            List<Quiz> _quizzes = new List<Quiz>(){new Quiz("title", questions)};
 
             MainWindow = new MainWindow()
             {

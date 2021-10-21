@@ -16,6 +16,7 @@ namespace Labb3.ViewModels
 
         //Är IEnumerable för att då inte klassen utanför denna klass lägga till/ta bort eller ändra saker i listan.
         //Om man inte vill kapsla in de så kan den vara ObservableCollection istället.
+
         public ObservableCollection<QuestionViewModel> Questions => _questions;
 
         public ICommand StartGameCommand
