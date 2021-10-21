@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Labb3.Managers;
 using Labb3.Models;
 using Labb3.ViewModels;
 
@@ -15,7 +17,8 @@ namespace Labb3.Commands
         private readonly MakeQuizViewModel _makeQuizViewModel;
         private readonly Quiz _quiz;
 
-        public AddQuestionToQuizCommand(MakeQuizViewModel makeQuizViewModel, Quiz quiz)
+
+        public AddQuestionToQuizCommand(MakeQuizViewModel makeQuizViewModel, QuizManager quizzes, Quiz quiz)
         {
             _makeQuizViewModel = makeQuizViewModel;
             _quiz = quiz;
@@ -26,14 +29,36 @@ namespace Labb3.Commands
         //Kan ändra den här och lägga in t.ex., om man inte har matat in något.
         public override bool CanExecute(object parameter)
         {
-            return !string.IsNullOrEmpty(_makeQuizViewModel.Option1) && 
-                   !string.IsNullOrEmpty(_makeQuizViewModel.Option2) && 
-                   !string.IsNullOrEmpty(_makeQuizViewModel.Option3) && 
-                   !string.IsNullOrEmpty(_makeQuizViewModel.CorrectAnswer) && 
-                   !string.IsNullOrEmpty(_makeQuizViewModel.Quiz) && 
-                   !string.IsNullOrEmpty(_makeQuizViewModel.Statement) && 
-                   !string.IsNullOrEmpty(_makeQuizViewModel.Theme) && 
-                   base.CanExecute(parameter) ;
+            //Om man lägger till ny fråga
+            if (!string.IsNullOrEmpty(_makeQuizViewModel.Option1) &&
+                !string.IsNullOrEmpty(_makeQuizViewModel.Option2) &&
+                !string.IsNullOrEmpty(_makeQuizViewModel.Option3) &&
+                !string.IsNullOrEmpty(_makeQuizViewModel.CorrectAnswer) &&
+                !string.IsNullOrEmpty(_makeQuizViewModel.Statement) &&
+                !string.IsNullOrEmpty(_makeQuizViewModel.Theme) &&
+                base.CanExecute(parameter))
+            {
+                return true;
+            }
+
+            //Om man redigerar en fråga
+            if (!string.IsNullOrEmpty(_makeQuizViewModel.Option1) &&
+                   !string.IsNullOrEmpty(_makeQuizViewModel.Option2) &&
+                   !string.IsNullOrEmpty(_makeQuizViewModel.Option3) &&
+                   !string.IsNullOrEmpty(_makeQuizViewModel.CorrectAnswer) &&
+                   !string.IsNullOrEmpty(_makeQuizViewModel.Theme) &&
+                   base.CanExecute(parameter))
+            {
+                
+            }
+            return !string.IsNullOrEmpty(_makeQuizViewModel.Option1) &&
+                   !string.IsNullOrEmpty(_makeQuizViewModel.Option2) &&
+                   !string.IsNullOrEmpty(_makeQuizViewModel.Option3) &&
+                   !string.IsNullOrEmpty(_makeQuizViewModel.CorrectAnswer) &&
+                   !string.IsNullOrEmpty(_makeQuizViewModel.QuizTitle) &&
+                   !string.IsNullOrEmpty(_makeQuizViewModel.Statement) &&
+                   !string.IsNullOrEmpty(_makeQuizViewModel.Theme) &&
+                   base.CanExecute(parameter);
             //return true;
             
         }
@@ -48,7 +73,6 @@ namespace Labb3.Commands
                 _makeQuizViewModel.Theme, 
                 _makeQuizViewModel.CorrectAnswer);
 
-            _quiz.AddQuestionToQuiz(_quiz, question);
 
             //Lägg till något till quiz-objektet
         }
@@ -59,11 +83,11 @@ namespace Labb3.Commands
                 e.PropertyName == nameof(MakeQuizViewModel.Option2) || 
                 e.PropertyName == nameof(MakeQuizViewModel.Option3) || 
                 e.PropertyName == nameof(MakeQuizViewModel.CorrectAnswer) || 
-                e.PropertyName == nameof(MakeQuizViewModel.Quiz) || 
+                e.PropertyName == nameof(MakeQuizViewModel.QuizTitle) || 
                 e.PropertyName == nameof(MakeQuizViewModel.Statement) || 
                 e.PropertyName == nameof(MakeQuizViewModel.Theme))
             {
-                OnCanExecutedChanged();
+                NotifyCanExecuteChanged();
             }
         }
     }

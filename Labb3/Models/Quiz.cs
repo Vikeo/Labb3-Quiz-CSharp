@@ -9,7 +9,7 @@ namespace Labb3.Models
 {
     public class Quiz
     {
-        private ICollection<Question> _questions;
+        private ICollection<Question> _questions = new List<Question>();
         public ICollection<Question> Questions
         {
             get { return _questions; }

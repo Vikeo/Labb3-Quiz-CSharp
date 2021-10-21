@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.Toolkit.Mvvm.Input;
 
 namespace Labb3.Commands
 {
-    abstract class CommandBase : ICommand
+    abstract class CommandBase : IRelayCommand, ICommand
     {
         public event EventHandler? CanExecuteChanged;
 
@@ -20,10 +21,15 @@ namespace Labb3.Commands
         //Vad som händer när man trycker på knappen
         public abstract void Execute(object? parameter);
 
-        protected void OnCanExecutedChanged()
+        public void NotifyCanExecuteChanged()
         {
             CanExecuteChanged?.Invoke(this, new EventArgs());
         }
+
+        //protected void OnCanExecutedChanged()
+        //{
+        //    CanExecuteChanged?.Invoke(this, new EventArgs());
+        //}
 
     }
 }
