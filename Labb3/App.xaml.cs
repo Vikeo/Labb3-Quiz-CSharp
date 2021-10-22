@@ -25,19 +25,6 @@ namespace Labb3
         public App()
         {
             ObservableCollection<Question> questions = new ObservableCollection<Question>();
-
-            questions.Add(new Question("lol1?", "pog", "log", "dog", "Dogs", "dog"));
-            questions.Add(new Question("lol2?", "pog", "log", "dog", "Twitch", "pog"));
-            questions.Add(new Question("lol3?", "pog", "log", "dog", "Nature", "log"));
-
-            _quiz = new Quiz("Big quiz1", questions);
-            _allQuizzes.Quizzes.Add(_quiz);
-
-            Quiz quiz2 = new Quiz("Big quiz2", questions);
-            _allQuizzes.Quizzes.Add(quiz2);
-    
-            Quiz quiz3 = new Quiz("Big quiz3", questions);
-            _allQuizzes.Quizzes.Add(quiz3);
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -53,6 +40,7 @@ namespace Labb3
 
             var questions = new ObservableCollection<Question>();
 
+            //TODO Behöver nog inte ta in data in i MainViewModel.
             MainWindow = new MainWindow()
             {
                 DataContext = new MainViewModel(_allQuizzes, _quiz)

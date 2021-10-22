@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Labb3.Models
 {
@@ -67,5 +69,19 @@ namespace Labb3.Models
             _theme = theme;
             _correctAnswer = correctAnswer;
         }
+
+        public static void ChangeCorrectAnswer(Question question, string newCorrectAnswer)
+        {
+            //Detta gör det möjligt att ändra värdet på ett readonly-fält.
+            typeof(Question).GetField("_correctAnswer", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(question, newCorrectAnswer);
+        }
+
+        public Question(string newCorrectAnswer)
+        {
+            _correctAnswer = newCorrectAnswer;
+        }
+
+        
+
     }
 }

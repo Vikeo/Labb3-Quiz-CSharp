@@ -24,7 +24,7 @@
             <TextBlock
                 Grid.Column="0"
                 FontSize="24"
-                Text="QuizTitle" />
+                Text="NewQuizTitle" />
 
             <Button
                 Grid.Column="1"
@@ -39,7 +39,7 @@
             ItemsSource="{Binding Questions}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Statement">
+                    <GridViewColumn Header="NewStatement">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Statement}" />
