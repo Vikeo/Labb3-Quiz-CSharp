@@ -40,10 +40,10 @@ namespace Labb3
 
             var questions = new ObservableCollection<Question>();
 
-            //TODO Behöver nog inte ta in data in i MainViewModel.
+            //TODO Tog bort in-datan till MainViewModel(_allQuizzes, _quiz). Är det OK utan eller måsta man ha med dem? Tror att det är lugnt utan.
             MainWindow = new MainWindow()
             {
-                DataContext = new MainViewModel(_allQuizzes, _quiz)
+                DataContext = new MainViewModel()
             };
 
             MainWindow.Show();

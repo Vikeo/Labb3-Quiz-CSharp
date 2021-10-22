@@ -16,9 +16,9 @@ namespace Labb3.ViewModels
 
         public ObservableObject CurrentViewModel { get; }
 
-        public MainViewModel(QuizManager quizzes, Quiz quiz)
+        public MainViewModel()
         {
-            CurrentViewModel = new MakeQuizViewModel(quizzes, quiz);
+            CurrentViewModel = new MakeQuizViewModel();
         }
     }
 }

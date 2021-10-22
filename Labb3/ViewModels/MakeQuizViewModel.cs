@@ -208,7 +208,7 @@ namespace Labb3.ViewModels
         public RelayCommand CancelCommand { get; }
         public RelayCommand CreateQuizCommand { get; }
 
-        public MakeQuizViewModel(QuizManager quizzes, Quiz quiz)
+        public MakeQuizViewModel()
         {
             //CreateQuizCommand = new CreateQuizCommand(this, quizzes, quiz);
 
