@@ -19,8 +19,8 @@ namespace Labb3
     public partial class App : Application
     {
 
-        private readonly Quiz _quiz = new Quiz("Big quiz", new List<Question>());
-        private readonly QuizManager _allQuizzes = new QuizManager();
+        //private readonly Quiz _quiz = new Quiz("Big quiz", new List<Question>());
+        //private readonly QuizManager _allQuizzes = new QuizManager();
 
         public App()
         {
@@ -30,13 +30,12 @@ namespace Labb3
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            QuizManager._allQuizzes = QuizManager.LoadQuizzes();
+
 
             //TODO kanske ska instansiera Question och Quiz här, tomma. Och ett ObservableCollection<string> objekt?
-            
             //Här ska man instansiera allt som man vill kunna visa. Flera olika view, om de ska leva över applikationens livstid.
-
             //TODO Är det här rätt? Borde JAG göra såhär?
-
 
             var questions = new ObservableCollection<Question>();
 
@@ -48,7 +47,6 @@ namespace Labb3
 
             MainWindow.Show();
 
-            
         }
     }
 }

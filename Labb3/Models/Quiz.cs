@@ -8,6 +8,7 @@ namespace Labb3.Models
 {
     public class Quiz
     {
+        //TODO Behöver inte tilldela ett värde?
         private ICollection<Question> _questions = new List<Question>();
         public ICollection<Question> Questions
         {
@@ -16,7 +17,6 @@ namespace Labb3.Models
         }
 
         private string _title;
-
         public string Title
         {
             get { return _title; }
@@ -27,14 +27,29 @@ namespace Labb3.Models
         {
             _title = title;
             _questions = questions;
-
         }
 
-        //TODO Helt fel metod, använder inte det som man matar in
+        public Quiz()
+        {
+        }
+
         public void AddQuestionToQuiz(Quiz quiz, Question question)
         {
             //Lägg till en Questions till Questions-listan
-            _questions.Add(question);
+        }
+
+        public Question GetRandomQuestion(Quiz quiz)
+        {
+            return quiz.Questions.First();
+        }
+
+
+        //TODO Kolla med Niklas om jag måset använda den här metoden:
+        public void AddQuestion(string statement, int correctAnswer, params string[] answers)
+        {
+        }
+        public void RemoveQuestion(int index)
+        {
         }
     }
 }

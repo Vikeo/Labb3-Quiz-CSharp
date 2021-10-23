@@ -26,12 +26,9 @@ namespace Labb3.ViewModels
 
         public PlayQuizViewModel()
         {
-            //Kan sätta denna som "ItemSource" till grejer
-            _questions = new ObservableCollection<QuestionViewModel>();
 
-            _questions.Add(new QuestionViewModel(new Question("lol1?", "pog", "log", "dog", "Dogs", "dog")));
-            _questions.Add(new QuestionViewModel(new Question("lol2?", "pog", "log", "dog", "Twitch", "pog")));
-            _questions.Add(new QuestionViewModel(new Question("lol3?", "pog", "log", "dog", "Nature", "log")));
+
+            
         }
     }
 }

@@ -2,10 +2,10 @@
     x:Class="Labb3.Views.MakeQuizView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Labb3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -22,7 +22,7 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
+            <ColumnDefinition Width="2*" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
@@ -59,10 +59,11 @@
                 Grid.Row="1"
                 Grid.Column="1"
                 Grid.ColumnSpan="5"
-                Margin="0,5,0,0"
+                Margin="0,5,89,0"
                 DisplayMemberPath="Title"
                 ItemsSource="{Binding Quizzes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                SelectedItem="{Binding SelectedQuiz, UpdateSourceTrigger=PropertyChanged}" />
+                SelectedItem="{Binding SelectedQuiz, UpdateSourceTrigger=PropertyChanged}" 
+                Text="{Binding NewQuizTitle, UpdateSourceTrigger=PropertyChanged}"/>
 
             <TextBox
                 Grid.Row="2"
@@ -218,7 +219,7 @@
                 Grid.Row="4"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Text="Statements" />
+                Text="Questions" />
         </Grid>
 
         <ListBox
@@ -228,22 +229,38 @@
             Grid.Column="1"
             Height="160"
             DisplayMemberPath="Statement"
-            ItemsSource="{Binding Statements, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+            ItemsSource="{Binding Questions, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
             SelectedItem="{Binding SelectedQuestion, UpdateSourceTrigger=PropertyChanged}" />
 
         <StackPanel
             Grid.Row="5"
             Margin="0,25,0,0"
             Orientation="Horizontal">
-            <Button Command="{Binding AddCommand}" Content="Add to quiz" />
+            <Button
+                Command="{Binding AddCommand}"
+                Content="Add to quiz"
+                FontSize="8" />
             <Button
                 Margin="5,0,0,0"
                 Command="{Binding EditCommand}"
-                Content="Edit statement" />
+                Content="Edit question"
+                FontSize="8" />
+            <Button
+                Margin="5,0,0,0"
+                Command="{Binding RemoveCommand}"
+                Content="Remove question"
+                FontSize="8" />
             <Button
                 Margin="5,0,0,0"
                 Command="{Binding CancelCommand}"
-                Content="Cancel" />
+                Content="Cancel"
+                FontSize="8" />
+            <Button
+                Margin="5,0,0,0"
+                Command="{Binding AddImageCommand}"
+                Content="Add image"
+                FontSize="8" />
+            
         </StackPanel>
     </Grid>
 </UserControl>

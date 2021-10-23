@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.PortableExecutable;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
@@ -21,7 +23,6 @@ namespace Labb3.Models
         }
 
         private string _option1;
-
         public string Option1
         {
             get { return _option1; }
@@ -29,7 +30,6 @@ namespace Labb3.Models
         }
 
         private string _option2;
-
         public string Option2
         {
             get { return _option2; }
@@ -37,7 +37,6 @@ namespace Labb3.Models
         }
 
         private string _option3;
-
         public string Option3
         {
             get { return _option3; }
@@ -52,6 +51,7 @@ namespace Labb3.Models
         }
 
         //Readonly variabler kan man tilldela värde till i en konstruktor.
+        //TODO Fråga niklas om det måste vara INT
         private readonly string _correctAnswer;
 
         public string CorrectAnswer
@@ -59,7 +59,8 @@ namespace Labb3.Models
             get { return _correctAnswer; }
         }
 
-        //Konstruktor
+        //Konstruktor. [JsonConstructor] visar Deserializern vilken konstruktor den ska använda.
+        [JsonConstructor]
         public Question(string statement, string option1, string option2, string option3, string theme, string correctAnswer)
         {
             _statement = statement;
@@ -76,12 +77,20 @@ namespace Labb3.Models
             typeof(Question).GetField("_correctAnswer", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(question, newCorrectAnswer);
         }
 
+        
         public Question(string newCorrectAnswer)
         {
             _correctAnswer = newCorrectAnswer;
         }
+        public Question()
+        {
+            
+        }
 
-        
+      
+
+
+
 
     }
 }
