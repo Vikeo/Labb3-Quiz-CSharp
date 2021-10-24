@@ -150,7 +150,7 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _option1, value);
-                _option1 = value;
+                //_option1 = value;
                 _options[1] = _option1;
                 
             }
@@ -238,7 +238,6 @@ namespace Labb3.ViewModels
         //Kollar om man kan lägga till frågor till quizen.
         public bool CanAddQuestionToQuiz()
         {
-
             //Om man lägger till ny fråga
             if (!string.IsNullOrEmpty(Option1) &&
                 !string.IsNullOrEmpty(Option2) &&
