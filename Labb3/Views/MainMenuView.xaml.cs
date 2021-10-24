@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Labb3.Views
 {
     /// <summary>
-    /// Interaction logic for MakeQuizView.xaml
+    /// Interaction logic for MainMenuView.xaml
     /// </summary>
-    public partial class MakeQuizView : UserControl
+    public partial class MainMenuView : UserControl
     {
-        public MakeQuizView()
+        public MainMenuView()
         {
             InitializeComponent();
         }

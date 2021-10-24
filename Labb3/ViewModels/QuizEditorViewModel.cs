@@ -16,7 +16,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 
 namespace Labb3.ViewModels
 {
-    public class MakeQuizViewModel : ObservableObject
+    public class QuizEditorViewModel : ObservableObject
     {
         //TODO Vill att _questions ska vara = Quizzes[n].Questions / det som man är Selected på Quizzes comboboxen.
 
@@ -60,7 +60,7 @@ namespace Labb3.ViewModels
                     SetProperty(ref _selectedQuiz, value);
                     _selectedQuiz = value;
 
-                    if (_questions != null)
+                    if (_questions != null && _selectedQuiz != null)
                     {
                         _questions.Clear();
 
@@ -199,12 +199,13 @@ namespace Labb3.ViewModels
         public RelayCommand AddCommand { get; }
         public RelayCommand EditCommand { get; }
         public RelayCommand RemoveCommand { get; }
+        public RelayCommand RemoveQuizCommand { get; }
         public RelayCommand CancelCommand { get; }
         public RelayCommand AddImageCommand { get; }
         public RelayCommand CreateQuizCommand { get; }
 
         //Konstruktor
-        public MakeQuizViewModel()
+        public QuizEditorViewModel()
         {
             //CreateQuizCommand = new CreateQuizCommand(this, quizzes, quiz);
 
@@ -213,7 +214,7 @@ namespace Labb3.ViewModels
             EditCommand = new RelayCommand(EditQuestion, CanEditQuestion);
             RemoveCommand = new RelayCommand(RemoveQuestion, CanRemoveQuestion);
             AddImageCommand = new RelayCommand(AddImageToQuestion, CanAddImage);
-
+            RemoveQuizCommand = new RelayCommand(RemoveQuiz, CanRemoveQuiz);
             PropertyChanged += OnViewModelPropertyChanged;
         }
 
@@ -237,6 +238,7 @@ namespace Labb3.ViewModels
         //Kollar om man kan lägga till frågor till quizen.
         public bool CanAddQuestionToQuiz()
         {
+
             //Om man lägger till ny fråga
             if (!string.IsNullOrEmpty(Option1) &&
                 !string.IsNullOrEmpty(Option2) &&
@@ -244,7 +246,13 @@ namespace Labb3.ViewModels
                 !string.IsNullOrEmpty(CorrectAnswer) &&
                 !string.IsNullOrEmpty(NewStatement) &&
                 !string.IsNullOrEmpty(Theme) &&
-                SelectedQuiz.Title != "TEMP")
+                SelectedQuiz.Title != "TEMP" &&
+                Option1 != Option2 &&
+                Option1 != Option3 &&
+                Option2 != Option1 &&
+                Option2 != Option3 &&
+                Option3 != Option1 &&
+                Option3 != Option2)
             {
 
                 //Kolla om det finns ett en fråga med samma NewStatement som det man har skrivit in. LINQ
@@ -270,6 +278,11 @@ namespace Labb3.ViewModels
 
             QuizManager._allQuizzes.Add(tempNewQuiz);
             SelectedQuiz = QuizManager._allQuizzes[QuizManager._allQuizzes.Count - 1];
+            Option1 = "";
+            Option2 = "";
+            Option3 = "";
+            CorrectAnswer = "";
+            NewStatement = "";
         }
         public bool CanAddQuiz()
         {
@@ -319,7 +332,8 @@ namespace Labb3.ViewModels
                 !string.IsNullOrEmpty(CorrectAnswer) &&
                 !string.IsNullOrEmpty(Theme) &&
                 SelectedQuiz.Title != "TEMP" &&
-                SelectedQuestion != null)
+                SelectedQuestion != null &&
+                SelectedQuestion.Statement != NewStatement)
             {
                 //TODO Lägga till en if-sats som kolla SelectedQuestion.Statement så att det är samma som man editerar.
                 return true;
@@ -332,6 +346,7 @@ namespace Labb3.ViewModels
         public void RemoveQuestion()
         {
             SelectedQuiz.Questions.Remove(SelectedQuestion);
+            ClearTextboxes();
 
             //Gör så att listan uppdateras i vyn.........
             if (Questions != null)
@@ -354,6 +369,23 @@ namespace Labb3.ViewModels
             return false;
         }
 
+        public void RemoveQuiz()
+        {
+            Quizzes.Remove(SelectedQuiz);
+
+            SelectedQuiz = DefaultSelectedQuiz();
+            ClearTextboxes();
+        }
+        public bool CanRemoveQuiz()
+        {
+            if (SelectedQuiz != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public void AddImageToQuestion()
         {
             //TODO Not implemented
@@ -362,6 +394,27 @@ namespace Labb3.ViewModels
         {
             //TODO Not implemented
             return true;
+        }
+
+        private void ClearTextboxes()
+        {
+            Option1 = "";
+            Option2 = "";
+            Option3 = "";
+            CorrectAnswer = "";
+            NewStatement = "";
+            Theme = "";
+        }
+        private Quiz DefaultSelectedQuiz()
+        {
+            if (Quizzes.Count == 0)
+            {
+                return SelectedQuiz = new Quiz("", new List<Question>());
+            }
+            else
+            {
+                return SelectedQuiz = Quizzes.First();
+            }
         }
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)

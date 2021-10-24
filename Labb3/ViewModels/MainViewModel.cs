@@ -18,7 +18,7 @@ namespace Labb3.ViewModels
 
         public MainViewModel()
         {
-            CurrentViewModel = new MakeQuizViewModel();
+            CurrentViewModel = new QuizEditorViewModel();
         }
     }
 }

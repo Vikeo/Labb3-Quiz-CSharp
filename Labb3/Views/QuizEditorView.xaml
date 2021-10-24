@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="Labb3.Views.MakeQuizView"
+    x:Class="Labb3.Views.QuizEditorView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
@@ -62,8 +62,7 @@
                 Margin="0,5,89,0"
                 DisplayMemberPath="Title"
                 ItemsSource="{Binding Quizzes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                SelectedItem="{Binding SelectedQuiz, UpdateSourceTrigger=PropertyChanged}" 
-                Text="{Binding NewQuizTitle, UpdateSourceTrigger=PropertyChanged}"/>
+                SelectedItem="{Binding SelectedQuiz, UpdateSourceTrigger=PropertyChanged}"/>
 
             <TextBox
                 Grid.Row="2"
@@ -252,6 +251,11 @@
                 FontSize="8" />
             <Button
                 Margin="5,0,0,0"
+                Command="{Binding RemoveQuizCommand}"
+                Content="Remove Quiz"
+                FontSize="8" />
+            <Button
+                Margin="5,0,0,0"
                 Command="{Binding CancelCommand}"
                 Content="Cancel"
                 FontSize="8" />
@@ -260,7 +264,7 @@
                 Command="{Binding AddImageCommand}"
                 Content="Add image"
                 FontSize="8" />
-            
+
         </StackPanel>
     </Grid>
 </UserControl>

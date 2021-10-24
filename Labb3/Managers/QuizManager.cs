@@ -56,6 +56,19 @@ namespace Labb3.Managers
             }
         }
 
+        public static List<string> GetUniqueThemes()
+        {
+            List<string> themes = new List<string>();
+
+            //TODO Göra om till linq
+            foreach (var quiz in _allQuizzes)
+            {
+                themes = quiz.Questions.Select(q => q.Theme).Distinct().ToList();
+            }
+
+            return themes;
+        }
+
         //public static async Task<ObservableCollection<Quiz>> LoadQuizzes()
         //{
         //    string fileName = "WeatherForecast.json";

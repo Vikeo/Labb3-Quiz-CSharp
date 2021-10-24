@@ -13,7 +13,7 @@
     <!--  FontSize="14"  -->
     <Grid MaxWidth="600" Margin="20,10">
 
-        <views:MakeQuizView DataContext="{Binding CurrentViewModel}" />
+        <views:QuizEditorView DataContext="{Binding CurrentViewModel}" />
 
     </Grid>
 </Window>
