@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Labb3.Managers;
 using Labb3.Models;
+using Labb3.Stores;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 
@@ -14,6 +15,9 @@ namespace Labb3.ViewModels
     class MainMenuViewModel : ObservableObject
     {
 
+        private readonly NavigationStore _navigationStore;
+        private readonly QuizManager _quizManager;
+        
         //Kanske gör ett nytt objekt, "QuizOptions", mata in allt som behövs visas i den.
         private ObservableCollection<Quiz> _quizzes = QuizManager._allQuizzes;
         public ObservableCollection<Quiz> Quizzes
@@ -63,11 +67,12 @@ namespace Labb3.ViewModels
         public RelayCommand GoToPlayQuizCommand { get; }
         public RelayCommand QuitCommand { get; }
 
-        public MainMenuViewModel()
+        public MainMenuViewModel(Stores.NavigationStore navigationStore)
         {
             GoToQuizEditorCommand = new RelayCommand(GoToQuizEditor);
             GoToPlayQuizCommand = new RelayCommand(GoToPlayQuiz, CanGoToPlayQuiz);
             QuitCommand = new RelayCommand(Quit);
+            _navigationStore = navigationStore;
         }
 
         private void GoToPlayQuiz()
@@ -82,7 +87,7 @@ namespace Labb3.ViewModels
 
         private void GoToQuizEditor()
         {
-            //throw new NotImplementedException();
+            _navigationStore.CurrentViewModel = new QuizEditorViewModel(_navigationStore, _quizManager);
         }
         private void Quit()
         {

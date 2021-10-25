@@ -9,7 +9,9 @@ using System.Windows;
 using System.Windows.Documents;
 using Labb3.Managers;
 using Labb3.Models;
+using Labb3.Stores;
 using Labb3.ViewModels;
+using Labb3.Views;
 
 namespace Labb3
 {
@@ -19,19 +21,26 @@ namespace Labb3
     public partial class App : Application
     {
 
+        private readonly NavigationStore _navigationStore;
+        private readonly QuizManager _quizManager;
+
         //private readonly Quiz _quiz = new Quiz("Big quiz", new List<Question>());
         //private readonly QuizManager _allQuizzes = new QuizManager();
 
         public App()
         {
             ObservableCollection<Question> questions = new ObservableCollection<Question>();
+            _navigationStore = new NavigationStore();
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
-            QuizManager._allQuizzes = QuizManager.LoadQuizzes();
 
+            _navigationStore.CurrentViewModel = new MainMenuViewModel(_navigationStore);
+
+            base.OnStartup(e);
+
+            //QuizManager._allQuizzes = QuizManager.LoadQuizzes();
 
             //TODO kanske ska instansiera Question och Quiz här, tomma. Och ett ObservableCollection<string> objekt?
             //Här ska man instansiera allt som man vill kunna visa. Flera olika view, om de ska leva över applikationens livstid.
@@ -42,7 +51,7 @@ namespace Labb3
             //TODO Tog bort in-datan till MainViewModel(_allQuizzes, _quiz). Är det OK utan eller måsta man ha med dem? Tror att det är lugnt utan.
             MainWindow = new MainWindow()
             {
-                DataContext = new MainViewModel()
+                DataContext = new MainViewModel(_navigationStore, _quizManager)
             };
 
             MainWindow.Show();

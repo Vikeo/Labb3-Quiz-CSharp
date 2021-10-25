@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Labb3.Managers;
 using Labb3.Models;
+using Labb3.Stores;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 
@@ -19,7 +20,8 @@ namespace Labb3.ViewModels
     public class QuizEditorViewModel : ObservableObject
     {
         //TODO Vill att _questions ska vara = Quizzes[n].Questions / det som man är Selected på Quizzes comboboxen.
-
+        private readonly NavigationStore _navigationStore;
+        private readonly QuizManager _quizManager;
 
         #region Properties
 
@@ -115,7 +117,6 @@ namespace Labb3.ViewModels
             {
                 SetProperty(ref _newQuizTitle, value);
                 _newQuizTitle = value;
-
             }
         }
 
@@ -183,6 +184,8 @@ namespace Labb3.ViewModels
         }
 
         private string _theme;
+        private NavigationStore navigationStore;
+
         public string Theme
         {
             get { return _theme; }
@@ -215,7 +218,19 @@ namespace Labb3.ViewModels
             RemoveCommand = new RelayCommand(RemoveQuestion, CanRemoveQuestion);
             AddImageCommand = new RelayCommand(AddImageToQuestion, CanAddImage);
             RemoveQuizCommand = new RelayCommand(RemoveQuiz, CanRemoveQuiz);
+
             PropertyChanged += OnViewModelPropertyChanged;
+        }
+
+        public QuizEditorViewModel(NavigationStore navigationStore, QuizManager quizManager)
+        {
+            _navigationStore = navigationStore;
+            _quizManager = quizManager;
+        }
+
+        public QuizEditorViewModel(NavigationStore navigationStore)
+        {
+            this.navigationStore = navigationStore;
         }
 
         //Det som sker när man trycker på AddCommand
@@ -276,7 +291,7 @@ namespace Labb3.ViewModels
             Quiz tempNewQuiz = new Quiz(NewQuizTitle, new List<Question>());
 
             QuizManager._allQuizzes.Add(tempNewQuiz);
-            SelectedQuiz = QuizManager._allQuizzes[QuizManager._allQuizzes.Count - 1];
+            SelectedQuiz = QuizManager._allQuizzes[^1];
             Option1 = "";
             Option2 = "";
             Option3 = "";
