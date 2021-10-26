@@ -82,7 +82,7 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _questions, value);
-                _questions = value;
+                
             }
         }
 
@@ -116,7 +116,7 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _newQuizTitle, value);
-                _newQuizTitle = value;
+                
             }
         }
 
@@ -128,7 +128,7 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _correctAnswer, value);
-                _correctAnswer = value;
+                
             }
         }
 
@@ -139,7 +139,7 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _options, value);
-                _options = value;
+                
                 
             }
         }
@@ -151,7 +151,7 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _option1, value);
-                //_option1 = value;
+                
                 _options[1] = _option1;
                 
             }
@@ -164,7 +164,7 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _option2, value);
-                _option2 = value;
+                
                 _options[2] = _option2;
 
             }
@@ -177,7 +177,7 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _option3, value);
-                _option3 = value;
+              
                 _options[3] = _option3;
                 
             }
@@ -208,8 +208,10 @@ namespace Labb3.ViewModels
         public RelayCommand CreateQuizCommand { get; }
 
         //Konstruktor
-        public QuizEditorViewModel()
+        public QuizEditorViewModel(NavigationStore navigationStore, QuizManager quizManager)
         {
+            _navigationStore = navigationStore;
+            _quizManager = quizManager;
             //CreateQuizCommand = new CreateQuizCommand(this, quizzes, quiz);
 
             AddCommand = new RelayCommand(AddQuestionToQuiz, CanAddQuestionToQuiz);
@@ -220,17 +222,6 @@ namespace Labb3.ViewModels
             RemoveQuizCommand = new RelayCommand(RemoveQuiz, CanRemoveQuiz);
 
             PropertyChanged += OnViewModelPropertyChanged;
-        }
-
-        public QuizEditorViewModel(NavigationStore navigationStore, QuizManager quizManager)
-        {
-            _navigationStore = navigationStore;
-            _quizManager = quizManager;
-        }
-
-        public QuizEditorViewModel(NavigationStore navigationStore)
-        {
-            this.navigationStore = navigationStore;
         }
 
         //Det som sker när man trycker på AddCommand
@@ -248,6 +239,8 @@ namespace Labb3.ViewModels
             //Gör så att Propertyn uppdateras
             var tempQuiz = SelectedQuiz;
             SelectedQuiz = tempQuiz;
+
+            QuizManager.SaveQuizzes(QuizManager._allQuizzes);
         }
 
         //Kollar om man kan lägga till frågor till quizen.
@@ -292,6 +285,8 @@ namespace Labb3.ViewModels
 
             QuizManager._allQuizzes.Add(tempNewQuiz);
             SelectedQuiz = QuizManager._allQuizzes[^1];
+
+
             Option1 = "";
             Option2 = "";
             Option3 = "";
@@ -304,7 +299,6 @@ namespace Labb3.ViewModels
             //Kollar först det finns en quiz med samma Titel.
             if (QuizManager._allQuizzes.All(q => q.Title != NewQuizTitle))
             {
-
                 return !string.IsNullOrEmpty(NewQuizTitle);
             }
             return false;
@@ -321,7 +315,9 @@ namespace Labb3.ViewModels
             Question.ChangeCorrectAnswer(SelectedQuestion, CorrectAnswer);
             SelectedQuestion._theme = Theme;
 
-            //Gör så att listan uppdateras i vyn.........
+            //TODO Gör så att listan uppdateras i vyn.........
+
+            //EditCommand.NotifyCanExecuteChanged();
 
             if (Questions != null)
             {
@@ -362,16 +358,18 @@ namespace Labb3.ViewModels
             SelectedQuiz.Questions.Remove(SelectedQuestion);
             ClearTextboxes();
 
-            //Gör så att listan uppdateras i vyn.........
-            if (Questions != null)
-            {
-                Questions.Clear();
+            EditCommand.NotifyCanExecuteChanged();
 
-                foreach (var question in SelectedQuiz.Questions)
-                {
-                    Questions.Add(question);
-                }
-            }
+            //Gör så att listan uppdateras i vyn.........
+            //if (Questions != null)
+            //{
+            //    Questions.Clear();
+
+            //    foreach (var question in SelectedQuiz.Questions)
+            //    {
+            //        Questions.Add(question);
+            //    }
+            //}
         }
         public bool CanRemoveQuestion()
         {

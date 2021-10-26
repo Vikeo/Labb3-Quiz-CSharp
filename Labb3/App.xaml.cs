@@ -40,7 +40,7 @@ namespace Labb3
 
             base.OnStartup(e);
 
-            //QuizManager._allQuizzes = QuizManager.LoadQuizzes();
+            QuizManager._allQuizzes = QuizManager.LoadQuizzes();
 
             //TODO kanske ska instansiera Question och Quiz här, tomma. Och ett ObservableCollection<string> objekt?
             //Här ska man instansiera allt som man vill kunna visa. Flera olika view, om de ska leva över applikationens livstid.

@@ -17,7 +17,10 @@ namespace Labb3.ViewModels
         private readonly QuizManager _quizManager;
         private readonly NavigationStore _navigationManager;
 
-        public ObservableObject CurrentViewModel => _navigationManager.CurrentViewModel;
+        //HÄR ÄNDRAR MAN DATACONTEXT
+        //public ObservableObject CurrentViewModel => new QuizEditorViewModel(); //Så som det funkar.
+
+        public ObservableObject CurrentViewModel => _navigationManager.CurrentViewModel; //Så som det ska vara om det skall funka.
 
         public MainViewModel(NavigationStore navigationManager, QuizManager quizManager)
         {

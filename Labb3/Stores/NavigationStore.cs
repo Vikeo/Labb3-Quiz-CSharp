@@ -21,10 +21,13 @@ namespace Labb3.Stores
                 OnCurrentViewModelChanged();
             }
         }
-
         private void OnCurrentViewModelChanged()
         {
             CurrentViewModelChanged?.Invoke();
         }
+
+        //Skapa metoder för att gå till olika ställen här i
+
+
     }
 }
