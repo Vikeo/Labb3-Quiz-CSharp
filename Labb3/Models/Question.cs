@@ -15,11 +15,17 @@ namespace Labb3.Models
     {
         //Fullprops
         private string _statement;
-
         public string Statement
         {
             get { return _statement; }
             set { _statement = value; }
+        }
+
+        private string[] _options;
+        public string[] Options
+        {
+            get { return _options; }
+            set { _options = value; }
         }
 
         private string _option1;
@@ -43,42 +49,38 @@ namespace Labb3.Models
             set { _option3 = value; }
         }
 
-        public string _theme;
+        private string _theme;
         public string Theme
         {
             get { return _theme;  }
             set { _theme = value; }
         }
 
-        //Readonly variabler kan man tilldela värde till i en konstruktor.
-        //TODO Fråga niklas om det måste vara INT
-        private readonly string _correctAnswer;
-
-        public string CorrectAnswer
+        private int _correctAnswer;
+        public int CorrectAnswer
         {
             get { return _correctAnswer; }
+            set { _correctAnswer = value; }
         }
 
         //Konstruktor. [JsonConstructor] visar Deserializern vilken konstruktor den ska använda.
         [JsonConstructor]
-        public Question(string statement, string option1, string option2, string option3, string theme, string correctAnswer)
+        public Question(string statement, string theme, int correctAnswer, params string[] options)
         {
             _statement = statement;
-            _option1 = option1;
-            _option2 = option2;
-            _option3 = option3;
+            _options = options;
             _theme = theme;
             _correctAnswer = correctAnswer;
         }
 
-        public static void ChangeCorrectAnswer(Question question, string newCorrectAnswer)
+        public static void ChangeCorrectAnswer(Question question, int newCorrectAnswer)
         {
             //Detta gör det möjligt att ändra värdet på ett readonly-fält.
             typeof(Question).GetField("_correctAnswer", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(question, newCorrectAnswer);
         }
 
         
-        public Question(string newCorrectAnswer)
+        public Question(int newCorrectAnswer)
         {
             _correctAnswer = newCorrectAnswer;
         }

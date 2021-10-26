@@ -6,31 +6,31 @@
     xmlns:local="clr-namespace:Labb3"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:Labb3.Views"
-    xmlns:vms="clr-namespace:Labb3.ViewModels"
+    xmlns:viewmodels="clr-namespace:Labb3.ViewModels"
     Title="Quiz Game"
     Width="800"
     Height="500"
+    d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
     mc:Ignorable="d">
     <!--  FontSize="14"  -->
     <Grid MaxWidth="600" Margin="20,10">
         <ContentControl Content="{Binding CurrentViewModel}">
             <ContentControl.Resources>
 
-                <DataTemplate DataType="{x:Type vms:QuizEditorViewModel}">
+                <DataTemplate DataType="{x:Type viewmodels:StartMenuViewModel}">
+
+                    <views:StartMenuView />
+
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type viewmodels:QuizEditorViewModel}">
                     <views:QuizEditorView />
                 </DataTemplate>
 
-                <DataTemplate DataType="{x:Type vms:MainMenuViewModel}">
-                    <views:MainMenuView />
-                </DataTemplate>
-
-                <DataTemplate DataType="{x:Type vms:PlayQuizViewModel}">
+                <DataTemplate DataType="{x:Type viewmodels:PlayQuizViewModel}">
                     <views:PlayQuizView />
                 </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
-
-        <!--<views:QuizEditorView DataContext="{Binding CurrentViewModel}" />-->
-
     </Grid>
 </Window>

@@ -28,6 +28,10 @@ namespace Labb3.Stores
 
         //Skapa metoder för att gå till olika ställen här i
 
+        public void GoToStart()
+        {
+
+        }
 
     }
 }

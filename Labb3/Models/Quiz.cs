@@ -45,8 +45,9 @@ namespace Labb3.Models
 
 
         //TODO Kolla med Niklas om jag måset använda den här metoden:
-        public void AddQuestion(string statement, int correctAnswer, params string[] answers)
+        public void AddQuestion(string statement, string theme, int correctAnswer, params string[] answers)
         {
+            
         }
         public void RemoveQuestion(int index)
         {

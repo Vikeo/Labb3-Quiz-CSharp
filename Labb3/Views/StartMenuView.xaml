@@ -1,10 +1,12 @@
 ﻿<UserControl
-    x:Class="Labb3.Views.MainMenuView"
+    x:Class="Labb3.Views.StartMenuView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Labb3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:Labb3.ViewModels"
+    d:DataContext="{d:DesignInstance viewmodels:StartMenuViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -45,15 +47,21 @@
                     FontSize="8" />
                 <Button
                     Margin="5,0,0,0"
-                    Command="{Binding QuitCommand}"
+                    Command="{Binding QuitApplicationCommand}"
                     Content="Quiz"
                     FontSize="8" />
 
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="3" Grid.Column="0">
+        <Grid
+            Grid.Row="3"
+            Grid.RowSpan="3"
+            Grid.Column="0">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+                <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
@@ -64,13 +72,49 @@
             </Grid.ColumnDefinitions>
 
             <ComboBox
-                Grid.Row="1"
+                Grid.Row="0"
                 Grid.Column="0"
-                Margin="20,0, 20, 0"
+                Margin="20,0,20,0"
+                DisplayMemberPath="Title"
+                ItemsSource="{Binding Quizzes, UpdateSourceTrigger=PropertyChanged}"
+                SelectedItem="{Binding SelectedQuiz, UpdateSourceTrigger=PropertyChanged}" />
+
+            <ListBox
+                Grid.Row="1"
+                Grid.RowSpan="4"
+                Grid.Column="0"
+                Margin="20,0,20,0"
                 ItemsSource="{Binding Themes, UpdateSourceTrigger=PropertyChanged}"
-                SelectedItem="{Binding SelectedTheme, UpdateSourceTrigger=PropertyChanged}"/>
+                SelectedItem="{Binding SelectedThemes, UpdateSourceTrigger=PropertyChanged}"
+                SelectionMode="Multiple" />
+
+            <!--<ListBox
+                x:Name="listbox"
+                Grid.Row="1"
+                Grid.RowSpan="4"
+                Grid.Column="0"
+                Margin="20,0,20,0"
+                ItemsSource="{Binding Themes, UpdateSourceTrigger=PropertyChanged}"
+                SelectionMode="Multiple" />
+            <Button
+                Grid.Row="0"
+                Grid.Column="1"
+                Command="{Binding GetThemesCommand}"
+                CommandParameter="{Binding SelectedItems, ElementName=listbox}"
+                Content="GetSelectedListBoxItems" />-->
+
+            <!--<DataGrid
+                Grid.Row="1"
+                Grid.RowSpan="3"
+                ItemsSource="{Binding Themes}"
+                SelectionMode="Extended">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="IsSelected" Value="{Binding SelectedThemes}" />
+                    </Style>
+                </DataGrid.Resources>
+            </DataGrid>-->
 
         </Grid>
-
     </Grid>
 </UserControl>

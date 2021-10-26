@@ -18,9 +18,9 @@ namespace Labb3.Views
     /// <summary>
     /// Interaction logic for MainMenuView.xaml
     /// </summary>
-    public partial class MainMenuView : UserControl
+    public partial class StartMenuView : UserControl
     {
-        public MainMenuView()
+        public StartMenuView()
         {
             InitializeComponent();
         }

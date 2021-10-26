@@ -5,8 +5,8 @@
     xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Labb3.Views"
-    xmlns:viewmodels="clr-namespace:Labb3.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:Labb3.ViewModels"
     d:DataContext="{d:DesignInstance viewmodels:QuizEditorViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -64,7 +64,7 @@
                 Margin="0,5,89,0"
                 DisplayMemberPath="Title"
                 ItemsSource="{Binding Quizzes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                SelectedItem="{Binding SelectedQuiz, UpdateSourceTrigger=PropertyChanged}"/>
+                SelectedItem="{Binding SelectedQuiz, UpdateSourceTrigger=PropertyChanged}" />
 
             <TextBox
                 Grid.Row="2"
@@ -196,7 +196,7 @@
                 Grid.Column="2"
                 Margin="5,5,5,0"
                 ItemsSource="{Binding Options, UpdateSourceTrigger=PropertyChanged}"
-                SelectedItem="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged}" />
+                SelectedIndex="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged}" />
 
 
         </Grid>
@@ -258,7 +258,7 @@
                 FontSize="8" />
             <Button
                 Margin="5,0,0,0"
-                Command="{Binding CancelCommand}"
+                Command="{Binding ReturnCommand}"
                 Content="Cancel"
                 FontSize="8" />
             <Button

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,7 +83,6 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _questions, value);
-                
             }
         }
 
@@ -99,11 +99,14 @@ namespace Labb3.ViewModels
                 {
                     _selectedQuestion = value;
 
-                    NewStatement = SelectedQuestion.Statement;
-                    Option1 = SelectedQuestion.Option1;
-                    Option2 = SelectedQuestion.Option2;
-                    Option3 = SelectedQuestion.Option3;
-                    Theme = SelectedQuestion.Theme;
+                    NewStatement  = SelectedQuestion.Statement;
+                    Options[1]    = SelectedQuestion.Options[1];
+                    Options[2]    = SelectedQuestion.Options[2];
+                    Options[3]    = SelectedQuestion.Options[3];
+                    Option1       = Options[1];
+                    Option2       = Options[2];
+                    Option3       = Options[3];
+                    Theme         = SelectedQuestion.Theme;
                     CorrectAnswer = SelectedQuestion.CorrectAnswer;
                 }
             }
@@ -116,19 +119,18 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _newQuizTitle, value);
-                
             }
         }
 
         //CorrectAnswer comboboxen listar de tre alternativ som man har skrivit in.
-        private string _correctAnswer;
-        public string CorrectAnswer
+        private int _correctAnswer;
+        public int CorrectAnswer
         {
             get { return _correctAnswer; }
             set
             {
                 SetProperty(ref _correctAnswer, value);
-                
+                EditCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -139,8 +141,6 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _options, value);
-                
-                
             }
         }
 
@@ -153,7 +153,7 @@ namespace Labb3.ViewModels
                 SetProperty(ref _option1, value);
                 
                 _options[1] = _option1;
-                
+                EditCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -166,7 +166,7 @@ namespace Labb3.ViewModels
                 SetProperty(ref _option2, value);
                 
                 _options[2] = _option2;
-
+                EditCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -179,13 +179,11 @@ namespace Labb3.ViewModels
                 SetProperty(ref _option3, value);
               
                 _options[3] = _option3;
-                
+                EditCommand.NotifyCanExecuteChanged();
             }
         }
 
         private string _theme;
-        private NavigationStore navigationStore;
-
         public string Theme
         {
             get { return _theme; }
@@ -193,90 +191,19 @@ namespace Labb3.ViewModels
             {
                 SetProperty(ref _theme, value);
                 _theme = value;
-                
             }
         }
         #endregion
 
+        #region RelayCommand
         //TODO Lägg till ett Command för att ändra namnet på Quiz. Ha det på samma Button som CreateQuizCommand om det går?
         public RelayCommand AddCommand { get; }
         public RelayCommand EditCommand { get; }
         public RelayCommand RemoveCommand { get; }
         public RelayCommand RemoveQuizCommand { get; }
-        public RelayCommand CancelCommand { get; }
+        public RelayCommand ReturnCommand { get; }
         public RelayCommand AddImageCommand { get; }
         public RelayCommand CreateQuizCommand { get; }
-
-        //Konstruktor
-        public QuizEditorViewModel(NavigationStore navigationStore, QuizManager quizManager)
-        {
-            _navigationStore = navigationStore;
-            _quizManager = quizManager;
-            //CreateQuizCommand = new CreateQuizCommand(this, quizzes, quiz);
-
-            AddCommand = new RelayCommand(AddQuestionToQuiz, CanAddQuestionToQuiz);
-            CreateQuizCommand = new RelayCommand(AddQuiz, CanAddQuiz);
-            EditCommand = new RelayCommand(EditQuestion, CanEditQuestion);
-            RemoveCommand = new RelayCommand(RemoveQuestion, CanRemoveQuestion);
-            AddImageCommand = new RelayCommand(AddImageToQuestion, CanAddImage);
-            RemoveQuizCommand = new RelayCommand(RemoveQuiz, CanRemoveQuiz);
-
-            PropertyChanged += OnViewModelPropertyChanged;
-        }
-
-        //Det som sker när man trycker på AddCommand
-        public void AddQuestionToQuiz()
-        {
-            Question question = new Question(NewStatement,
-                Option1,
-                Option2,
-                Option3,
-                Theme,
-                CorrectAnswer);
-
-            SelectedQuiz.Questions.Add(question);
-
-            //Gör så att Propertyn uppdateras
-            var tempQuiz = SelectedQuiz;
-            SelectedQuiz = tempQuiz;
-
-            QuizManager.SaveQuizzes(QuizManager._allQuizzes);
-        }
-
-        //Kollar om man kan lägga till frågor till quizen.
-        public bool CanAddQuestionToQuiz()
-        {
-            //Om man lägger till ny fråga
-            if (!string.IsNullOrEmpty(Option1) &&
-                !string.IsNullOrEmpty(Option2) &&
-                !string.IsNullOrEmpty(Option3) &&
-                !string.IsNullOrEmpty(CorrectAnswer) &&
-                !string.IsNullOrEmpty(NewStatement) &&
-                !string.IsNullOrEmpty(Theme) &&
-                SelectedQuiz.Title != "TEMP" &&
-                Option1 != Option2 &&
-                Option1 != Option3 &&
-                Option2 != Option1 &&
-                Option2 != Option3 &&
-                Option3 != Option1 &&
-                Option3 != Option2)
-            {
-
-                //Kolla om det finns ett en fråga med samma NewStatement som det man har skrivit in. LINQ
-                if (SelectedQuiz.Questions.All(q => q.Statement != NewStatement))
-                {
-                    return true;
-                }
-
-                return false;
-
-            }
-
-            else
-            {
-                return false;
-            }
-        }
 
         public void AddQuiz()
         {
@@ -286,11 +213,10 @@ namespace Labb3.ViewModels
             QuizManager._allQuizzes.Add(tempNewQuiz);
             SelectedQuiz = QuizManager._allQuizzes[^1];
 
-
             Option1 = "";
             Option2 = "";
             Option3 = "";
-            CorrectAnswer = "";
+            CorrectAnswer = 0;
             NewStatement = "";
         }
         public bool CanAddQuiz()
@@ -304,25 +230,72 @@ namespace Labb3.ViewModels
             return false;
         }
 
+        //Det som sker när man trycker på AddCommand
+        public void AddQuestionToQuiz()
+        {
+            Question question = new Question(NewStatement, Theme, CorrectAnswer, Options.ToArray());
+
+            SelectedQuiz.Questions.Add(question);
+
+            //Gör så att Propertyn uppdateras
+            var tempQuiz = SelectedQuiz;
+            SelectedQuiz = tempQuiz;
+
+            QuizManager.SaveQuizzes(QuizManager._allQuizzes);
+        }
+
+        //Kollar om man kan lägga till frågor till quizen.
+        public bool CanAddQuestionToQuiz()
+        {
+            if (SelectedQuiz == null)
+            {
+                return false;
+            }
+            else if (!string.IsNullOrEmpty(Option1)      &&
+                     !string.IsNullOrEmpty(Option2)      &&
+                     !string.IsNullOrEmpty(Option3)      &&
+                     CorrectAnswer != 0                  &&
+                     !string.IsNullOrEmpty(NewStatement) &&
+                     !string.IsNullOrEmpty(Theme)        &&
+                     SelectedQuiz.Title != "TEMP"        &&
+                     Option1 != Option2                  &&
+                     Option1 != Option3                  &&
+                     Option2 != Option1                  &&
+                     Option2 != Option3                  &&
+                     Option3 != Option1                  &&
+                     Option3 != Option2)
+            {
+
+                //TODO Finns kanske ett bättre LINQ-uttryck för detta.
+                if (SelectedQuiz.Questions.All(q => q.Statement != NewStatement))
+                {
+                    return true;
+                }
+
+                return false;
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        
+
         public void EditQuestion()
         {
-            //TODO Kan inte ändra Statement till något annat. Det som står i NewStatement måste just nu vara == SelectedQuiz.Questions.Statement,
-            //så det råkar alltid bli samma
             SelectedQuestion.Statement = NewStatement;
-            SelectedQuestion.Option1 = Option1;
-            SelectedQuestion.Option2 = Option2;
-            SelectedQuestion.Option3 = Option3;
+            SelectedQuestion.Option1   = Option1;
+            SelectedQuestion.Option2   = Option2;
+            SelectedQuestion.Option3   = Option3;
             Question.ChangeCorrectAnswer(SelectedQuestion, CorrectAnswer);
-            SelectedQuestion._theme = Theme;
+            SelectedQuestion.Theme     = Theme;
 
-            //TODO Gör så att listan uppdateras i vyn.........
-
-            //EditCommand.NotifyCanExecuteChanged();
-
+            //TODO Gör så att listan av frågor uppdateras i vyn.........
             if (Questions != null)
             {
                 Questions.Clear();
-
                 foreach (var question in SelectedQuiz.Questions)
                 {
                     Questions.Add(question);
@@ -331,24 +304,33 @@ namespace Labb3.ViewModels
         }
         public bool CanEditQuestion()
         {
-            //Om man redigerar en fråga.
-            //Kollar om man har en SelectedQuiz, SelectedQuestion och att alla fält är ifyllda
-
-            //Kollar om fälten är ifyllda
-            if (!string.IsNullOrEmpty(NewStatement) &&
-                !string.IsNullOrEmpty(Option1) &&
-                !string.IsNullOrEmpty(Option2) &&
-                !string.IsNullOrEmpty(Option3) &&
-                !string.IsNullOrEmpty(CorrectAnswer) &&
-                !string.IsNullOrEmpty(Theme) &&
-                SelectedQuiz.Title != "TEMP" &&
-                SelectedQuestion != null &&
-                SelectedQuestion.Statement != NewStatement)
+            //TODO Bättre sätt att göra detta på??????
+            if (SelectedQuestion != null)
             {
-                //TODO Lägga till en if-sats som kolla SelectedQuestion.Statement så att det är samma som man editerar.
-                return true;
+                if (SelectedQuestion.Statement != NewStatement ||
+                    SelectedQuestion.Theme != Theme            ||
+                    SelectedQuestion.Options[1] != Options[1]  ||
+                    SelectedQuestion.Options[2] != Options[2]  ||
+                    SelectedQuestion.Options[3] != Options[3]  ||
+                    SelectedQuestion.CorrectAnswer != CorrectAnswer) 
+                {
+                    if (CorrectAnswer > 0                  &&
+                        !string.IsNullOrEmpty(Option1)      &&
+                        !string.IsNullOrEmpty(Option2)      &&
+                        !string.IsNullOrEmpty(Option3)      &&
+                        !string.IsNullOrEmpty(NewStatement) &&
+                        !string.IsNullOrEmpty(Theme)        &&
+                        Option1 != Option2                  &&
+                        Option1 != Option3                  &&
+                        Option2 != Option1                  &&
+                        Option2 != Option3                  &&
+                        Option3 != Option1                  &&
+                        Option3 != Option2)
+                    {
+                        return true;
+                    }
+                }
             }
-
             return false;
 
         }
@@ -358,18 +340,16 @@ namespace Labb3.ViewModels
             SelectedQuiz.Questions.Remove(SelectedQuestion);
             ClearTextboxes();
 
-            EditCommand.NotifyCanExecuteChanged();
+            //TODO Gör så att listan av frågor uppdateras i vyn.........
+            if (Questions != null)
+            {
+                Questions.Clear();
 
-            //Gör så att listan uppdateras i vyn.........
-            //if (Questions != null)
-            //{
-            //    Questions.Clear();
-
-            //    foreach (var question in SelectedQuiz.Questions)
-            //    {
-            //        Questions.Add(question);
-            //    }
-            //}
+                foreach (var question in SelectedQuiz.Questions)
+                {
+                    Questions.Add(question);
+                }
+            }
         }
         public bool CanRemoveQuestion()
         {
@@ -408,15 +388,21 @@ namespace Labb3.ViewModels
             return true;
         }
 
+        public void ReturnToStartMenu()
+        {
+            _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, _quizManager);
+        }
+
         private void ClearTextboxes()
         {
             Option1 = "";
             Option2 = "";
             Option3 = "";
-            CorrectAnswer = "";
+            CorrectAnswer = 0;
             NewStatement = "";
             Theme = "";
         }
+
         private Quiz DefaultSelectedQuiz()
         {
             if (Quizzes.Count == 0)
@@ -428,17 +414,18 @@ namespace Labb3.ViewModels
                 return SelectedQuiz = Quizzes.First();
             }
         }
+        #endregion
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(SelectedQuiz) ||
+            if (e.PropertyName == nameof(SelectedQuiz)     ||
                 e.PropertyName == nameof(SelectedQuestion) ||
-                e.PropertyName == nameof(Option1) ||
-                e.PropertyName == nameof(Option2) ||
-                e.PropertyName == nameof(Option3) ||
-                e.PropertyName == nameof(CorrectAnswer) ||
-                e.PropertyName == nameof(NewQuizTitle) ||
-                e.PropertyName == nameof(NewStatement) ||
+                e.PropertyName == nameof(Option1)          ||
+                e.PropertyName == nameof(Option2)          ||
+                e.PropertyName == nameof(Option3)          ||
+                e.PropertyName == nameof(CorrectAnswer)    ||
+                e.PropertyName == nameof(NewQuizTitle)     ||
+                e.PropertyName == nameof(NewStatement)     ||
                 e.PropertyName == nameof(Theme))
             {
                 CreateQuizCommand.NotifyCanExecuteChanged();
@@ -450,5 +437,22 @@ namespace Labb3.ViewModels
             QuizManager.SaveQuizzes(QuizManager._allQuizzes);
         }
 
+        //Konstruktor
+        public QuizEditorViewModel(NavigationStore navigationStore, QuizManager quizManager)
+        {
+            _navigationStore = navigationStore;
+
+            //CreateQuizCommand = new CreateQuizCommand(this, quizzes, quiz);
+
+            AddCommand        = new RelayCommand(AddQuestionToQuiz, CanAddQuestionToQuiz);
+            CreateQuizCommand = new RelayCommand(AddQuiz, CanAddQuiz);
+            EditCommand       = new RelayCommand(EditQuestion, CanEditQuestion);
+            RemoveCommand     = new RelayCommand(RemoveQuestion, CanRemoveQuestion);
+            AddImageCommand   = new RelayCommand(AddImageToQuestion, CanAddImage);
+            RemoveQuizCommand = new RelayCommand(RemoveQuiz, CanRemoveQuiz);
+            ReturnCommand     = new RelayCommand(ReturnToStartMenu);
+
+            PropertyChanged += OnViewModelPropertyChanged;
+        }
     }
 }

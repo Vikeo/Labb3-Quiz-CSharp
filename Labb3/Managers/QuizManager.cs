@@ -50,23 +50,14 @@ namespace Labb3.Managers
             {
                 var text = sr.ReadToEnd();
 
-
                 ObservableCollection<Quiz> quizList = JsonSerializer.Deserialize<ObservableCollection<Quiz>>(text);
                 return quizList;
             }
         }
 
-        public static List<string> GetUniqueThemes()
+        public static ObservableCollection<string> GetUniqueThemes(Quiz quiz)
         {
-            List<string> themes = new List<string>();
-
-            //TODO Göra om till linq
-            foreach (var quiz in _allQuizzes)
-            {
-                themes = quiz.Questions.Select(q => q.Theme).Distinct().ToList();
-            }
-
-            return themes;
+            return new ObservableCollection<string>(quiz.Questions.Select(q => q.Theme).Distinct().ToList());
         }
 
         //public static async Task<ObservableCollection<Quiz>> LoadQuizzes()

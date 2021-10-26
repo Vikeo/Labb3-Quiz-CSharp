@@ -6,29 +6,27 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Labb3.Models;
+using Labb3.Stores;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Labb3.ViewModels
 {
     class PlayQuizViewModel : ObservableObject
     {
-        private readonly ObservableCollection<QuestionViewModel> _questions;
+        private Quiz _selectedQuiz;
+        private List<string> _selectedThemes;
+        private NavigationStore _navigationStore;
 
-        //Är IEnumerable för att då inte klassen utanför denna klass lägga till/ta bort eller ändra saker i listan.
-        //Om man inte vill kapsla in de så kan den vara ObservableCollection istället.
-
-        public ObservableCollection<QuestionViewModel> Questions => _questions;
-
-        public ICommand StartGameCommand
+        public PlayQuizViewModel(NavigationStore navigationStore)
         {
-            get;
+            _navigationStore = navigationStore;
         }
 
-        public PlayQuizViewModel()
+        public PlayQuizViewModel(NavigationStore navigationStore, Quiz selectedQuiz, List<string> selectedThemes)
         {
-
-
-            
+            _selectedQuiz = selectedQuiz;
+            _selectedThemes = selectedThemes;
+            _navigationStore = navigationStore;
         }
     }
 }
