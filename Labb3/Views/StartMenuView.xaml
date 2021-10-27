@@ -78,42 +78,37 @@
                 DisplayMemberPath="Title"
                 ItemsSource="{Binding Quizzes, UpdateSourceTrigger=PropertyChanged}"
                 SelectedItem="{Binding SelectedQuiz, UpdateSourceTrigger=PropertyChanged}" />
+            <Button Content="Get Themes"
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="20,0,20,0"
+                Command="{Binding SetThemesCommand}"
+                />
 
             <ListBox
                 Grid.Row="1"
                 Grid.RowSpan="4"
                 Grid.Column="0"
                 Margin="20,0,20,0"
-                ItemsSource="{Binding Themes, UpdateSourceTrigger=PropertyChanged}"
-                SelectedItem="{Binding SelectedThemes, UpdateSourceTrigger=PropertyChanged}"
-                SelectionMode="Multiple" />
+                DisplayMemberPath="ThemeName"
+                ItemsSource="{Binding ListThemes, UpdateSourceTrigger=PropertyChanged}"
+                SelectionMode="Multiple">
 
-            <!--<ListBox
-                x:Name="listbox"
+                <ListBox.Resources>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay}" />
+                    </Style>
+                </ListBox.Resources>
+            </ListBox>
+
+            <ListBox
                 Grid.Row="1"
                 Grid.RowSpan="4"
-                Grid.Column="0"
-                Margin="20,0,20,0"
-                ItemsSource="{Binding Themes, UpdateSourceTrigger=PropertyChanged}"
-                SelectionMode="Multiple" />
-            <Button
-                Grid.Row="0"
                 Grid.Column="1"
-                Command="{Binding GetThemesCommand}"
-                CommandParameter="{Binding SelectedItems, ElementName=listbox}"
-                Content="GetSelectedListBoxItems" />-->
+                Margin="20,0,20,0"
+                DisplayMemberPath="ThemeName"
+                ItemsSource="{Binding SelectedThemes, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <!--<DataGrid
-                Grid.Row="1"
-                Grid.RowSpan="3"
-                ItemsSource="{Binding Themes}"
-                SelectionMode="Extended">
-                <DataGrid.Resources>
-                    <Style TargetType="DataGridRow">
-                        <Setter Property="IsSelected" Value="{Binding SelectedThemes}" />
-                    </Style>
-                </DataGrid.Resources>
-            </DataGrid>-->
 
         </Grid>
     </Grid>

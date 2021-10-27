@@ -23,6 +23,7 @@ namespace Labb3.ViewModels
         //TODO Vill att _questions ska vara = Quizzes[n].Questions / det som man är Selected på Quizzes comboboxen.
         private readonly NavigationStore _navigationStore;
         private readonly QuizManager _quizManager;
+        private ObservableCollection<Theme> _themes;
 
         #region Properties
 
@@ -33,7 +34,6 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _newStatement, value);
-                _newStatement = value;
             }
         }
 
@@ -83,6 +83,7 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _questions, value);
+                OnPropertyChanged(nameof(Questions));
             }
         }
 
@@ -93,7 +94,7 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _selectedQuestion, value);
-                
+
                 //TODO value blir null av någon anledning, kanske borde fixa det men det funkar "som vanligt" med if-satsen.
                 if (value != null)
                 {
@@ -210,6 +211,8 @@ namespace Labb3.ViewModels
             //Gör så att Propertyn uppdateras
             Quiz tempNewQuiz = new Quiz(NewQuizTitle, new List<Question>());
 
+            //OnPropertyChanged(nameof(SelectedQuiz));
+
             QuizManager._allQuizzes.Add(tempNewQuiz);
             SelectedQuiz = QuizManager._allQuizzes[^1];
 
@@ -238,8 +241,13 @@ namespace Labb3.ViewModels
             SelectedQuiz.Questions.Add(question);
 
             //Gör så att Propertyn uppdateras
-            var tempQuiz = SelectedQuiz;
-            SelectedQuiz = tempQuiz;
+
+            OnPropertyChanged(nameof(SelectedQuiz.Questions));
+
+            //var tempQuiz = SelectedQuiz;
+            //SelectedQuiz = tempQuiz;
+
+
 
             QuizManager.SaveQuizzes(QuizManager._allQuizzes);
         }
@@ -286,13 +294,19 @@ namespace Labb3.ViewModels
         public void EditQuestion()
         {
             SelectedQuestion.Statement = NewStatement;
-            SelectedQuestion.Option1   = Option1;
-            SelectedQuestion.Option2   = Option2;
-            SelectedQuestion.Option3   = Option3;
+            SelectedQuestion.Options[1]   = Options[1];
+            SelectedQuestion.Options[2]   = Options[2];
+            SelectedQuestion.Options[3]   = Options[3];
             Question.ChangeCorrectAnswer(SelectedQuestion, CorrectAnswer);
             SelectedQuestion.Theme     = Theme;
 
+            SelectedQuestion = new Question();
+
             //TODO Gör så att listan av frågor uppdateras i vyn.........
+
+            //TODO Implementera denna lite här och där. Man kan Göra
+            //OnPropertyChanged(nameof(Questions));
+
             if (Questions != null)
             {
                 Questions.Clear();
@@ -314,7 +328,7 @@ namespace Labb3.ViewModels
                     SelectedQuestion.Options[3] != Options[3]  ||
                     SelectedQuestion.CorrectAnswer != CorrectAnswer) 
                 {
-                    if (CorrectAnswer > 0                  &&
+                    if (CorrectAnswer > 0                   &&
                         !string.IsNullOrEmpty(Option1)      &&
                         !string.IsNullOrEmpty(Option2)      &&
                         !string.IsNullOrEmpty(Option3)      &&
@@ -332,7 +346,6 @@ namespace Labb3.ViewModels
                 }
             }
             return false;
-
         }
 
         public void RemoveQuestion()
@@ -390,7 +403,7 @@ namespace Labb3.ViewModels
 
         public void ReturnToStartMenu()
         {
-            _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, _quizManager);
+            _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, _quizManager, _themes);
         }
 
         private void ClearTextboxes()
