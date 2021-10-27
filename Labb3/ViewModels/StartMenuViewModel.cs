@@ -22,10 +22,10 @@ namespace Labb3.ViewModels
 
         #region Properties
 
-        private ObservableCollection<Quiz> _quizzes = QuizManager._allQuizzes;
+        private ObservableCollection<Quiz> _quizzes;
         public ObservableCollection<Quiz> Quizzes
         {
-            get { return _quizzes; }
+            get { return _quizzes = _quizManager._allQuizzes; }
             set
             {
                 SetProperty(ref _quizzes, value);
@@ -89,7 +89,7 @@ namespace Labb3.ViewModels
 
         private void GoToQuizEditor()
         {
-            _navigationStore.CurrentViewModel = new QuizEditorViewModel(_navigationStore, _quizManager);
+            _navigationStore.CurrentViewModel = new QuizEditorViewModel(_navigationStore, _quizManager, _themes);
         }
 
         private void GoToPlayQuiz()
@@ -131,7 +131,7 @@ namespace Labb3.ViewModels
                 GoToPlayQuizCommand.NotifyCanExecuteChanged();
             }
 
-            QuizManager.SaveQuizzes(QuizManager._allQuizzes);
+            //TODO QuizManager.SaveQuizzes(_quizManager._allQuizzes);
         }
 
         public StartMenuViewModel(NavigationStore navigationStore, QuizManager quizManager,

@@ -38,10 +38,10 @@ namespace Labb3.ViewModels
         }
 
         //Kanske gör ett nytt objekt, "QuizOptions", mata in allt som behövs visas i den.
-        private ObservableCollection<Quiz> _quizzes = QuizManager._allQuizzes;
+        private ObservableCollection<Quiz> _quizzes;
         public ObservableCollection<Quiz> Quizzes
         {
-            get { return _quizzes; }
+            get { return _quizzes = _quizManager._allQuizzes; }
             set
             {
 
@@ -213,8 +213,8 @@ namespace Labb3.ViewModels
 
             //OnPropertyChanged(nameof(SelectedQuiz));
 
-            QuizManager._allQuizzes.Add(tempNewQuiz);
-            SelectedQuiz = QuizManager._allQuizzes[^1];
+            _quizManager._allQuizzes.Add(tempNewQuiz);
+            SelectedQuiz = _quizManager._allQuizzes[^1];
 
             Option1 = "";
             Option2 = "";
@@ -226,7 +226,7 @@ namespace Labb3.ViewModels
         {
             //Om man vill lägga till en ny quiz.
             //Kollar först det finns en quiz med samma Titel.
-            if (QuizManager._allQuizzes.All(q => q.Title != NewQuizTitle))
+            if (_quizManager._allQuizzes.All(q => q.Title != NewQuizTitle))
             {
                 return !string.IsNullOrEmpty(NewQuizTitle);
             }
@@ -247,9 +247,7 @@ namespace Labb3.ViewModels
             //var tempQuiz = SelectedQuiz;
             //SelectedQuiz = tempQuiz;
 
-
-
-            QuizManager.SaveQuizzes(QuizManager._allQuizzes);
+            _quizManager.SaveQuizzes(_quizManager._allQuizzes);
         }
 
         //Kollar om man kan lägga till frågor till quizen.
@@ -300,11 +298,10 @@ namespace Labb3.ViewModels
             Question.ChangeCorrectAnswer(SelectedQuestion, CorrectAnswer);
             SelectedQuestion.Theme     = Theme;
 
-            SelectedQuestion = new Question();
 
             //TODO Gör så att listan av frågor uppdateras i vyn.........
 
-            //TODO Implementera denna lite här och där. Man kan Göra
+            //TODO Implementera denna lite här och där. Man kan göra 
             //OnPropertyChanged(nameof(Questions));
 
             if (Questions != null)
@@ -447,13 +444,16 @@ namespace Labb3.ViewModels
                 RemoveCommand.NotifyCanExecuteChanged();
             }
 
-            QuizManager.SaveQuizzes(QuizManager._allQuizzes);
+            _quizManager.SaveQuizzes(_quizManager._allQuizzes);
         }
 
         //Konstruktor
-        public QuizEditorViewModel(NavigationStore navigationStore, QuizManager quizManager)
+        public QuizEditorViewModel(NavigationStore navigationStore, QuizManager quizManager, ObservableCollection<Theme> themes)
         {
             _navigationStore = navigationStore;
+            _quizManager = quizManager;
+            _themes = themes;
+
 
             //CreateQuizCommand = new CreateQuizCommand(this, quizzes, quiz);
 

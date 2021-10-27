@@ -13,10 +13,10 @@ namespace Labb3.Managers
     //Singelton
     public class QuizManager
     {
-        public static ObservableCollection<Quiz> _allQuizzes = new ObservableCollection<Quiz>();
+        public ObservableCollection<Quiz> _allQuizzes = new ObservableCollection<Quiz>();
 
-        public static string _savePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        public static string _fileName = "QuizGameQuizList.json";
+        public string _savePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        public string _fileName = "QuizGameQuizList.json";
 
         public ObservableCollection<Quiz> Quizzes
         {
@@ -30,7 +30,7 @@ namespace Labb3.Managers
 
         //TODO Måste jag returnera Task? Går bra med void????
         //Ska Serialize vara SerializeAsync
-        public static async Task SaveQuizzes(ObservableCollection<Quiz> allQuizzes)
+        public async Task SaveQuizzes(ObservableCollection<Quiz> allQuizzes)
         {
             //ASYNC
             //using FileStream createStream = File.Create(_fileName);
@@ -44,7 +44,7 @@ namespace Labb3.Managers
         }
 
         //TODO Fixa Async!
-        public static ObservableCollection<Quiz> LoadQuizzes()
+        public ObservableCollection<Quiz> LoadQuizzes()
         {
             using (var sr = new StreamReader(Path.Combine(_savePath, _fileName)))
             {

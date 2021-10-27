@@ -48,7 +48,7 @@
                 <Button
                     Margin="5,0,0,0"
                     Command="{Binding QuitApplicationCommand}"
-                    Content="Quiz"
+                    Content="Quit"
                     FontSize="8" />
 
             </StackPanel>

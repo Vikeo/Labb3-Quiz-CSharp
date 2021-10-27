@@ -29,12 +29,13 @@ namespace Labb3
         {
             _navigationStore = new NavigationStore();
             _themes = new ObservableCollection<Theme>();
+            _quizManager = new QuizManager();
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
 
-            QuizManager._allQuizzes = QuizManager.LoadQuizzes();
+            _quizManager._allQuizzes = _quizManager.LoadQuizzes();
 
             base.OnStartup(e);
 

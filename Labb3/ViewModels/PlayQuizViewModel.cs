@@ -50,7 +50,7 @@ namespace Labb3.ViewModels
             set { SetProperty(ref _questionsQueue, value); }
         }
 
-        private Question _currentQuestion = new Question("Vad är?", "1", 3, new []{"1", "3", "4"});
+        private Question _currentQuestion;
         public Question CurrentQuestion
         {
             get { return _currentQuestion; }
@@ -83,8 +83,8 @@ namespace Labb3.ViewModels
 
         #region RelayCommands
 
-        private RelayCommand CheckCommand { get; } 
-        private RelayCommand QuitCommand { get; }
+        public RelayCommand CheckCommand { get; } 
+        public RelayCommand QuitCommand { get; }
 
         private void CheckAnswer()
         {
@@ -92,6 +92,8 @@ namespace Labb3.ViewModels
         }
         private bool CanCheckAnswer()
         {
+            GenerateRandomQuestionQueue(_selectedQuiz);
+
             if (!string.IsNullOrEmpty(SelectedOption))
             {
                 return true;
@@ -106,6 +108,24 @@ namespace Labb3.ViewModels
         }
 
         #endregion
+
+        private Queue<Question> GenerateRandomQuestionQueue(Quiz quiz)
+        {
+            Queue<Question> tempQueue = new Queue<Question>();
+            List<Question> questionsList = _selectedQuiz.Questions.ToList();
+
+            while (questionsList.Count > 0)
+            {
+                Random r = new Random();
+
+                var tempRandom = r.Next(0, questionsList.Count);
+
+                tempQueue.Enqueue(questionsList[tempRandom]);
+                questionsList.RemoveAt(tempRandom);
+
+            }
+            return tempQueue;
+        }
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
