@@ -78,12 +78,6 @@
                 DisplayMemberPath="Title"
                 ItemsSource="{Binding Quizzes, UpdateSourceTrigger=PropertyChanged}"
                 SelectedItem="{Binding SelectedQuiz, UpdateSourceTrigger=PropertyChanged}" />
-            <Button Content="Get Themes"
-                Grid.Row="0"
-                Grid.Column="1"
-                Margin="20,0,20,0"
-                Command="{Binding SetThemesCommand}"
-                />
 
             <ListBox
                 Grid.Row="1"
@@ -100,14 +94,6 @@
                     </Style>
                 </ListBox.Resources>
             </ListBox>
-
-            <ListBox
-                Grid.Row="1"
-                Grid.RowSpan="4"
-                Grid.Column="1"
-                Margin="20,0,20,0"
-                DisplayMemberPath="ThemeName"
-                ItemsSource="{Binding SelectedThemes, UpdateSourceTrigger=PropertyChanged}"/>
 
 
         </Grid>

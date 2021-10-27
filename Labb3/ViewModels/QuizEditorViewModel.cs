@@ -208,19 +208,21 @@ namespace Labb3.ViewModels
 
         public void AddQuiz()
         {
-            //Gör så att Propertyn uppdateras
-            Quiz tempNewQuiz = new Quiz(NewQuizTitle, new List<Question>());
+            _quizManager.CreateNewQuiz(NewQuizTitle, new List<Question>());
 
             //OnPropertyChanged(nameof(SelectedQuiz));
-
-            _quizManager._allQuizzes.Add(tempNewQuiz);
-            SelectedQuiz = _quizManager._allQuizzes[^1];
 
             Option1 = "";
             Option2 = "";
             Option3 = "";
             CorrectAnswer = 0;
             NewStatement = "";
+
+            NewQuizTitle = "";
+
+            //Gör så att Propertyn uppdateras
+            SelectedQuiz = _quizManager._allQuizzes[^1];
+
         }
         public bool CanAddQuiz()
         {
@@ -236,13 +238,12 @@ namespace Labb3.ViewModels
         //Det som sker när man trycker på AddCommand
         public void AddQuestionToQuiz()
         {
-            Question question = new Question(NewStatement, Theme, CorrectAnswer, Options.ToArray());
 
-            SelectedQuiz.Questions.Add(question);
+            SelectedQuiz.AddQuestion(NewStatement, Theme, CorrectAnswer, Options.ToArray());
 
             //Gör så att Propertyn uppdateras
 
-            //OnPropertyChanged(nameof(SelectedQuiz.Questions));
+            //OnPropertyChanged(nameof(SelectedQuiz.Questions)); ????
 
             var tempQuiz = SelectedQuiz;
             SelectedQuiz = tempQuiz;
@@ -271,23 +272,18 @@ namespace Labb3.ViewModels
                      Option3 != Option1                  &&
                      Option3 != Option2)
             {
-
                 //TODO Finns kanske ett bättre LINQ-uttryck för detta.
                 if (SelectedQuiz.Questions.All(q => q.Statement != NewStatement))
                 {
                     return true;
                 }
-
                 return false;
-
             }
             else
             {
                 return false;
             }
         }
-
-        
 
         public void EditQuestion()
         {
@@ -344,17 +340,31 @@ namespace Labb3.ViewModels
             }
             return false;
         }
+        public void RemoveQuiz()
+        {
+            _quizManager.RemoveQuiz(SelectedQuiz);
+
+            SelectedQuiz = DefaultSelectedQuiz();
+            ClearTextboxes();
+        }
+        public bool CanRemoveQuiz()
+        {
+            if (SelectedQuiz != null)
+            {
+                return true;
+            }
+            return false;
+        }
 
         public void RemoveQuestion()
         {
-            SelectedQuiz.Questions.Remove(SelectedQuestion);
+            SelectedQuiz.RemoveQuestion(SelectedQuestion);
             ClearTextboxes();
 
             //TODO Gör så att listan av frågor uppdateras i vyn.........
             if (Questions != null)
             {
                 Questions.Clear();
-
                 foreach (var question in SelectedQuiz.Questions)
                 {
                     Questions.Add(question);
@@ -367,24 +377,6 @@ namespace Labb3.ViewModels
             {
                 return true;
             }
-
-            return false;
-        }
-
-        public void RemoveQuiz()
-        {
-            Quizzes.Remove(SelectedQuiz);
-
-            SelectedQuiz = DefaultSelectedQuiz();
-            ClearTextboxes();
-        }
-        public bool CanRemoveQuiz()
-        {
-            if (SelectedQuiz != null)
-            {
-                return true;
-            }
-
             return false;
         }
 
@@ -397,12 +389,10 @@ namespace Labb3.ViewModels
             //TODO Not implemented
             return true;
         }
-
         public void ReturnToStartMenu()
         {
             _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, _quizManager, _themes);
         }
-
         private void ClearTextboxes()
         {
             Option1 = "";
@@ -412,7 +402,6 @@ namespace Labb3.ViewModels
             NewStatement = "";
             Theme = "";
         }
-
         private Quiz DefaultSelectedQuiz()
         {
             if (Quizzes.Count == 0)
@@ -425,7 +414,6 @@ namespace Labb3.ViewModels
             }
         }
         #endregion
-
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(SelectedQuiz)     ||

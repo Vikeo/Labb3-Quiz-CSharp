@@ -49,13 +49,44 @@
             Margin="10"
             FontSize="10"
             Text="{Binding Score}" />
-        <TextBlock
+        <Button
             Grid.Row="4"
             Grid.Column="2"
             Margin="10"
             FontSize="8"
-            Text="{Binding CurrentQuestion.Options[1]}" />
-        <TextBlock
+            Content="{Binding CurrentQuestion.Options[1]}"
+            Command="{Binding Answer1}"/>
+        <Button
+            Grid.Row="4"
+            Grid.Column="3"
+            Margin="10"
+            FontSize="8"
+            Content="{Binding CurrentQuestion.Options[2]}"
+            Command="{Binding Answer2}"/>
+        <Button
+            Grid.Row="4"
+            Grid.Column="4"
+            Margin="10"
+            FontSize="8"
+            Content="{Binding CurrentQuestion.Options[3]}"
+            Command="{Binding Answer3}"/>
+
+        <!--<Button
+            Grid.Row="4"
+            Grid.Column="2"
+            Margin="10"
+            Command="{Binding CheckCommand}"
+            Content="{Binding CurrentQuestion.Options[1]}"
+            FontSize="10">
+            <Button.CommandParameter>
+                <MultiBinding Converter="{StaticResource ButtonConverter}">
+                    <Binding ElementName="MyCanvas" Path="Width" />
+                    <Binding ElementName="MyCanvas" Path="Height" />
+                </MultiBinding>
+            </Button.CommandParameter>
+        </Button>-->
+
+        <!--<TextBlock
             Grid.Row="4"
             Grid.Column="3"
             Margin="10"
@@ -66,14 +97,14 @@
             Grid.Column="4"
             Margin="10"
             FontSize="8"
-            Text="{Binding CurrentQuestion.Options[3]}" />
+            Text="{Binding CurrentQuestion.Options[3]}" />-->
 
         <ComboBox
             Grid.Row="5"
             Grid.Column="3"
             Margin="10"
-            ItemsSource="{Binding CurrentQuestion.Options}" 
-            SelectedItem="{Binding SelectedOption}"/>
+            ItemsSource="{Binding CurrentQuestion.Options}"
+            SelectedItem="{Binding SelectedOption}" />
 
 
         <Button

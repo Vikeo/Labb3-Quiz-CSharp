@@ -28,6 +28,17 @@ namespace Labb3.Managers
         {
         }
 
+        public void CreateNewQuiz(string title, List<Question> questions)
+        {
+            Quiz newQuiz = new Quiz(title, questions);
+            _allQuizzes.Add(newQuiz);
+        }
+        public void RemoveQuiz(Quiz quiz)
+        {
+            _allQuizzes.Remove(quiz);
+        }
+
+
         //TODO Måste jag returnera Task? Går bra med void????
         //Ska Serialize vara SerializeAsync
         public async Task SaveQuizzes(ObservableCollection<Quiz> allQuizzes)

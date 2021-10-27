@@ -26,14 +26,8 @@ namespace Labb3.Models
             set
             {
                 _selected = value;
-                //OnSelectedChanged();
             }
         }
-
-        //private void OnSelectedChanged()
-        //{
-        //    SelectedChanged?.Invoke();
-        //}
 
         public Theme(string themeName, bool selected)
         {

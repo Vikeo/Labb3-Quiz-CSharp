@@ -33,22 +33,42 @@ namespace Labb3.Models
         {
         }
 
-        public void AddQuestionToQuiz(Quiz quiz, Question question)
+        public Queue<Question> GenerateRandomQuestionQueue(Quiz quiz)
         {
-            //Lägg till en Questions till Questions-listan
+            Queue<Question> tempQueue = new Queue<Question>();
+            List<Question> questionsList = quiz.Questions.ToList();
+
+            while (questionsList.Count > 0)
+            {
+                Random r = new Random();
+
+                var tempRandom = r.Next(0, questionsList.Count);
+
+                tempQueue.Enqueue(questionsList[tempRandom]);
+                questionsList.RemoveAt(tempRandom);
+
+            }
+            return tempQueue;
         }
 
+        //TODO Kanske implemetera denna om det behövs.
         public Question GetRandomQuestion(Quiz quiz)
         {
             return quiz.Questions.First();
         }
 
-
         //TODO Kolla med Niklas om jag måset använda den här metoden:
         public void AddQuestion(string statement, string theme, int correctAnswer, params string[] answers)
         {
-            
+            Question newQuestion = new Question(statement, theme, correctAnswer, answers);
+            Questions.Add(newQuestion);
         }
+
+        public void RemoveQuestion(Question question)
+        {
+            Questions.Remove(question);
+        }
+
         public void RemoveQuestion(int index)
         {
         }

@@ -9,6 +9,7 @@ using System.Windows;
 using Labb3.Managers;
 using Labb3.Models;
 using Labb3.Stores;
+using Labb3.Views;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 
@@ -94,11 +95,22 @@ namespace Labb3.ViewModels
 
         private void GoToPlayQuiz()
         {
-            _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _selectedQuiz, _selectedThemes.ToList());
+            SetThemes();
+
+            if (_selectedThemes.Count == 0)
+            {
+                MessageBox.Show($"Du har inte något tema valt, du måste välja minst ett.", "Score", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            else
+            {
+                _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _selectedQuiz, _selectedThemes.ToList());
+            }
+            
         }
         private bool CanGoToPlayQuiz()
         {
-            if (SelectedQuiz.Title != "TEMP" && SelectedThemes.Count != 0)
+            
+            if (SelectedQuiz.Title != "TEMP")
             {
                 return true;
             }
@@ -118,17 +130,6 @@ namespace Labb3.ViewModels
             GoToPlayQuizCommand.NotifyCanExecuteChanged();
         }
 
-        private bool CanSetThemes()
-        {
-            //Kolla om något Theme är Selected
-            //if (_themes.Any(t => t.Selected == true))
-            //{
-            //    return true;
-            //}
-
-            return true;
-        }
-
         private void QuitApplication()
         {
             Application.Current.Shutdown();
@@ -140,10 +141,10 @@ namespace Labb3.ViewModels
             if (e.PropertyName == nameof(SelectedQuiz))
             {
                 GoToPlayQuizCommand.NotifyCanExecuteChanged();
-                SetThemesCommand.NotifyCanExecuteChanged();
+                //SetThemesCommand.NotifyCanExecuteChanged();
             }
 
-            //TODO QuizManager.SaveQuizzes(_quizManager._allQuizzes);
+            //_quizManager.SaveQuizzes(_quizManager._allQuizzes);
         }
 
         public StartMenuViewModel(NavigationStore navigationStore, QuizManager quizManager,
@@ -155,7 +156,6 @@ namespace Labb3.ViewModels
 
             GoToQuizEditorCommand = new RelayCommand(GoToQuizEditor);
             GoToPlayQuizCommand = new RelayCommand(GoToPlayQuiz, CanGoToPlayQuiz);
-            SetThemesCommand = new RelayCommand(SetThemes, CanSetThemes);
             QuitApplicationCommand = new RelayCommand(QuitApplication);
 
             PropertyChanged += OnViewModelPropertyChanged;
