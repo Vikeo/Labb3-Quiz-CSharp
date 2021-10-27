@@ -10,6 +10,7 @@ namespace Labb3.Models
     public class Theme
     {
         private string _themeName;
+        //public event Action SelectedChanged;
 
         public string ThemeName
         {
@@ -22,8 +23,17 @@ namespace Labb3.Models
         public bool Selected
         {
             get { return _selected; }
-            set { _selected = value; }
+            set
+            {
+                _selected = value;
+                //OnSelectedChanged();
+            }
         }
+
+        //private void OnSelectedChanged()
+        //{
+        //    SelectedChanged?.Invoke();
+        //}
 
         public Theme(string themeName, bool selected)
         {

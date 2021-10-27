@@ -32,7 +32,10 @@ namespace Labb3.ViewModels
         private Quiz _chosenQuiz;
         public Quiz ChosenQuiz
         {
-            get { return _chosenQuiz = _selectedQuiz; }
+            get
+            {
+                return _chosenQuiz = _selectedQuiz;
+            }
             set { SetProperty(ref _chosenQuiz, value); }
         }
 
@@ -47,7 +50,6 @@ namespace Labb3.ViewModels
         public Queue<Question> QuestionsQueue
         {
             get { return _questionsQueue; }
-            set { SetProperty(ref _questionsQueue, value); }
         }
 
         private Question _currentQuestion;
@@ -78,6 +80,13 @@ namespace Labb3.ViewModels
             set { SetProperty(ref _currentQuestionTheme, value); }
         }
 
+        private int _score;
+        public int Score
+        {
+            get { return _score; }
+            set { _score = value; }
+        }
+
 
         #endregion
 
@@ -88,12 +97,24 @@ namespace Labb3.ViewModels
 
         private void CheckAnswer()
         {
-            //Är SelectedOption = CorrectAnswer?
+            if (CurrentQuestion.Options[CurrentQuestion.CorrectAnswer] == SelectedOption)
+            {
+                SelectedOption = null;
+                Score++;
+                OnPropertyChanged(nameof(Score));
+                //TODO Villkor som kollar om kön är tom inna Dequeue.
+                CurrentQuestion = QuestionsQueue.Dequeue();
+            }
+            else
+            {
+                SelectedOption = null;
+                OnPropertyChanged(nameof(Score));
+                CurrentQuestion = QuestionsQueue.Dequeue();
+            }
+            
         }
         private bool CanCheckAnswer()
         {
-            GenerateRandomQuestionQueue(_selectedQuiz);
-
             if (!string.IsNullOrEmpty(SelectedOption))
             {
                 return true;
@@ -129,7 +150,9 @@ namespace Labb3.ViewModels
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-  
+            CheckCommand.NotifyCanExecuteChanged();
+            //OnPropertyChanged(nameof(Score));
+
         }
 
         public PlayQuizViewModel(NavigationStore navigationStore, Quiz selectedQuiz, List<Theme> selectedThemes)
@@ -137,6 +160,9 @@ namespace Labb3.ViewModels
             _selectedQuiz = selectedQuiz;
             _selectedThemes = selectedThemes;
             _navigationStore = navigationStore;
+
+            _questionsQueue = GenerateRandomQuestionQueue(_selectedQuiz);
+            _currentQuestion = QuestionsQueue.Dequeue();
 
             CheckCommand = new RelayCommand(CheckAnswer, CanCheckAnswer);
             QuitCommand = new RelayCommand(QuitToStart);

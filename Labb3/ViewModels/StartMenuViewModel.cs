@@ -118,6 +118,17 @@ namespace Labb3.ViewModels
             GoToPlayQuizCommand.NotifyCanExecuteChanged();
         }
 
+        private bool CanSetThemes()
+        {
+            //Kolla om något Theme är Selected
+            //if (_themes.Any(t => t.Selected == true))
+            //{
+            //    return true;
+            //}
+
+            return true;
+        }
+
         private void QuitApplication()
         {
             Application.Current.Shutdown();
@@ -129,6 +140,7 @@ namespace Labb3.ViewModels
             if (e.PropertyName == nameof(SelectedQuiz))
             {
                 GoToPlayQuizCommand.NotifyCanExecuteChanged();
+                SetThemesCommand.NotifyCanExecuteChanged();
             }
 
             //TODO QuizManager.SaveQuizzes(_quizManager._allQuizzes);
@@ -143,11 +155,13 @@ namespace Labb3.ViewModels
 
             GoToQuizEditorCommand = new RelayCommand(GoToQuizEditor);
             GoToPlayQuizCommand = new RelayCommand(GoToPlayQuiz, CanGoToPlayQuiz);
-            SetThemesCommand = new RelayCommand(SetThemes);
+            SetThemesCommand = new RelayCommand(SetThemes, CanSetThemes);
             QuitApplicationCommand = new RelayCommand(QuitApplication);
 
             PropertyChanged += OnViewModelPropertyChanged;
+
         }
 
+        
     }
 }

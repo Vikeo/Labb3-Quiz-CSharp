@@ -242,10 +242,10 @@ namespace Labb3.ViewModels
 
             //Gör så att Propertyn uppdateras
 
-            OnPropertyChanged(nameof(SelectedQuiz.Questions));
+            //OnPropertyChanged(nameof(SelectedQuiz.Questions));
 
-            //var tempQuiz = SelectedQuiz;
-            //SelectedQuiz = tempQuiz;
+            var tempQuiz = SelectedQuiz;
+            SelectedQuiz = tempQuiz;
 
             _quizManager.SaveQuizzes(_quizManager._allQuizzes);
         }

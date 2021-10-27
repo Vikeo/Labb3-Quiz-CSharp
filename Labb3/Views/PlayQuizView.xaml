@@ -34,6 +34,22 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock
+            Grid.Row="1"
+            Grid.Column="3"
+            Margin="10"
+            Text="{Binding ChosenQuiz.Title}" />
+        <TextBlock
+            Grid.Row="2"
+            Grid.Column="3"
+            Margin="10"
+            Text="{Binding CurrentQuestion.Statement}" />
+        <TextBlock
+            Grid.Row="3"
+            Grid.Column="5"
+            Margin="10"
+            FontSize="10"
+            Text="{Binding Score}" />
+        <TextBlock
             Grid.Row="4"
             Grid.Column="2"
             Margin="10"
@@ -56,7 +72,8 @@
             Grid.Row="5"
             Grid.Column="3"
             Margin="10"
-            ItemsSource="{Binding CurrentQuestion.Options}" />
+            ItemsSource="{Binding CurrentQuestion.Options}" 
+            SelectedItem="{Binding SelectedOption}"/>
 
 
         <Button
