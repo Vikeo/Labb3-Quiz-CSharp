@@ -24,6 +24,7 @@ namespace Labb3.ViewModels
         private readonly NavigationStore _navigationStore;
         private readonly QuizManager _quizManager;
         private ObservableCollection<Theme> _themes;
+        private readonly FileManager _fileManager;
 
         #region Properties
 
@@ -44,10 +45,7 @@ namespace Labb3.ViewModels
             get { return _quizzes = _quizManager._allQuizzes; }
             set
             {
-
                 SetProperty(ref _quizzes, value);
-                _quizzes = value;
-
             }
         }
 
@@ -98,8 +96,6 @@ namespace Labb3.ViewModels
                 //TODO value blir null av någon anledning, kanske borde fixa det men det funkar "som vanligt" med if-satsen.
                 if (value != null)
                 {
-                    _selectedQuestion = value;
-
                     NewStatement  = SelectedQuestion.Statement;
                     Options[1]    = SelectedQuestion.Options[1];
                     Options[2]    = SelectedQuestion.Options[2];
@@ -248,7 +244,7 @@ namespace Labb3.ViewModels
             var tempQuiz = SelectedQuiz;
             SelectedQuiz = tempQuiz;
 
-            _quizManager.SaveQuizzes(_quizManager._allQuizzes);
+            _fileManager.SaveQuizzes(_quizManager._allQuizzes);
         }
 
         //Kollar om man kan lägga till frågor till quizen.
@@ -293,7 +289,6 @@ namespace Labb3.ViewModels
             SelectedQuestion.Options[3]   = Options[3];
             Question.ChangeCorrectAnswer(SelectedQuestion, CorrectAnswer);
             SelectedQuestion.Theme     = Theme;
-
 
             //TODO Gör så att listan av frågor uppdateras i vyn.........
 
@@ -391,7 +386,7 @@ namespace Labb3.ViewModels
         }
         public void ReturnToStartMenu()
         {
-            _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, _quizManager, _themes);
+            _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, _quizManager, _themes, _fileManager);
         }
         private void ClearTextboxes()
         {
@@ -414,6 +409,7 @@ namespace Labb3.ViewModels
             }
         }
         #endregion
+
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(SelectedQuiz)     ||
@@ -432,16 +428,16 @@ namespace Labb3.ViewModels
                 RemoveCommand.NotifyCanExecuteChanged();
             }
 
-            _quizManager.SaveQuizzes(_quizManager._allQuizzes);
+            _fileManager.SaveQuizzes(_quizManager._allQuizzes);
         }
 
         //Konstruktor
-        public QuizEditorViewModel(NavigationStore navigationStore, QuizManager quizManager, ObservableCollection<Theme> themes)
+        public QuizEditorViewModel(NavigationStore navigationStore, QuizManager quizManager, ObservableCollection<Theme> themes, FileManager fileManager)
         {
             _navigationStore = navigationStore;
             _quizManager = quizManager;
             _themes = themes;
-
+            _fileManager = fileManager;
 
             //CreateQuizCommand = new CreateQuizCommand(this, quizzes, quiz);
 

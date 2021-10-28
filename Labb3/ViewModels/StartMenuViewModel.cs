@@ -20,6 +20,7 @@ namespace Labb3.ViewModels
         private readonly NavigationStore _navigationStore;
         private readonly QuizManager _quizManager;
         private ObservableCollection<Theme> _themes;
+        private readonly FileManager _fileManager;
 
         #region Properties
 
@@ -83,18 +84,20 @@ namespace Labb3.ViewModels
         #endregion
 
         #region RelayCommands
+
         public RelayCommand GoToQuizEditorCommand { get; }
         public RelayCommand GoToPlayQuizCommand { get; }
-        public RelayCommand SetThemesCommand { get; }
         public RelayCommand QuitApplicationCommand { get; }
 
         private void GoToQuizEditor()
         {
-            _navigationStore.CurrentViewModel = new QuizEditorViewModel(_navigationStore, _quizManager, _themes);
+            _navigationStore.CurrentViewModel = new QuizEditorViewModel(_navigationStore, _quizManager, _themes, _fileManager);
         }
 
         private void GoToPlayQuiz()
         {
+
+            //TODO När jag kommer tillbaka till StartMenu så finns de temana man valde kvar.
             SetThemes();
 
             if (_selectedThemes.Count == 0)
@@ -103,18 +106,27 @@ namespace Labb3.ViewModels
             }
             else
             {
-                _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _selectedQuiz, _selectedThemes.ToList());
+                _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _quizManager, _selectedQuiz, _selectedThemes.ToList(), _fileManager);
             }
-            
         }
         private bool CanGoToPlayQuiz()
         {
-            
+
             if (SelectedQuiz.Title != "TEMP")
             {
                 return true;
             }
             return false;
+        }
+
+        private Quiz GetQuizQuestionsWithSelectedTheme(Quiz quiz)
+        {
+            foreach (var question in quiz.Questions)
+            {
+                
+            }
+
+            return null;
         }
 
         private void SetThemes()
@@ -141,18 +153,16 @@ namespace Labb3.ViewModels
             if (e.PropertyName == nameof(SelectedQuiz))
             {
                 GoToPlayQuizCommand.NotifyCanExecuteChanged();
-                //SetThemesCommand.NotifyCanExecuteChanged();
             }
-
-            //_quizManager.SaveQuizzes(_quizManager._allQuizzes);
         }
 
         public StartMenuViewModel(NavigationStore navigationStore, QuizManager quizManager,
-            ObservableCollection<Theme> themes)
+            ObservableCollection<Theme> themes, FileManager fileManager)
         {
             _navigationStore = navigationStore;
             _quizManager = quizManager;
             _themes = themes;
+            _fileManager = fileManager;
 
             GoToQuizEditorCommand = new RelayCommand(GoToQuizEditor);
             GoToPlayQuizCommand = new RelayCommand(GoToPlayQuiz, CanGoToPlayQuiz);

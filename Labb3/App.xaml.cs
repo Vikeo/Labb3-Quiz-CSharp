@@ -22,7 +22,8 @@ namespace Labb3
     {
         private readonly NavigationStore _navigationStore;
         private readonly QuizManager _quizManager;
-        private ObservableCollection<Theme> _themes;
+        private readonly ObservableCollection<Theme> _themes;
+        private readonly FileManager _fileManager;
 
 
         public App()
@@ -30,17 +31,18 @@ namespace Labb3
             _navigationStore = new NavigationStore();
             _themes = new ObservableCollection<Theme>();
             _quizManager = new QuizManager();
+            _fileManager = new FileManager();
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
 
-            _quizManager._allQuizzes = _quizManager.LoadQuizzes();
+            _quizManager._allQuizzes = _fileManager.LoadQuizzes();
 
             base.OnStartup(e);
 
             //Där som man ska starta.
-            _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, _quizManager, _themes);
+            _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, _quizManager, _themes, _fileManager);
 
             MainWindow = new MainWindow()
             {

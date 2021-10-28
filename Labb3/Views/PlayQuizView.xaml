@@ -53,23 +53,23 @@
             Grid.Row="4"
             Grid.Column="2"
             Margin="10"
-            FontSize="8"
+            Command="{Binding Answer1}"
             Content="{Binding CurrentQuestion.Options[1]}"
-            Command="{Binding Answer1}"/>
+            FontSize="8" />
         <Button
             Grid.Row="4"
             Grid.Column="3"
             Margin="10"
-            FontSize="8"
+            Command="{Binding Answer2}"
             Content="{Binding CurrentQuestion.Options[2]}"
-            Command="{Binding Answer2}"/>
+            FontSize="8" />
         <Button
             Grid.Row="4"
             Grid.Column="4"
             Margin="10"
-            FontSize="8"
+            Command="{Binding Answer3}"
             Content="{Binding CurrentQuestion.Options[3]}"
-            Command="{Binding Answer3}"/>
+            FontSize="8" />
 
         <!--<Button
             Grid.Row="4"

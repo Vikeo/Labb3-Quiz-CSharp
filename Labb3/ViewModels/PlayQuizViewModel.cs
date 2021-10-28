@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -21,6 +22,8 @@ namespace Labb3.ViewModels
         private Quiz _selectedQuiz;
         private List<Theme> _selectedThemes;
         private NavigationStore _navigationStore;
+        private FileManager _fileManager;
+        private QuizManager _quizManager;
 
         #region Properties
 
@@ -109,7 +112,8 @@ namespace Labb3.ViewModels
 
             SelectedOption = null;
             OnPropertyChanged(nameof(Score));
-            GetNextQuestionInQueue();
+            //CurrentQuestion = _selectedQuiz.GetRandomQuestion(_selectedQuiz);
+            //GetNextQuestionInQueue();
         }
         private bool CanCheckAnswer()
         {
@@ -123,7 +127,7 @@ namespace Labb3.ViewModels
         private void QuitToStart()
         {
             //TODO Ändra QuizManager.
-            _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, new QuizManager(), new ObservableCollection<Theme>(_selectedThemes));
+            _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, _quizManager, new ObservableCollection<Theme>(_selectedThemes), _fileManager);
         }
 
         private void AnswerQuestion(int Option)
@@ -133,7 +137,13 @@ namespace Labb3.ViewModels
                 Score++;
             }
 
-            GetNextQuestionInQueue();
+            CurrentQuestion = _selectedQuiz.GetRandomQuestion(_selectedQuiz);
+            if (CurrentQuestion == null)
+            {
+                MessageBox.Show($"Score {Score}", "Score", MessageBoxButton.OK);
+                QuitToStart();
+            }
+            //GetNextQuestionInQueue();
 
         }
 
@@ -153,25 +163,6 @@ namespace Labb3.ViewModels
             }
         }
 
-        //TODO Har lagt in denna i Quiz-klassen, men kanske kommer behöva den här istället.
-        //private Queue<Question> GenerateRandomQuestionQueue(Quiz quiz)
-        //{
-        //    Queue<Question> tempQueue = new Queue<Question>();
-        //    List<Question> questionsList = _selectedQuiz.Questions.ToList();
-
-        //    while (questionsList.Count > 0)
-        //    {
-        //        Random r = new Random();
-
-        //        var tempRandom = r.Next(0, questionsList.Count);
-
-        //        tempQueue.Enqueue(questionsList[tempRandom]);
-        //        questionsList.RemoveAt(tempRandom);
-
-        //    }
-        //    return tempQueue;
-        //}
-
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             CheckCommand.NotifyCanExecuteChanged();
@@ -185,7 +176,6 @@ namespace Labb3.ViewModels
             Random r = new Random();
 
             string[] tempOptions = CurrentQuestion.Options;
-
 
             int r1 = r.Next(1, 4);
             CurrentQuestion.Options[3] = tempOptions[r1];
@@ -205,19 +195,21 @@ namespace Labb3.ViewModels
             CurrentQuestion.Options[2] = tempOptions[r3];
 
             List<string> tempStringList = CurrentQuestion.Options.ToList();
-            
-
 
         }
 
-        public PlayQuizViewModel(NavigationStore navigationStore, Quiz selectedQuiz, List<Theme> selectedThemes)
+        public PlayQuizViewModel(NavigationStore navigationStore, QuizManager quizManager,  Quiz selectedQuiz, List<Theme> selectedThemes, FileManager fileManager)
         {
             _selectedQuiz = selectedQuiz;
             _selectedThemes = selectedThemes;
             _navigationStore = navigationStore;
+            _quizManager = quizManager;
+            _fileManager = fileManager;
 
             _questionsQueue = _selectedQuiz.GenerateRandomQuestionQueue(_selectedQuiz);
-            _currentQuestion = QuestionsQueue.Dequeue();
+            _currentQuestion = _selectedQuiz.GetRandomQuestion(_selectedQuiz);
+
+            //_currentQuestion = QuestionsQueue.Dequeue();
             //ShuffleCorrectAnswerIndex();
 
             CheckCommand = new RelayCommand(CheckAnswer, CanCheckAnswer);

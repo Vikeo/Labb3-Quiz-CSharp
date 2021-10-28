@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Labb3.Models
 {
@@ -51,13 +52,25 @@ namespace Labb3.Models
             return tempQueue;
         }
 
-        //TODO Kanske implemetera denna om det behövs.
         public Question GetRandomQuestion(Quiz quiz)
         {
-            return quiz.Questions.First();
+            List<Question> questionsList = quiz.Questions.ToList();
+            if (quiz.Questions.Count > 0)
+            {
+                Random r = new Random();
+                
+                var tempRandom = r.Next(questionsList.Count);
+
+                var tempQuestion = questionsList[r.Next(tempRandom)];
+                quiz.Questions.Remove(tempQuestion);
+                return questionsList[r.Next(tempRandom)];
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        //TODO Kolla med Niklas om jag måset använda den här metoden:
         public void AddQuestion(string statement, string theme, int correctAnswer, params string[] answers)
         {
             Question newQuestion = new Question(statement, theme, correctAnswer, answers);

@@ -76,7 +76,7 @@ namespace Labb3.Models
         public static void ChangeCorrectAnswer(Question question, int newCorrectAnswer)
         {
             //Detta gör det möjligt att ändra värdet på ett readonly-fält.
-            typeof(Question).GetField("_correctAnswer", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(question, newCorrectAnswer);
+            typeof(Question).GetField("_correctAnswer", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(question, newCorrectAnswer);
         }
 
         

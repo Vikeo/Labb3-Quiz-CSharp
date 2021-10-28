@@ -15,8 +15,7 @@ namespace Labb3.Managers
     {
         public ObservableCollection<Quiz> _allQuizzes = new ObservableCollection<Quiz>();
 
-        public string _savePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        public string _fileName = "QuizGameQuizList.json";
+        
 
         public ObservableCollection<Quiz> Quizzes
         {
@@ -36,34 +35,6 @@ namespace Labb3.Managers
         public void RemoveQuiz(Quiz quiz)
         {
             _allQuizzes.Remove(quiz);
-        }
-
-
-        //TODO Måste jag returnera Task? Går bra med void????
-        //Ska Serialize vara SerializeAsync
-        public async Task SaveQuizzes(ObservableCollection<Quiz> allQuizzes)
-        {
-            //ASYNC
-            //using FileStream createStream = File.Create(_fileName);
-            //await JsonSerializer.SerializeAsync(createStream, allQuizzes);
-            //await createStream.DisposeAsync();
-
-            using (StreamWriter outputFile = new StreamWriter(Path.Combine(_savePath, _fileName)))
-            {
-                await outputFile.WriteAsync(JsonSerializer.Serialize(_allQuizzes));
-            }
-        }
-
-        //TODO Fixa Async!
-        public ObservableCollection<Quiz> LoadQuizzes()
-        {
-            using (var sr = new StreamReader(Path.Combine(_savePath, _fileName)))
-            {
-                var text = sr.ReadToEnd();
-
-                ObservableCollection<Quiz> quizList = JsonSerializer.Deserialize<ObservableCollection<Quiz>>(text);
-                return quizList;
-            }
         }
 
         public static ObservableCollection<string> GetUniqueThemes(Quiz quiz)
