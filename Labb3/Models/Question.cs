@@ -49,8 +49,8 @@ namespace Labb3.Models
         //    set { _option3 = value; }
         //}
 
-        private string _theme;
-        public string Theme
+        private Theme _theme;
+        public Theme Theme
         {
             get { return _theme;  }
             set { _theme = value; }
@@ -65,7 +65,7 @@ namespace Labb3.Models
 
         //Konstruktor. [JsonConstructor] visar Deserializern vilken konstruktor den ska använda.
         [JsonConstructor]
-        public Question(string statement, string theme, int correctAnswer, params string[] options)
+        public Question(string statement, Theme theme, int correctAnswer, params string[] options)
         {
             _statement = statement;
             _options = options;

@@ -39,7 +39,7 @@ namespace Labb3.Managers
 
         public static ObservableCollection<string> GetUniqueThemes(Quiz quiz)
         {
-            return new ObservableCollection<string>(quiz.Questions.Select(q => q.Theme).Distinct().ToList());
+            return new ObservableCollection<string>(quiz.Questions.Select(q => q.Theme.ThemeName).Distinct().ToList());
         }
 
         //public static async Task<ObservableCollection<Quiz>> LoadQuizzes()

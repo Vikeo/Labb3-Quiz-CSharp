@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace Labb3.Models
 {
-    public class Quiz
+    public class Quiz: ICloneable
     {
         //TODO Behöver inte tilldela ett värde?
         private ICollection<Question> _questions = new List<Question>();
@@ -34,22 +34,11 @@ namespace Labb3.Models
         {
         }
 
-        public Queue<Question> GenerateRandomQuestionQueue(Quiz quiz)
+        //Copy Constructur
+        public Quiz(Quiz otherQuiz)
         {
-            Queue<Question> tempQueue = new Queue<Question>();
-            List<Question> questionsList = quiz.Questions.ToList();
-
-            while (questionsList.Count > 0)
-            {
-                Random r = new Random();
-
-                var tempRandom = r.Next(0, questionsList.Count);
-
-                tempQueue.Enqueue(questionsList[tempRandom]);
-                questionsList.RemoveAt(tempRandom);
-
-            }
-            return tempQueue;
+            _questions = otherQuiz.Questions;
+            _title = otherQuiz.Title;
         }
 
         public Question GetRandomQuestion(Quiz quiz)
@@ -61,9 +50,9 @@ namespace Labb3.Models
                 
                 var tempRandom = r.Next(questionsList.Count);
 
-                var tempQuestion = questionsList[r.Next(tempRandom)];
-                quiz.Questions.Remove(tempQuestion);
-                return questionsList[r.Next(tempRandom)];
+                var tempQuestion = questionsList[tempRandom];
+
+                return tempQuestion;
             }
             else
             {
@@ -71,7 +60,7 @@ namespace Labb3.Models
             }
         }
 
-        public void AddQuestion(string statement, string theme, int correctAnswer, params string[] answers)
+        public void AddQuestion(string statement, Theme theme, int correctAnswer, params string[] answers)
         {
             Question newQuestion = new Question(statement, theme, correctAnswer, answers);
             Questions.Add(newQuestion);
@@ -84,6 +73,11 @@ namespace Labb3.Models
 
         public void RemoveQuestion(int index)
         {
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

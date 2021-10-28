@@ -20,7 +20,6 @@ namespace Labb3.ViewModels
 {
     public class QuizEditorViewModel : ObservableObject
     {
-        //TODO Vill att _questions ska vara = Quizzes[n].Questions / det som man är Selected på Quizzes comboboxen.
         private readonly NavigationStore _navigationStore;
         private readonly QuizManager _quizManager;
         private ObservableCollection<Theme> _themes;
@@ -103,7 +102,7 @@ namespace Labb3.ViewModels
                     Option1       = Options[1];
                     Option2       = Options[2];
                     Option3       = Options[3];
-                    Theme         = SelectedQuestion.Theme;
+                    ThemeName     = SelectedQuestion.Theme.ThemeName.ToString();
                     CorrectAnswer = SelectedQuestion.CorrectAnswer;
                 }
             }
@@ -180,20 +179,30 @@ namespace Labb3.ViewModels
             }
         }
 
-        private string _theme;
-        public string Theme
+        private Theme _theme = new Theme("TEMP", false);
+        public Theme Theme
         {
             get { return _theme; }
             set
             {
                 SetProperty(ref _theme, value);
-                _theme = value;
+                
+            }
+        }
+
+        private string _themeName;
+        public string ThemeName
+        {
+            get { return _themeName; }
+            set
+            {
+                SetProperty(ref _themeName, value);
+                Theme.ThemeName = value;
             }
         }
         #endregion
 
         #region RelayCommand
-        //TODO Lägg till ett Command för att ändra namnet på Quiz. Ha det på samma Button som CreateQuizCommand om det går?
         public RelayCommand AddCommand { get; }
         public RelayCommand EditCommand { get; }
         public RelayCommand RemoveCommand { get; }
@@ -201,6 +210,7 @@ namespace Labb3.ViewModels
         public RelayCommand ReturnCommand { get; }
         public RelayCommand AddImageCommand { get; }
         public RelayCommand CreateQuizCommand { get; }
+        public RelayCommand EditQuizTitleCommand { get; }
 
         public void AddQuiz()
         {
@@ -254,18 +264,18 @@ namespace Labb3.ViewModels
             {
                 return false;
             }
-            else if (!string.IsNullOrEmpty(Option1)      &&
-                     !string.IsNullOrEmpty(Option2)      &&
-                     !string.IsNullOrEmpty(Option3)      &&
-                     CorrectAnswer != 0                  &&
-                     !string.IsNullOrEmpty(NewStatement) &&
-                     !string.IsNullOrEmpty(Theme)        &&
-                     SelectedQuiz.Title != "TEMP"        &&
-                     Option1 != Option2                  &&
-                     Option1 != Option3                  &&
-                     Option2 != Option1                  &&
-                     Option2 != Option3                  &&
-                     Option3 != Option1                  &&
+            else if (!string.IsNullOrEmpty(Option1)         &&
+                     !string.IsNullOrEmpty(Option2)         &&
+                     !string.IsNullOrEmpty(Option3)         &&
+                     CorrectAnswer != 0                     &&
+                     !string.IsNullOrEmpty(NewStatement)    &&
+                     !string.IsNullOrEmpty(Theme.ThemeName) &&
+                     SelectedQuiz.Title != "TEMP"           &&
+                     Option1 != Option2                     &&
+                     Option1 != Option3                     &&
+                     Option2 != Option1                     &&
+                     Option2 != Option3                     &&
+                     Option3 != Option1                     &&
                      Option3 != Option2)
             {
                 //TODO Finns kanske ett bättre LINQ-uttryck för detta.
@@ -281,14 +291,30 @@ namespace Labb3.ViewModels
             }
         }
 
+        public void EditQuizTitle()
+        {
+            SelectedQuiz.Title = NewQuizTitle;
+        }
+
+        public bool CanEditQuizTitle()
+        {
+            //TODO Exakt samma kod som CanAddQuiz
+            if (_quizManager._allQuizzes.All(q => q.Title != NewQuizTitle))
+            {
+                return !string.IsNullOrEmpty(NewQuizTitle);
+            }
+            return false;
+        }
+
+        //TODO Kan inte edita om jag ändrar på en Option
         public void EditQuestion()
         {
-            SelectedQuestion.Statement = NewStatement;
-            SelectedQuestion.Options[1]   = Options[1];
-            SelectedQuestion.Options[2]   = Options[2];
-            SelectedQuestion.Options[3]   = Options[3];
+            SelectedQuestion.Statement       = NewStatement;
+            SelectedQuestion.Options[1]      = Options[1];
+            SelectedQuestion.Options[2]      = Options[2];
+            SelectedQuestion.Options[3]      = Options[3];
             Question.ChangeCorrectAnswer(SelectedQuestion, CorrectAnswer);
-            SelectedQuestion.Theme     = Theme;
+            SelectedQuestion.Theme.ThemeName = ThemeName;
 
             //TODO Gör så att listan av frågor uppdateras i vyn.........
 
@@ -309,27 +335,31 @@ namespace Labb3.ViewModels
             //TODO Bättre sätt att göra detta på??????
             if (SelectedQuestion != null)
             {
-                if (SelectedQuestion.Statement != NewStatement ||
-                    SelectedQuestion.Theme != Theme            ||
-                    SelectedQuestion.Options[1] != Options[1]  ||
-                    SelectedQuestion.Options[2] != Options[2]  ||
-                    SelectedQuestion.Options[3] != Options[3]  ||
+                if (SelectedQuestion.Statement != NewStatement          ||
+                    SelectedQuestion.Theme.ThemeName != ThemeName ||
+                    SelectedQuestion.Options[1] != Options[1]           ||
+                    SelectedQuestion.Options[2] != Options[2]           ||
+                    SelectedQuestion.Options[3] != Options[3]           ||
                     SelectedQuestion.CorrectAnswer != CorrectAnswer) 
                 {
-                    if (CorrectAnswer > 0                   &&
-                        !string.IsNullOrEmpty(Option1)      &&
-                        !string.IsNullOrEmpty(Option2)      &&
-                        !string.IsNullOrEmpty(Option3)      &&
-                        !string.IsNullOrEmpty(NewStatement) &&
-                        !string.IsNullOrEmpty(Theme)        &&
-                        Option1 != Option2                  &&
-                        Option1 != Option3                  &&
-                        Option2 != Option1                  &&
-                        Option2 != Option3                  &&
-                        Option3 != Option1                  &&
+                    if (CorrectAnswer > 0                      &&
+                        !string.IsNullOrEmpty(Option1)         &&
+                        !string.IsNullOrEmpty(Option2)         &&
+                        !string.IsNullOrEmpty(Option3)         &&
+                        !string.IsNullOrEmpty(NewStatement)    &&
+                        !string.IsNullOrEmpty(Theme.ThemeName) &&
+                        Option1 != Option2                     &&
+                        Option1 != Option3                     &&
+                        Option2 != Option1                     &&
+                        Option2 != Option3                     &&
+                        Option3 != Option1                     &&
                         Option3 != Option2)
                     {
-                        return true;
+                        if (SelectedQuiz.Questions.All(q => q.Statement != NewStatement))
+                        {
+                            return true;
+                        }
+
                     }
                 }
             }
@@ -395,7 +425,7 @@ namespace Labb3.ViewModels
             Option3 = "";
             CorrectAnswer = 0;
             NewStatement = "";
-            Theme = "";
+            Theme = null;
         }
         private Quiz DefaultSelectedQuiz()
         {
@@ -420,12 +450,14 @@ namespace Labb3.ViewModels
                 e.PropertyName == nameof(CorrectAnswer)    ||
                 e.PropertyName == nameof(NewQuizTitle)     ||
                 e.PropertyName == nameof(NewStatement)     ||
-                e.PropertyName == nameof(Theme))
+                e.PropertyName == nameof(Theme.ThemeName))
             {
                 CreateQuizCommand.NotifyCanExecuteChanged();
                 AddCommand.NotifyCanExecuteChanged();
                 EditCommand.NotifyCanExecuteChanged();
+                EditQuizTitleCommand.NotifyCanExecuteChanged();
                 RemoveCommand.NotifyCanExecuteChanged();
+                RemoveQuizCommand.NotifyCanExecuteChanged();
             }
 
             _fileManager.SaveQuizzes(_quizManager._allQuizzes);
@@ -448,6 +480,7 @@ namespace Labb3.ViewModels
             AddImageCommand   = new RelayCommand(AddImageToQuestion, CanAddImage);
             RemoveQuizCommand = new RelayCommand(RemoveQuiz, CanRemoveQuiz);
             ReturnCommand     = new RelayCommand(ReturnToStartMenu);
+            EditQuizTitleCommand = new RelayCommand(EditQuizTitle, CanEditQuizTitle);
 
             PropertyChanged += OnViewModelPropertyChanged;
         }

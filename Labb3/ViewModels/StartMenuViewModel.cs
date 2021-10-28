@@ -106,7 +106,16 @@ namespace Labb3.ViewModels
             }
             else
             {
-                _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _quizManager, _selectedQuiz, _selectedThemes.ToList(), _fileManager);
+                //TODO bättre sätt att göra en kopia av quiz
+                Quiz playQuiz = new Quiz(_selectedQuiz.Title, new List<Question>());
+                foreach (var question in _selectedQuiz.Questions)
+                {
+                    playQuiz.Questions.Add(question);
+                }
+
+                playQuiz.Questions = RemoveUnselectedThemesFromQuestions(playQuiz.Questions.ToList());
+
+                _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _quizManager, playQuiz, _selectedThemes.ToList(), _fileManager);
             }
         }
         private bool CanGoToPlayQuiz()
@@ -119,14 +128,24 @@ namespace Labb3.ViewModels
             return false;
         }
 
-        private Quiz GetQuizQuestionsWithSelectedTheme(Quiz quiz)
+        private List<Question> RemoveUnselectedThemesFromQuestions(List<Question> questions)
         {
-            foreach (var question in quiz.Questions)
+            //TODO bättre sätt att göra en kopia av list av questions i en quiz. (eller rent av av en quiz)
+            List<Question> tempQuestions = new List<Question>();
+
+            foreach (var question in questions)
             {
-                
+                tempQuestions.Add(question);
             }
 
-            return null;
+            foreach (var question in questions)
+            {
+                if (!question.Theme.Selected)
+                {
+                    tempQuestions.Remove(question);
+                }
+            }
+            return tempQuestions;
         }
 
         private void SetThemes()
@@ -137,6 +156,17 @@ namespace Labb3.ViewModels
                 if (theme.Selected)
                 {
                     _selectedThemes.Add(theme);
+                }
+            }
+
+            foreach (var question in SelectedQuiz.Questions)
+            {
+                foreach (var theme in _selectedThemes)
+                {
+                    if (question.Theme.ThemeName == theme.ThemeName)
+                    {
+                        question.Theme.Selected = true;
+                    }
                 }
             }
             GoToPlayQuizCommand.NotifyCanExecuteChanged();

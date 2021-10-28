@@ -37,38 +37,15 @@ namespace Labb3.ViewModels
         private Quiz _chosenQuiz;
         public Quiz ChosenQuiz
         {
-            get
-            {
-                return _chosenQuiz = _selectedQuiz;
-            }
+            get { return _chosenQuiz; }
             set { SetProperty(ref _chosenQuiz, value); }
-        }
-
-        private ObservableCollection<Question> _questions;
-        public ObservableCollection<Question> Questions
-        {
-            get { return _questions; }
-            set { SetProperty(ref _questions, value); }
-        }
-
-        private readonly Queue<Question> _questionsQueue;
-        public Queue<Question> QuestionsQueue
-        {
-            get { return _questionsQueue; }
         }
 
         private Question _currentQuestion;
         public Question CurrentQuestion
         {
             get { return _currentQuestion; }
-            set { SetProperty(ref _currentQuestion, value); }
-        }
-
-        private List<Question> _presentedQuestions;
-        public List<Question> PresentedQuestions
-        {
-            get { return _presentedQuestions; }
-            set { SetProperty(ref _presentedQuestions, value); }
+            set { _currentQuestion = value; }
         }
 
         private string _selectedOption;
@@ -78,8 +55,8 @@ namespace Labb3.ViewModels
             set { SetProperty(ref _selectedOption, value); }
         }
 
-        private string _currentQuestionTheme;
-        public string CurrentQuestionTheme
+        private Theme _currentQuestionTheme;
+        public Theme CurrentQuestionTheme
         {
             get { return _currentQuestionTheme = CurrentQuestion.Theme; }
             set { SetProperty(ref _currentQuestionTheme, value); }
@@ -92,6 +69,18 @@ namespace Labb3.ViewModels
             set { SetProperty(ref _score, value); }
         }
 
+        private int _questionsCount;
+        public int QuestionsCount
+        {
+            get { return _questionsCount; }
+        }
+
+        private int _questionCounter;
+        public int QuestionCounter
+        {
+            get { return _questionCounter; }
+            set { _questionCounter = value; }
+        }
 
         #endregion
 
@@ -112,8 +101,6 @@ namespace Labb3.ViewModels
 
             SelectedOption = null;
             OnPropertyChanged(nameof(Score));
-            //CurrentQuestion = _selectedQuiz.GetRandomQuestion(_selectedQuiz);
-            //GetNextQuestionInQueue();
         }
         private bool CanCheckAnswer()
         {
@@ -137,36 +124,28 @@ namespace Labb3.ViewModels
                 Score++;
             }
 
-            CurrentQuestion = _selectedQuiz.GetRandomQuestion(_selectedQuiz);
+            if (_questionCounter < _questionsCount)
+            {
+                _questionCounter++;
+            }
+            OnPropertyChanged(nameof(QuestionCounter));
+
+            CurrentQuestion = _chosenQuiz.GetRandomQuestion(_chosenQuiz);
+            _chosenQuiz.RemoveQuestion(CurrentQuestion);
+
             if (CurrentQuestion == null)
             {
                 MessageBox.Show($"Score {Score}", "Score", MessageBoxButton.OK);
                 QuitToStart();
             }
-            //GetNextQuestionInQueue();
-
+            OnPropertyChanged(nameof(CurrentQuestion));
         }
 
         #endregion
 
-        private void GetNextQuestionInQueue()
-        {
-            if (QuestionsQueue.Count > 0)
-            {
-                CurrentQuestion = QuestionsQueue.Dequeue();
-            }
-            else
-            {
-                //TODO Pop-up. Du fick såhär många poäng, gå till menyn.
-                MessageBox.Show($"Score {Score}", "Score", MessageBoxButton.OK);
-                QuitToStart();
-            }
-        }
-
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             CheckCommand.NotifyCanExecuteChanged();
-            //OnPropertyChanged(nameof(Score));
         }
 
         private void ShuffleCorrectAnswerIndex()
@@ -206,11 +185,20 @@ namespace Labb3.ViewModels
             _quizManager = quizManager;
             _fileManager = fileManager;
 
-            _questionsQueue = _selectedQuiz.GenerateRandomQuestionQueue(_selectedQuiz);
-            _currentQuestion = _selectedQuiz.GetRandomQuestion(_selectedQuiz);
+            //TODO igen, skapar en kopia av ett objekt på ett konstigt sätt.
+            _chosenQuiz = new Quiz(_selectedQuiz.Title, new List<Question>());
+            foreach (var question in _selectedQuiz.Questions)
+            {
+                _chosenQuiz.Questions.Add(question);
+            }
 
-            //_currentQuestion = QuestionsQueue.Dequeue();
-            //ShuffleCorrectAnswerIndex();
+            _questionCounter = 0;
+            _questionsCount = _selectedQuiz.Questions.Count();
+            _themes = _selectedThemes;
+
+            _currentQuestion = _chosenQuiz.GetRandomQuestion(_chosenQuiz);
+            _chosenQuiz.RemoveQuestion(CurrentQuestion);
+            _questionCounter++;
 
             CheckCommand = new RelayCommand(CheckAnswer, CanCheckAnswer);
             QuitCommand = new RelayCommand(QuitToStart);
