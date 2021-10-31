@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace Labb3.Models
 {
-    public class Quiz: ICloneable
+    public class Quiz
     {
         //TODO Behöver inte tilldela ett värde?
         private ICollection<Question> _questions = new List<Question>();
@@ -43,42 +43,33 @@ namespace Labb3.Models
 
         public Question GetRandomQuestion()
         {
-            //TODO Den quizen som utför GetRandomQuestions properties kommer man åt här. Bara att skriva Questions så blir det rätt.
-            
-            //Rekursiv metod?
-            foreach (var question in Questions)
-            {
-                if (question.Asked)
-                {
-                    GetRandomQuestion();
-                }
-                else
-                {
-                    return question;
-                }
-            }
-
-
-            //Förra saker jag gjorde:
-            List<Question> questionsList = Questions.ToList();
-
+            //Den quizen som utför GetRandomQuestion kommer åt sina egna properties här. Bara att skriva Questions så blir det rätt.
             if (Questions.Count > 0)
             {
                 Random r = new Random();
 
-                //TODO Varför funkar inte det här: return Questions[r.Next(Questions.Count)];
-
-                var tempRandom = r.Next(questionsList.Count);
-
-                var tempQuestion = questionsList[tempRandom];
-
-                
-                return tempQuestion;
-                
+                //Random foreach. Ordnar listan
+                foreach (var question in Questions.Where(q => q.Asked == false).OrderBy(q => r.Next()))
+                {
+                    if (question.Asked)
+                    {
+                        GetRandomQuestion();
+                    }
+                    else
+                    {
+                        question.Asked = true;
+                        return question;
+                    }
+                }
             }
-            else
+            return null;
+        }
+
+        internal void ResetQuestionsAsked()
+        {
+            foreach (var question in Questions)
             {
-                return null;
+                question.Asked = false;
             }
         }
 
@@ -95,11 +86,6 @@ namespace Labb3.Models
 
         public void RemoveQuestion(int index)
         {
-        }
-
-        public object Clone()
-        {
-            return this.MemberwiseClone();
         }
     }
 }

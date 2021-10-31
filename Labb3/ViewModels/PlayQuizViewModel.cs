@@ -31,14 +31,12 @@ namespace Labb3.ViewModels
         public List<Theme> Themes
         {
             get { return _themes; }
-            set { _themes = value; }
         }
 
         private Quiz _chosenQuiz;
         public Quiz ChosenQuiz
         {
             get { return _chosenQuiz; }
-            set { SetProperty(ref _chosenQuiz, value); }
         }
 
         private Question _currentQuestion;
@@ -48,13 +46,7 @@ namespace Labb3.ViewModels
             set { _currentQuestion = value; }
         }
 
-        private string _selectedOption;
-        public string SelectedOption
-        {
-            get { return _selectedOption; }
-            set { SetProperty(ref _selectedOption, value); }
-        }
-
+        //TODO Fixa denna property. Kanske inte behöver eftersom CurrentQuestion.Theme.ThemeName redan finns.
         private Theme _currentQuestionTheme;
         public Theme CurrentQuestionTheme
         {
@@ -69,7 +61,7 @@ namespace Labb3.ViewModels
             set { SetProperty(ref _score, value); }
         }
 
-        private int _questionsCount;
+        private readonly int _questionsCount;
         public int QuestionsCount
         {
             get { return _questionsCount; }
@@ -79,7 +71,6 @@ namespace Labb3.ViewModels
         public int QuestionCounter
         {
             get { return _questionCounter; }
-            set { _questionCounter = value; }
         }
 
         #endregion
@@ -91,46 +82,33 @@ namespace Labb3.ViewModels
         public RelayCommand Answer1 { get; }
         public RelayCommand Answer2 { get; }
         public RelayCommand Answer3 { get; }
-        private void CheckAnswer()
-        {
-            if (CurrentQuestion.Options[CurrentQuestion.CorrectAnswer] == SelectedOption)
-            {
-                Score++;
-            }
 
-            SelectedOption = null;
-            OnPropertyChanged(nameof(Score));
-        }
-        private bool CanCheckAnswer()
-        {
-            if (!string.IsNullOrEmpty(SelectedOption))
-            {
-                return true;
-            }
-            return false;
-        }
+        #endregion
+
+        #region Actions/Functions
 
         private void QuitToStart()
         {
             //TODO Ändra QuizManager.
+            _chosenQuiz.ResetQuestionsAsked();
             _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, _quizManager, new ObservableCollection<Theme>(_selectedThemes), _fileManager);
         }
 
+        //Kollar om svaret är rätt, om nästa fråga är == null så avslutas spelet.
         private void AnswerQuestion(int Option)
         {
             if (CurrentQuestion.CorrectAnswer == Option)
             {
                 Score++;
             }
-
             if (_questionCounter < _questionsCount)
             {
                 _questionCounter++;
             }
+
             OnPropertyChanged(nameof(QuestionCounter));
 
             CurrentQuestion = _chosenQuiz.GetRandomQuestion();
-            _chosenQuiz.RemoveQuestion(CurrentQuestion);
 
             if (CurrentQuestion == null)
             {
@@ -144,12 +122,12 @@ namespace Labb3.ViewModels
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            CheckCommand.NotifyCanExecuteChanged();
+            //TODO Tom här i PlayView, kanske inte ens behöver denna här
         }
 
         private void ShuffleCorrectAnswerIndex()
         {
-            //Vill ha något som kan shuffla svaren, är tråkigt om de är på samma plats varje gång.
+            //TODO Vill ha något som kan shuffla svaren, är tråkigt om de är på samma plats varje gång.
             string correctAnswerString = CurrentQuestion.Options[CurrentQuestion.CorrectAnswer];
             Random r = new Random();
 
@@ -178,28 +156,22 @@ namespace Labb3.ViewModels
 
         public PlayQuizViewModel(NavigationStore navigationStore, QuizManager quizManager,  Quiz selectedQuiz, List<Theme> selectedThemes, FileManager fileManager)
         {
+            //TODO Behöver jag TVÅ selectedQuiz och themes??
             _selectedQuiz = selectedQuiz;
+            _chosenQuiz = selectedQuiz;
             _selectedThemes = selectedThemes;
+            _themes = selectedThemes;
             _navigationStore = navigationStore;
             _quizManager = quizManager;
             _fileManager = fileManager;
 
-            //TODO igen, skapar en kopia av ett objekt på ett konstigt sätt.
-            _chosenQuiz = new Quiz(_selectedQuiz.Title, new List<Question>());
-            foreach (var question in _selectedQuiz.Questions)
-            {
-                _chosenQuiz.Questions.Add(question);
-            }
-
             _questionCounter = 0;
-            _questionsCount = _selectedQuiz.Questions.Count();
-            _themes = _selectedThemes;
+            _questionsCount = _chosenQuiz.Questions.Count();
 
             _currentQuestion = _chosenQuiz.GetRandomQuestion();
-            _chosenQuiz.RemoveQuestion(CurrentQuestion);
+
             _questionCounter++;
 
-            CheckCommand = new RelayCommand(CheckAnswer, CanCheckAnswer);
             QuitCommand = new RelayCommand(QuitToStart);
             Answer1 = new RelayCommand(() => AnswerQuestion(1) );
             Answer2 = new RelayCommand(() => AnswerQuestion(2));
