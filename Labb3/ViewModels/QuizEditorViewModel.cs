@@ -54,22 +54,15 @@ namespace Labb3.ViewModels
             get { return _selectedQuiz; }
             set
             {
-                //Den första if-satsen gör så att jag kan skippa att ha med en extra TextBox. Kan skapa ny med ComboBox med denna.
-                //if (Quizzes.Any(q => q.Title == SelectedQuiz.Title))
-                //{
-                    SetProperty(ref _selectedQuiz, value);
-                    _selectedQuiz = value;
+                SetProperty(ref _selectedQuiz, value);
 
-                    if (_questions != null && _selectedQuiz != null)
-                    {
-                        _questions.Clear();
+                if (_selectedQuiz == null)
+                {
+                    SelectedQuiz = DefaultSelectedQuiz();
+                }
 
-                        foreach (var question in _selectedQuiz.Questions)
-                        {
-                            _questions.Add(question);
-                        }
-                    }
-                //}
+                //TODO SÅHÄR UPPDATERAT MAN TYDLIGEN VYER
+                Questions = new ObservableCollection<Question>(_selectedQuiz.Questions);
             }
         }
 
@@ -99,10 +92,10 @@ namespace Labb3.ViewModels
                     Options[1]    = SelectedQuestion.Options[1];
                     Options[2]    = SelectedQuestion.Options[2];
                     Options[3]    = SelectedQuestion.Options[3];
-                    Option1       = Options[1];
-                    Option2       = Options[2];
-                    Option3       = Options[3];
-                    ThemeName     = SelectedQuestion.Theme.ThemeName.ToString();
+                    Option1 = Options[1];
+                    Option2 = Options[2];
+                    Option3 = Options[3];
+                    ThemeName = SelectedQuestion.Theme.ThemeName.ToString();
                     CorrectAnswer = SelectedQuestion.CorrectAnswer;
                 }
             }
@@ -179,6 +172,14 @@ namespace Labb3.ViewModels
             }
         }
 
+        //TODO Implement
+        private string _image;
+        public string Image
+        {
+            get { return _image; }
+            set { _image = value; }
+        }
+
         private Theme _theme = new Theme("TEMP", false);
         public Theme Theme
         {
@@ -197,7 +198,6 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _themeName, value);
-                Theme.ThemeName = value;
             }
         }
         #endregion
@@ -216,17 +216,14 @@ namespace Labb3.ViewModels
         {
             _quizManager.CreateNewQuiz(NewQuizTitle, new List<Question>());
 
-            //OnPropertyChanged(nameof(SelectedQuiz));
-
             Option1 = "";
             Option2 = "";
             Option3 = "";
             CorrectAnswer = 0;
             NewStatement = "";
-
             NewQuizTitle = "";
 
-            //Gör så att Propertyn uppdateras
+            //TODO Gör så att Propertyn uppdateras?
             SelectedQuiz = _quizManager._allQuizzes[^1];
 
         }
@@ -244,8 +241,8 @@ namespace Labb3.ViewModels
         //Det som sker när man trycker på AddCommand
         public void AddQuestionToQuiz()
         {
-
-            SelectedQuiz.AddQuestion(NewStatement, Theme, CorrectAnswer, Options.ToArray());
+            Theme newTheme = new Theme(ThemeName.ToString(), false);
+            SelectedQuiz.AddQuestion(NewStatement, newTheme, CorrectAnswer, false, Image, Options.ToArray());
 
             //Gör så att Propertyn uppdateras
 
@@ -294,12 +291,28 @@ namespace Labb3.ViewModels
         public void EditQuizTitle()
         {
             SelectedQuiz.Title = NewQuizTitle;
+
+            
+            //TODO Combobox uppdateras inte om jag inte gör såhär:
+
+            int tempIndex = Quizzes.IndexOf(SelectedQuiz);
+            if (Quizzes != null)
+            {
+                List<Quiz> tempQuizzes = Quizzes.ToList();
+
+                Quizzes.Clear();
+                foreach (var quiz in tempQuizzes)
+                {
+                    Quizzes.Add(quiz);
+                }
+            }
+            SelectedQuiz = Quizzes[tempIndex];
         }
 
         public bool CanEditQuizTitle()
         {
-            //TODO Exakt samma kod som CanAddQuiz
-            if (_quizManager._allQuizzes.All(q => q.Title != NewQuizTitle))
+            //TODO NÄSTAN Exakt samma kod som CanAddQuiz
+            if (_quizManager._allQuizzes.All(q => q.Title != NewQuizTitle) && _quizManager._allQuizzes.Count > 0)
             {
                 return !string.IsNullOrEmpty(NewQuizTitle);
             }
@@ -316,26 +329,18 @@ namespace Labb3.ViewModels
             Question.ChangeCorrectAnswer(SelectedQuestion, CorrectAnswer);
             SelectedQuestion.Theme.ThemeName = ThemeName;
 
-            //TODO Gör så att listan av frågor uppdateras i vyn.........
+            //Gör så att listan i vyn uppdateras.
+            Questions = new ObservableCollection<Question>(SelectedQuiz.Questions);
 
-            //TODO Implementera denna lite här och där. Man kan göra 
-            //OnPropertyChanged(nameof(Questions));
-
-            if (Questions != null)
-            {
-                Questions.Clear();
-                foreach (var question in SelectedQuiz.Questions)
-                {
-                    Questions.Add(question);
-                }
-            }
+            EditCommand.NotifyCanExecuteChanged();
         }
         public bool CanEditQuestion()
         {
+            bool tempBool = false;
             //TODO Bättre sätt att göra detta på??????
             if (SelectedQuestion != null)
             {
-                if (SelectedQuestion.Statement != NewStatement          ||
+                if (NewStatement != SelectedQuestion.Statement          ||
                     SelectedQuestion.Theme.ThemeName != ThemeName ||
                     SelectedQuestion.Options[1] != Options[1]           ||
                     SelectedQuestion.Options[2] != Options[2]           ||
@@ -355,11 +360,15 @@ namespace Labb3.ViewModels
                         Option3 != Option1                     &&
                         Option3 != Option2)
                     {
-                        if (SelectedQuiz.Questions.All(q => q.Statement != NewStatement))
+                        //Har denna här så att jag kan sätta det jag vill returnera till True här, men sen kolla ett till vilkor.
+                        tempBool = true;
+
+                        if (NewStatement != SelectedQuestion.Statement && SelectedQuiz.Questions.Any(q => q.Statement == NewStatement))
                         {
-                            return true;
+                            tempBool = false;
                         }
 
+                        return tempBool;
                     }
                 }
             }
@@ -367,6 +376,7 @@ namespace Labb3.ViewModels
         }
         public void RemoveQuiz()
         {
+            //TODO Popup-Är du säker?
             _quizManager.RemoveQuiz(SelectedQuiz);
 
             SelectedQuiz = DefaultSelectedQuiz();
@@ -389,11 +399,7 @@ namespace Labb3.ViewModels
             //TODO Gör så att listan av frågor uppdateras i vyn.........
             if (Questions != null)
             {
-                Questions.Clear();
-                foreach (var question in SelectedQuiz.Questions)
-                {
-                    Questions.Add(question);
-                }
+                Questions = new ObservableCollection<Question>(SelectedQuiz.Questions);
             }
         }
         public bool CanRemoveQuestion()
@@ -420,12 +426,12 @@ namespace Labb3.ViewModels
         }
         private void ClearTextboxes()
         {
-            Option1 = "";
-            Option2 = "";
-            Option3 = "";
-            CorrectAnswer = 0;
-            NewStatement = "";
-            Theme = null;
+            //Option1 = "";
+            //Option2 = "";
+            //Option3 = "";
+            //CorrectAnswer = 0;
+            //NewStatement = "";
+            //ThemeName = null;
         }
         private Quiz DefaultSelectedQuiz()
         {

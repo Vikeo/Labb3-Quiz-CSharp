@@ -28,26 +28,21 @@ namespace Labb3.Models
             set { _options = value; }
         }
 
-        //private string _option1;
-        //public string Option1
-        //{
-        //    get { return _option1; }
-        //    set { _option1 = value; }
-        //}
+        private bool _asked;
 
-        //private string _option2;
-        //public string Option2
-        //{
-        //    get { return _option2; }
-        //    set { _option2 = value; }
-        //}
+        public bool Asked
+        {
+            get { return _asked; }
+            set { _asked = value; }
+        }
 
-        //private string _option3;
-        //public string Option3
-        //{
-        //    get { return _option3; }
-        //    set { _option3 = value; }
-        //}
+        //TODO Fixa bild.
+        private string _image;
+        public string Image
+        {
+            get { return _image; }
+            set { _image = value; }
+        }
 
         private Theme _theme;
         public Theme Theme
@@ -65,12 +60,14 @@ namespace Labb3.Models
 
         //Konstruktor. [JsonConstructor] visar Deserializern vilken konstruktor den ska använda.
         [JsonConstructor]
-        public Question(string statement, Theme theme, int correctAnswer, params string[] options)
+        public Question(string statement, Theme theme, int correctAnswer, bool asked, string image, params string[] options)
         {
             _statement = statement;
             _options = options;
             _theme = theme;
             _correctAnswer = correctAnswer;
+            _asked = asked;
+            _image = image;
         }
 
         public static void ChangeCorrectAnswer(Question question, int newCorrectAnswer)
@@ -86,10 +83,10 @@ namespace Labb3.Models
         }
         public Question()
         {
-            
+
         }
 
-      
+
 
 
 

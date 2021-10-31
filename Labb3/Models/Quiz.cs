@@ -41,18 +41,40 @@ namespace Labb3.Models
             _title = otherQuiz.Title;
         }
 
-        public Question GetRandomQuestion(Quiz quiz)
+        public Question GetRandomQuestion()
         {
-            List<Question> questionsList = quiz.Questions.ToList();
-            if (quiz.Questions.Count > 0)
+            //TODO Den quizen som utför GetRandomQuestions properties kommer man åt här. Bara att skriva Questions så blir det rätt.
+            
+            //Rekursiv metod?
+            foreach (var question in Questions)
+            {
+                if (question.Asked)
+                {
+                    GetRandomQuestion();
+                }
+                else
+                {
+                    return question;
+                }
+            }
+
+
+            //Förra saker jag gjorde:
+            List<Question> questionsList = Questions.ToList();
+
+            if (Questions.Count > 0)
             {
                 Random r = new Random();
-                
+
+                //TODO Varför funkar inte det här: return Questions[r.Next(Questions.Count)];
+
                 var tempRandom = r.Next(questionsList.Count);
 
                 var tempQuestion = questionsList[tempRandom];
 
+                
                 return tempQuestion;
+                
             }
             else
             {
@@ -60,9 +82,9 @@ namespace Labb3.Models
             }
         }
 
-        public void AddQuestion(string statement, Theme theme, int correctAnswer, params string[] answers)
+        public void AddQuestion(string statement, Theme theme, int correctAnswer, bool asked, string image, params string[] answers)
         {
-            Question newQuestion = new Question(statement, theme, correctAnswer, answers);
+            Question newQuestion = new Question(statement, theme, correctAnswer, asked, image,  answers);
             Questions.Add(newQuestion);
         }
 

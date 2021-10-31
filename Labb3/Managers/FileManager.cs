@@ -30,7 +30,7 @@ namespace Labb3.Managers
             }
         }
 
-        //TODO Fixa Async!
+        //TODO Fixa Async plz!
         public ObservableCollection<Quiz> LoadQuizzes()
         {
             using (var sr = new StreamReader(Path.Combine(_savePath, _fileName)))

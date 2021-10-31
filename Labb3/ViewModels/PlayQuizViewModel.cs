@@ -91,7 +91,6 @@ namespace Labb3.ViewModels
         public RelayCommand Answer1 { get; }
         public RelayCommand Answer2 { get; }
         public RelayCommand Answer3 { get; }
-
         private void CheckAnswer()
         {
             if (CurrentQuestion.Options[CurrentQuestion.CorrectAnswer] == SelectedOption)
@@ -130,7 +129,7 @@ namespace Labb3.ViewModels
             }
             OnPropertyChanged(nameof(QuestionCounter));
 
-            CurrentQuestion = _chosenQuiz.GetRandomQuestion(_chosenQuiz);
+            CurrentQuestion = _chosenQuiz.GetRandomQuestion();
             _chosenQuiz.RemoveQuestion(CurrentQuestion);
 
             if (CurrentQuestion == null)
@@ -196,7 +195,7 @@ namespace Labb3.ViewModels
             _questionsCount = _selectedQuiz.Questions.Count();
             _themes = _selectedThemes;
 
-            _currentQuestion = _chosenQuiz.GetRandomQuestion(_chosenQuiz);
+            _currentQuestion = _chosenQuiz.GetRandomQuestion();
             _chosenQuiz.RemoveQuestion(CurrentQuestion);
             _questionCounter++;
 
