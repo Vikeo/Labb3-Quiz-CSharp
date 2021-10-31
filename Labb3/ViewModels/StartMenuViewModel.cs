@@ -83,7 +83,7 @@ namespace Labb3.ViewModels
 
         #endregion
 
-        #region RelayCommands
+        #region RelayCommands + Actions/Functions
 
         public RelayCommand GoToQuizEditorCommand { get; }
         public RelayCommand GoToPlayQuizCommand { get; }
@@ -96,8 +96,8 @@ namespace Labb3.ViewModels
 
         private void GoToPlayQuiz()
         {
-
-            //TODO När jag kommer tillbaka till StartMenu så finns de temana man valde kvar.
+            //TODO När jag kommer tillbaka till StartMenu så finns de temana man valde kvar
+            //TODO Kanske inte behöver Set:a teman länge. 
             SetThemes();
 
             if (_selectedThemes.Count == 0)
@@ -106,16 +106,7 @@ namespace Labb3.ViewModels
             }
             else
             {
-                //TODO bättre sätt att göra en kopia av quiz
-                Quiz playQuiz = new Quiz(_selectedQuiz.Title, new List<Question>());
-                foreach (var question in _selectedQuiz.Questions)
-                {
-                    playQuiz.Questions.Add(question);
-                }
-
-                playQuiz.Questions = RemoveUnselectedThemesFromQuestions(playQuiz.Questions.ToList());
-
-                _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _quizManager, playQuiz, _selectedThemes.ToList(), _fileManager);
+                _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _quizManager, _selectedQuiz, _selectedThemes.ToList(), _fileManager);
             }
         }
         private bool CanGoToPlayQuiz()
@@ -128,29 +119,8 @@ namespace Labb3.ViewModels
             return false;
         }
 
-        private List<Question> RemoveUnselectedThemesFromQuestions(List<Question> questions)
-        {
-            //TODO bättre sätt att göra en kopia av list av questions i en quiz. (eller rent av av en quiz)
-            List<Question> tempQuestions = new List<Question>();
-
-            foreach (var question in questions)
-            {
-                tempQuestions.Add(question);
-            }
-
-            foreach (var question in questions)
-            {
-                if (!question.Theme.Selected)
-                {
-                    tempQuestions.Remove(question);
-                }
-            }
-            return tempQuestions;
-        }
-
         private void SetThemes()
         {
-            _selectedThemes.Clear();
             foreach (var theme in _themes)
             {
                 if (theme.Selected)
@@ -178,6 +148,7 @@ namespace Labb3.ViewModels
         }
 
         #endregion
+
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(SelectedQuiz))
@@ -199,7 +170,6 @@ namespace Labb3.ViewModels
             QuitApplicationCommand = new RelayCommand(QuitApplication);
 
             PropertyChanged += OnViewModelPropertyChanged;
-
         }
 
         

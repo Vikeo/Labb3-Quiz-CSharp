@@ -14,9 +14,6 @@ namespace Labb3.Managers
     public class QuizManager
     {
         public ObservableCollection<Quiz> _allQuizzes = new ObservableCollection<Quiz>();
-
-        
-
         public ObservableCollection<Quiz> Quizzes
         {
             get { return _allQuizzes; }
@@ -42,7 +39,7 @@ namespace Labb3.Managers
             return new ObservableCollection<string>(quiz.Questions.Select(q => q.Theme.ThemeName).Distinct().ToList());
         }
 
-        //public static async Task<ObservableCollection<Quiz>> LoadQuizzes()
+        //public static async Task<ObservableCollection<Quiz>> LoadAllQuizzes()
         //{
         //    string fileName = "WeatherForecast.json";
         //    using (FileStream openStream = File.OpenRead(Path.Combine(_savePath, fileName)))

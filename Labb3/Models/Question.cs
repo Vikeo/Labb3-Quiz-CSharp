@@ -29,7 +29,6 @@ namespace Labb3.Models
         }
 
         private bool _asked;
-
         public bool Asked
         {
             get { return _asked; }
@@ -51,11 +50,12 @@ namespace Labb3.Models
             set { _theme = value; }
         }
 
-        private int _correctAnswer;
+        //TODO Varför är det inte readonly längre?
+        //Readonly variabler kan man tilldela värde till i en konstruktor.
+        private readonly int _correctAnswer;
         public int CorrectAnswer
         {
             get { return _correctAnswer; }
-            set { _correctAnswer = value; }
         }
 
         //Konstruktor. [JsonConstructor] visar Deserializern vilken konstruktor den ska använda.

@@ -43,19 +43,21 @@ namespace Labb3.Models
 
         public Question GetRandomQuestion()
         {
+            //TODO Lägga till en check här som kolla om frågans tema är Selected?
             //Den quizen som utför GetRandomQuestion kommer åt sina egna properties här. Bara att skriva Questions så blir det rätt.
             if (Questions.Count > 0)
             {
                 Random r = new Random();
 
                 //Random foreach. Ordnar listan
-                foreach (var question in Questions.Where(q => q.Asked == false).OrderBy(q => r.Next()))
+                foreach (var question in Questions.Where(q => q.Asked == false && q.Theme.Selected).OrderBy(q => r.Next()))
                 {
                     if (question.Asked)
                     {
                         GetRandomQuestion();
                     }
-                    else
+                    //TODO bara 'else' borde räcka här, men vill vara säker på at Theme.Selected = true ATM.
+                    else if (question.Theme.Selected)
                     {
                         question.Asked = true;
                         return question;
@@ -72,6 +74,13 @@ namespace Labb3.Models
                 question.Asked = false;
             }
         }
+        internal void ResetThemeSelected()
+        {
+            foreach (var question in Questions)
+            {
+                question.Theme.Selected = false;
+            }
+        }
 
         public void AddQuestion(string statement, Theme theme, int correctAnswer, bool asked, string image, params string[] answers)
         {
@@ -83,6 +92,8 @@ namespace Labb3.Models
         {
             Questions.Remove(question);
         }
+
+        
 
         public void RemoveQuestion(int index)
         {

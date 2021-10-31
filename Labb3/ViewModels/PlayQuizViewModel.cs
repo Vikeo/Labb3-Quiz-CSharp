@@ -2,13 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using Labb3.Managers;
 using Labb3.Models;
 using Labb3.Stores;
@@ -90,6 +85,7 @@ namespace Labb3.ViewModels
         private void QuitToStart()
         {
             //TODO Ändra QuizManager.
+            _chosenQuiz.ResetThemeSelected();
             _chosenQuiz.ResetQuestionsAsked();
             _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, _quizManager, new ObservableCollection<Theme>(_selectedThemes), _fileManager);
         }

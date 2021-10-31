@@ -34,10 +34,11 @@ namespace Labb3
             _fileManager = new FileManager();
         }
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
 
-            _quizManager._allQuizzes = _fileManager.LoadQuizzes();
+            //TODO Tror att det är rätt, unless...??.
+            _quizManager._allQuizzes = await _fileManager.LoadAllQuizzes();
 
             base.OnStartup(e);
 

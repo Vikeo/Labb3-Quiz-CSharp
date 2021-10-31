@@ -251,7 +251,7 @@ namespace Labb3.ViewModels
             var tempQuiz = SelectedQuiz;
             SelectedQuiz = tempQuiz;
 
-            _fileManager.SaveQuizzes(_quizManager._allQuizzes);
+            _fileManager.SaveAllQuizzes(_quizManager._allQuizzes);
         }
 
         //Kollar om man kan lägga till frågor till quizen.
@@ -466,7 +466,7 @@ namespace Labb3.ViewModels
                 RemoveQuizCommand.NotifyCanExecuteChanged();
             }
 
-            _fileManager.SaveQuizzes(_quizManager._allQuizzes);
+            _fileManager.SaveAllQuizzes(_quizManager._allQuizzes);
         }
 
         //Konstruktor
