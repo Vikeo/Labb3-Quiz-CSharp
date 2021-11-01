@@ -50,6 +50,16 @@
                     Command="{Binding QuitApplicationCommand}"
                     Content="Quit"
                     FontSize="8" />
+                <Button
+                    Margin="5,0,0,0"
+                    Command="{Binding ExportQuizCommand}"
+                    Content="Export Quiz"
+                    FontSize="8" />
+                <Button
+                    Margin="5,0,0,0"
+                    Command="{Binding ImportQuizCommand}"
+                    Content="Import Quiz"
+                    FontSize="8" />
 
             </StackPanel>
         </Grid>

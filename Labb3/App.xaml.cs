@@ -34,9 +34,9 @@ namespace Labb3
             _fileManager = new FileManager();
         }
 
+        //TODO NIKLAS Är det OK att ha void på OnStartup?
         protected override async void OnStartup(StartupEventArgs e)
         {
-
             //TODO Tror att det är rätt, unless...??.
             _quizManager._allQuizzes = await _fileManager.LoadAllQuizzes();
 

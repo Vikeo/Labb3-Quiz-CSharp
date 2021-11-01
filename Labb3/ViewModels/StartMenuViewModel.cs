@@ -88,6 +88,8 @@ namespace Labb3.ViewModels
         public RelayCommand GoToQuizEditorCommand { get; }
         public RelayCommand GoToPlayQuizCommand { get; }
         public RelayCommand QuitApplicationCommand { get; }
+        public RelayCommand ExportQuizCommand { get; }
+        public RelayCommand ImportQuizCommand { get; }
 
         private void GoToQuizEditor()
         {
@@ -111,7 +113,6 @@ namespace Labb3.ViewModels
         }
         private bool CanGoToPlayQuiz()
         {
-
             if (SelectedQuiz.Title != "TEMP")
             {
                 return true;
@@ -147,6 +148,25 @@ namespace Labb3.ViewModels
             Application.Current.Shutdown();
         }
 
+        private void ExportQuiz()
+        {
+            //TODO Behöver man lägga till 'Task task = '
+            _fileManager.ExportQuiz(SelectedQuiz);
+        }
+        private bool CanExportQuiz()
+        {
+            if (SelectedQuiz.Title != "TEMP")
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private async Task ImportQuiz()
+        {
+            _quizManager._allQuizzes.Add(await _fileManager.ImportQuiz(_quizManager._allQuizzes));
+        }
+
         #endregion
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -154,6 +174,7 @@ namespace Labb3.ViewModels
             if (e.PropertyName == nameof(SelectedQuiz))
             {
                 GoToPlayQuizCommand.NotifyCanExecuteChanged();
+                ExportQuizCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -168,6 +189,8 @@ namespace Labb3.ViewModels
             GoToQuizEditorCommand = new RelayCommand(GoToQuizEditor);
             GoToPlayQuizCommand = new RelayCommand(GoToPlayQuiz, CanGoToPlayQuiz);
             QuitApplicationCommand = new RelayCommand(QuitApplication);
+            ExportQuizCommand = new RelayCommand(ExportQuiz, CanExportQuiz);
+            ImportQuizCommand = new RelayCommand(() => ImportQuiz());
 
             PropertyChanged += OnViewModelPropertyChanged;
         }

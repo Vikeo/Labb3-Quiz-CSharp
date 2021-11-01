@@ -246,8 +246,6 @@ namespace Labb3.ViewModels
 
             //Gör så att Propertyn uppdateras
 
-            //OnPropertyChanged(nameof(SelectedQuiz.Questions)); ????
-
             var tempQuiz = SelectedQuiz;
             SelectedQuiz = tempQuiz;
 
@@ -292,8 +290,9 @@ namespace Labb3.ViewModels
         {
             SelectedQuiz.Title = NewQuizTitle;
 
-            
-            //TODO Combobox uppdateras inte om jag inte gör såhär:
+            //Quizzes = new ObservableCollection<Quiz>();
+
+            //TODO Combobox uppdateras inte direkt om jag inte gör såhär:
 
             int tempIndex = Quizzes.IndexOf(SelectedQuiz);
             if (Quizzes != null)
