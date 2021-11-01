@@ -53,6 +53,10 @@
             Grid.Column="3"
             Margin="10"
             Text="{Binding CurrentQuestion.Statement}" />
+        <Image
+            Grid.Row="2"
+            Grid.Column="1"
+            Source="{Binding CurrentQuestion.ImagePath, UpdateSourceTrigger=PropertyChanged}" />
         <TextBlock
             Grid.Row="3"
             Grid.Column="5"

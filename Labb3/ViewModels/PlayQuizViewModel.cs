@@ -38,7 +38,7 @@ namespace Labb3.ViewModels
         public Question CurrentQuestion
         {
             get { return _currentQuestion; }
-            set { _currentQuestion = value; }
+            set { SetProperty(ref _currentQuestion, value); }
         }
 
         //TODO Fixa denna property. Kanske inte behöver eftersom CurrentQuestion.Theme.ThemeName redan finns.

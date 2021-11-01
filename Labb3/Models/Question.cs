@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Labb3.Models
@@ -35,12 +36,12 @@ namespace Labb3.Models
             set { _asked = value; }
         }
 
-        //TODO Fixa bild.
-        private string _image;
-        public string Image
+        //TODO Fixa imagePath.
+        private string _imagePath;
+        public string ImagePath
         {
-            get { return _image; }
-            set { _image = value; }
+            get { return _imagePath; }
+            set { _imagePath = value; }
         }
 
         private Theme _theme;
@@ -60,14 +61,14 @@ namespace Labb3.Models
 
         //Konstruktor. [JsonConstructor] visar Deserializern vilken konstruktor den ska använda.
         [JsonConstructor]
-        public Question(string statement, Theme theme, int correctAnswer, bool asked, string image, params string[] options)
+        public Question(string statement, Theme theme, int correctAnswer, bool asked, string imagePath, params string[] options)
         {
             _statement = statement;
             _options = options;
             _theme = theme;
             _correctAnswer = correctAnswer;
             _asked = asked;
-            _image = image;
+            _imagePath = imagePath;
         }
 
         public static void ChangeCorrectAnswer(Question question, int newCorrectAnswer)
@@ -76,7 +77,6 @@ namespace Labb3.Models
             typeof(Question).GetField("_correctAnswer", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(question, newCorrectAnswer);
         }
 
-        
         public Question(int newCorrectAnswer)
         {
             _correctAnswer = newCorrectAnswer;

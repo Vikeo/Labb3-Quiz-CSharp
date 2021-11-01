@@ -145,6 +145,7 @@ namespace Labb3.ViewModels
 
         private void QuitApplication()
         {
+            _fileManager.SaveAllQuizzes(_quizManager._allQuizzes);
             Application.Current.Shutdown();
         }
 

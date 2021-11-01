@@ -25,7 +25,6 @@ namespace Labb3
         private readonly ObservableCollection<Theme> _themes;
         private readonly FileManager _fileManager;
 
-
         public App()
         {
             _navigationStore = new NavigationStore();
@@ -34,11 +33,11 @@ namespace Labb3
             _fileManager = new FileManager();
         }
 
-        //TODO NIKLAS Är det OK att ha void på OnStartup?
-        protected override async void OnStartup(StartupEventArgs e)
+        // Är det OK att ha void på OnStartup? - Flytta in
+        protected override void OnStartup(StartupEventArgs e)
         {
-            //TODO Tror att det är rätt, unless...??.
-            _quizManager._allQuizzes = await _fileManager.LoadAllQuizzes();
+
+            GetQuizzes();
 
             base.OnStartup(e);
 
@@ -49,9 +48,13 @@ namespace Labb3
             {
                 DataContext = new MainViewModel(_navigationStore, _quizManager)
             };
-
             MainWindow.Show();
-
         }
+
+        private async Task GetQuizzes()
+        {
+            _quizManager._allQuizzes = await _fileManager.LoadAllQuizzes();
+        }
+
     }
 }

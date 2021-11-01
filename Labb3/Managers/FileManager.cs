@@ -13,16 +13,29 @@ using Microsoft.Win32;
 
 namespace Labb3.Managers
 {
+    //TODO Gör så att filerna som skapas av programmer hamnar i en mapp i appdata. Enviroment.SpecialFolder.LocalApplicationData + foldername?
     public class FileManager
     {
-        private string _savePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        private string _fileName = "QuizGameQuizListAsync.json";
+        //TODO Bättre sätt att skriva filvägarna på.
+        private string _baseFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ViktorsQuizGame");
+        private string _fileName = "AllQuizzes.json";
 
-        //TODO NIKLAS: Måste jag returnera Task? Går bra med void????
+        private string _imageFolderPath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ViktorsQuizGame"), "images");
+        public string ImageFolderPath
+        {
+            get { return _imageFolderPath; }
+            set { _imageFolderPath = value; }
+        }
+        public FileManager()
+        {
+        }
+
+        //Blir det OK om jag gör BitmapImage till Base64 sträng
         public async Task SaveAllQuizzes(ObservableCollection<Quiz> allQuizzes)
         {
             //ASYNC
-            using FileStream createStream = File.Create(Path.Combine(_savePath, _fileName));
+            CreateNewDirectorys();
+            using FileStream createStream = File.Create(Path.Combine(_baseFolderPath, _fileName));
             await JsonSerializer.SerializeAsync(createStream, allQuizzes);
             await createStream.DisposeAsync();
         }
@@ -41,11 +54,11 @@ namespace Labb3.Managers
             {
                 //Samma som SaveAllQuizzes
                 using FileStream createStream = File.Create(saveFileDialog1.FileName);
-                await JsonSerializer.SerializeAsync(createStream, quiz);
                 await createStream.DisposeAsync();
             }
         }
 
+        //TODO Gör en check som kollar om alla grejer i konstruktorn kunde fylles i korrekt. Säg till att det inte gick annars och skriv ut hur den ska vara formaterad.
         public async Task<Quiz> ImportQuiz(ObservableCollection<Quiz> allQuizzes)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
@@ -72,10 +85,20 @@ namespace Labb3.Managers
         public async Task<ObservableCollection<Quiz>> LoadAllQuizzes()
         {
             //Async?!
-            using FileStream openStream = File.OpenRead(Path.Combine(_savePath, _fileName));
-            ObservableCollection<Quiz> quizList =
-                await JsonSerializer.DeserializeAsync<ObservableCollection<Quiz>>(openStream);
-            return quizList;
+            if (File.Exists(Path.Combine(_baseFolderPath, _fileName)))
+            {
+                using FileStream openStream = File.OpenRead(Path.Combine(_baseFolderPath, _fileName));
+                ObservableCollection<Quiz> quizList =
+                    await JsonSerializer.DeserializeAsync<ObservableCollection<Quiz>>(openStream);
+                return quizList;
+            }
+
+            return new ObservableCollection<Quiz>();
+        }
+
+        public void CreateNewDirectorys()
+        {
+            Directory.CreateDirectory(Path.Combine(_baseFolderPath, "images"));
         }
     }
 }

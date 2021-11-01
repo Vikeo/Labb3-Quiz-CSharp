@@ -28,6 +28,11 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
+        <Image
+            Grid.Row="1"
+            Grid.Column="1"
+            Source="{Binding ImagePath, UpdateSourceTrigger=PropertyChanged}" />
+
         <TextBlock
             Grid.Row="0"
             Grid.ColumnSpan="2"
@@ -241,6 +246,7 @@
 
         <StackPanel
             Grid.Row="5"
+            Grid.ColumnSpan="2"
             Margin="0,25,0,0"
             Orientation="Horizontal">
             <Button
@@ -270,7 +276,7 @@
             <Button
                 Margin="5,0,0,0"
                 Command="{Binding AddImageCommand}"
-                Content="Add image"
+                Content="Add imagePath"
                 FontSize="8" />
 
         </StackPanel>

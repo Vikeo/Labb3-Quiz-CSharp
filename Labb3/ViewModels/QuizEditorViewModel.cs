@@ -4,17 +4,22 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.Design;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Labb3.Managers;
 using Labb3.Models;
 using Labb3.Stores;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
+using Microsoft.Win32;
 
 namespace Labb3.ViewModels
 {
@@ -95,6 +100,8 @@ namespace Labb3.ViewModels
                     Option1 = Options[1];
                     Option2 = Options[2];
                     Option3 = Options[3];
+                    ImagePath = SelectedQuestion.ImagePath;
+
                     ThemeName = SelectedQuestion.Theme.ThemeName.ToString();
                     CorrectAnswer = SelectedQuestion.CorrectAnswer;
                 }
@@ -173,11 +180,11 @@ namespace Labb3.ViewModels
         }
 
         //TODO Implement
-        private string _image;
-        public string Image
+        private string _imagePath;
+        public string ImagePath
         {
-            get { return _image; }
-            set { _image = value; }
+            get { return _imagePath; }
+            set { SetProperty(ref _imagePath, value); }
         }
 
         private Theme _theme = new Theme("TEMP", false);
@@ -187,7 +194,6 @@ namespace Labb3.ViewModels
             set
             {
                 SetProperty(ref _theme, value);
-                
             }
         }
 
@@ -200,6 +206,7 @@ namespace Labb3.ViewModels
                 SetProperty(ref _themeName, value);
             }
         }
+
         #endregion
 
         #region RelayCommand
@@ -242,12 +249,13 @@ namespace Labb3.ViewModels
         public void AddQuestionToQuiz()
         {
             Theme newTheme = new Theme(ThemeName.ToString(), false);
-            SelectedQuiz.AddQuestion(NewStatement, newTheme, CorrectAnswer, false, Image, Options.ToArray());
+            SelectedQuiz.AddQuestion(NewStatement, newTheme, CorrectAnswer, false, ImagePath, Options.ToArray());
 
             //Gör så att Propertyn uppdateras
 
             var tempQuiz = SelectedQuiz;
             SelectedQuiz = tempQuiz;
+            SelectedQuestion = SelectedQuiz.Questions.ToList()[^1];
 
             _fileManager.SaveAllQuizzes(_quizManager._allQuizzes);
         }
@@ -340,7 +348,7 @@ namespace Labb3.ViewModels
             if (SelectedQuestion != null)
             {
                 if (NewStatement != SelectedQuestion.Statement          ||
-                    SelectedQuestion.Theme.ThemeName != ThemeName ||
+                    SelectedQuestion.Theme.ThemeName != ThemeName       ||
                     SelectedQuestion.Options[1] != Options[1]           ||
                     SelectedQuestion.Options[2] != Options[2]           ||
                     SelectedQuestion.Options[3] != Options[3]           ||
@@ -366,7 +374,6 @@ namespace Labb3.ViewModels
                         {
                             tempBool = false;
                         }
-
                         return tempBool;
                     }
                 }
@@ -410,14 +417,41 @@ namespace Labb3.ViewModels
             return false;
         }
 
+        //TODO Kanske ska göra så att bilderna lagras i en mapp i applikationen. 
+        //TODO Kanske ha som async?
         public void AddImageToQuestion()
         {
-            //TODO Not implemented
+            OpenFileDialog openFileImageDialog = new OpenFileDialog();
+
+            openFileImageDialog.Title = "Choose image";
+            openFileImageDialog.Filter = "ImagePath Files|*.jpg;*.jpeg;*.png;|All files (*.*)|*.*";
+            openFileImageDialog.FilterIndex = 1;
+
+            if (openFileImageDialog.ShowDialog() == true)
+            {
+                //TODO ändra så att det är path istället för en fil.
+                BitmapImage bitImage = new BitmapImage(new Uri(openFileImageDialog.FileName));
+                ImagePath = openFileImageDialog.FileName;
+
+                //Kopierar filen och byter namn på den så att den har samma namn som Quiz+Question.
+                if (SelectedQuiz.Title != "TEMP" && SelectedQuestion != null)
+                {
+                    //TODO Det kan finnas flera bilder som hejter QuizTitle+Statement, men att de har olika filändelser.
+                    File.Copy(openFileImageDialog.FileName, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), $"{SelectedQuiz.Title}{SelectedQuestion.Statement}.{openFileImageDialog.FileName.Split('.')[1]}"));
+                    SelectedQuestion.ImagePath =
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                            $"{SelectedQuiz.Title}{SelectedQuestion.Statement}.{openFileImageDialog.FileName.Split('.')[1]}");
+                }
+            }
         }
+
         public bool CanAddImage()
         {
-            //TODO Not implemented
-            return true;
+            if (SelectedQuestion != null)
+            {
+                return true;
+            }
+            return false;
         }
         public void ReturnToStartMenu()
         {
@@ -436,7 +470,7 @@ namespace Labb3.ViewModels
         {
             if (Quizzes.Count == 0)
             {
-                return SelectedQuiz = new Quiz("", new List<Question>());
+                return SelectedQuiz = new Quiz("TEMP", new List<Question>());
             }
             else
             {
@@ -444,6 +478,11 @@ namespace Labb3.ViewModels
             }
         }
         #endregion
+
+        private async Task SetImage()
+        {
+            await Task.Run(() => ImagePath = SelectedQuestion.ImagePath);
+        }
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -455,7 +494,8 @@ namespace Labb3.ViewModels
                 e.PropertyName == nameof(CorrectAnswer)    ||
                 e.PropertyName == nameof(NewQuizTitle)     ||
                 e.PropertyName == nameof(NewStatement)     ||
-                e.PropertyName == nameof(Theme.ThemeName))
+                e.PropertyName == nameof(Theme.ThemeName)  ||
+                e.PropertyName == nameof(ImagePath))
             {
                 CreateQuizCommand.NotifyCanExecuteChanged();
                 AddCommand.NotifyCanExecuteChanged();
@@ -463,6 +503,7 @@ namespace Labb3.ViewModels
                 EditQuizTitleCommand.NotifyCanExecuteChanged();
                 RemoveCommand.NotifyCanExecuteChanged();
                 RemoveQuizCommand.NotifyCanExecuteChanged();
+                AddImageCommand.NotifyCanExecuteChanged();
             }
 
             _fileManager.SaveAllQuizzes(_quizManager._allQuizzes);
@@ -482,7 +523,7 @@ namespace Labb3.ViewModels
             CreateQuizCommand = new RelayCommand(AddQuiz, CanAddQuiz);
             EditCommand       = new RelayCommand(EditQuestion, CanEditQuestion);
             RemoveCommand     = new RelayCommand(RemoveQuestion, CanRemoveQuestion);
-            AddImageCommand   = new RelayCommand(AddImageToQuestion, CanAddImage);
+            AddImageCommand   = new RelayCommand(() => AddImageToQuestion(), CanAddImage);
             RemoveQuizCommand = new RelayCommand(RemoveQuiz, CanRemoveQuiz);
             ReturnCommand     = new RelayCommand(ReturnToStartMenu);
             EditQuizTitleCommand = new RelayCommand(EditQuizTitle, CanEditQuizTitle);

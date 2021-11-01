@@ -2,26 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace Labb3.Models
 {
     public class Quiz
     {
+        private string _title;
+        public string Title
+        {
+            get { return _title; }
+            set { _title = value; }
+        }
+
         //TODO Behöver inte tilldela ett värde?
         private ICollection<Question> _questions = new List<Question>();
         public ICollection<Question> Questions
         {
             get { return _questions; }
             set { _questions = value; }
-        }
-
-        private string _title;
-        public string Title
-        {
-            get { return _title; }
-            set { _title = value; }
         }
 
         public Quiz(string title, ICollection<Question> questions)
@@ -32,13 +34,6 @@ namespace Labb3.Models
 
         public Quiz()
         {
-        }
-
-        //Copy Constructur
-        public Quiz(Quiz otherQuiz)
-        {
-            _questions = otherQuiz.Questions;
-            _title = otherQuiz.Title;
         }
 
         public Question GetRandomQuestion()
@@ -52,6 +47,7 @@ namespace Labb3.Models
                 //Random foreach. Ordnar listan
                 foreach (var question in Questions.Where(q => q.Asked == false && q.Theme.Selected).OrderBy(q => r.Next()))
                 {
+                    //TODO Kolla.
                     if (question.Asked)
                     {
                         GetRandomQuestion();
@@ -92,8 +88,6 @@ namespace Labb3.Models
         {
             Questions.Remove(question);
         }
-
-        
 
         public void RemoveQuestion(int index)
         {
