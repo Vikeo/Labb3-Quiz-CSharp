@@ -12,62 +12,74 @@
     mc:Ignorable="d">
     <Grid IsSharedSizeScope="True">
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="4*" />
+            <RowDefinition Height="10*" />
+            <RowDefinition Height="10*" />
+            <RowDefinition Height="10*" />
+            <RowDefinition Height="10*" />
+            <RowDefinition Height="10*" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="10*" />
+            <ColumnDefinition Width="10*" />
+            <ColumnDefinition Width="10*" />
+            <ColumnDefinition Width="10*" />
+            <ColumnDefinition Width="10*" />
+            <ColumnDefinition Width="10*" />
         </Grid.ColumnDefinitions>
 
         <TextBlock
             Grid.Row="0"
+            Grid.Column="2"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Center"
             FontSize="24"
             Text="Main menu" />
-        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-            <StackPanel
-                Grid.Row="0"
-                Margin="0,25,0,0"
-                Orientation="Horizontal">
-                <Button
-                    Command="{Binding GoToQuizEditorCommand}"
-                    Content="Quiz Editor"
-                    FontSize="8" />
-                <Button
-                    Margin="5,0,0,0"
-                    Command="{Binding GoToPlayQuizCommand}"
-                    Content="Play Selected Quiz"
-                    FontSize="8" />
-                <Button
-                    Margin="5,0,0,0"
-                    Command="{Binding QuitApplicationCommand}"
-                    Content="Quit"
-                    FontSize="8" />
-                <Button
-                    Margin="5,0,0,0"
-                    Command="{Binding ExportQuizCommand}"
-                    Content="Export Quiz"
-                    FontSize="8" />
-                <Button
-                    Margin="5,0,0,0"
-                    Command="{Binding ImportQuizCommand}"
-                    Content="Import Quiz"
-                    FontSize="8" />
 
-            </StackPanel>
-        </Grid>
+        <StackPanel
+            Grid.Row="1"
+            Grid.RowSpan="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="5"
+            Margin="0,25,0,0"
+            Orientation="Horizontal">
+
+            <Button
+                Command="{Binding GoToQuizEditorCommand}"
+                Content="Quiz Editor"
+                FontSize="8" />
+
+            <Button
+                Margin="5,0,0,0"
+                Command="{Binding GoToPlayQuizCommand}"
+                Content="Play Selected Quiz"
+                FontSize="8" />
+            <Button
+                Margin="5,0,0,0"
+                Command="{Binding QuitApplicationCommand}"
+                Content="Quit"
+                FontSize="8" />
+            <Button
+                Margin="5,0,0,0"
+                Command="{Binding ExportQuizCommand}"
+                Content="Export Quiz"
+                FontSize="8" />
+            <Button
+                Margin="5,0,0,0"
+                Command="{Binding ImportQuizCommand}"
+                Content="Import Quiz"
+                FontSize="8" />
+        </StackPanel>
+
 
         <Grid
-            Grid.Row="3"
+            Grid.Row="4"
             Grid.RowSpan="3"
-            Grid.Column="0">
+            Grid.Column="3"
+            Grid.ColumnSpan="3"
+            Margin="0,0,133,0">
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
@@ -81,29 +93,37 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <ComboBox
-                Grid.Row="0"
-                Grid.Column="0"
-                Margin="20,0,20,0"
-                DisplayMemberPath="Title"
-                ItemsSource="{Binding Quizzes, UpdateSourceTrigger=PropertyChanged}"
-                SelectedItem="{Binding SelectedQuiz, UpdateSourceTrigger=PropertyChanged}" />
-
-            <ListBox
+            <StackPanel
                 Grid.Row="1"
-                Grid.RowSpan="4"
-                Grid.Column="0"
-                Margin="20,0,20,0"
-                DisplayMemberPath="ThemeName"
-                ItemsSource="{Binding ListThemes, UpdateSourceTrigger=PropertyChanged}"
-                SelectionMode="Multiple">
+                Grid.RowSpan="5"
+                Grid.ColumnSpan="3"
+                Orientation="Vertical">
 
-                <ListBox.Resources>
-                    <Style TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay}" />
-                    </Style>
-                </ListBox.Resources>
-            </ListBox>
+                <ComboBox
+                    Margin="20,0,20,0"
+                    DisplayMemberPath="Title"
+                    ItemsSource="{Binding Quizzes, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding SelectedQuiz, UpdateSourceTrigger=PropertyChanged}" />
+
+                <ListBox
+                    Height="auto"
+                    Margin="20,0,20,0"
+                    DisplayMemberPath="ThemeName"
+                    ItemsSource="{Binding ListThemes, UpdateSourceTrigger=PropertyChanged}"
+                    SelectionMode="Multiple">
+
+                    <ListBox.Resources>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay}" />
+                        </Style>
+                    </ListBox.Resources>
+                </ListBox>
+
+            </StackPanel>
+
+
+
+
 
 
         </Grid>

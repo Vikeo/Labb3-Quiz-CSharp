@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
@@ -36,7 +37,7 @@ namespace Labb3
         // Är det OK att ha void på OnStartup? - Flytta in
         protected override void OnStartup(StartupEventArgs e)
         {
-
+            //TODO Tror att quizzes laddas in lite för sent.
             GetQuizzes();
 
             base.OnStartup(e);
@@ -49,6 +50,7 @@ namespace Labb3
                 DataContext = new MainViewModel(_navigationStore, _quizManager)
             };
             MainWindow.Show();
+            
         }
 
         private async Task GetQuizzes()

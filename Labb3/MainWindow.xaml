@@ -5,22 +5,20 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Labb3"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:views="clr-namespace:Labb3.Views"
     xmlns:viewmodels="clr-namespace:Labb3.ViewModels"
+    xmlns:views="clr-namespace:Labb3.Views"
     Title="Quiz Game"
     Width="800"
     Height="500"
     d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
     mc:Ignorable="d">
     <!--  FontSize="14"  -->
-    <Grid MaxWidth="600" Margin="20,10">
+    <Grid Margin="20,10">
         <ContentControl Content="{Binding CurrentViewModel}">
             <ContentControl.Resources>
 
                 <DataTemplate DataType="{x:Type viewmodels:StartMenuViewModel}">
-
                     <views:StartMenuView />
-
                 </DataTemplate>
 
                 <DataTemplate DataType="{x:Type viewmodels:QuizEditorViewModel}">

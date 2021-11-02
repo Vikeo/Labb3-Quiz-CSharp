@@ -51,7 +51,6 @@ namespace Labb3.Models
             set { _theme = value; }
         }
 
-        //TODO Varför är det inte readonly längre?
         //Readonly variabler kan man tilldela värde till i en konstruktor.
         private readonly int _correctAnswer;
         public int CorrectAnswer
@@ -60,6 +59,7 @@ namespace Labb3.Models
         }
 
         //Konstruktor. [JsonConstructor] visar Deserializern vilken konstruktor den ska använda.
+        //TODO Ha en konstruktor för Export/Import?
         [JsonConstructor]
         public Question(string statement, Theme theme, int correctAnswer, bool asked, string imagePath, params string[] options)
         {
@@ -73,6 +73,7 @@ namespace Labb3.Models
 
         public static void ChangeCorrectAnswer(Question question, int newCorrectAnswer)
         {
+            //TODO Mutera inte den förra frågan, använd data från den och skapa en ny.
             //Detta gör det möjligt att ändra värdet på ett readonly-fält.
             typeof(Question).GetField("_correctAnswer", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(question, newCorrectAnswer);
         }

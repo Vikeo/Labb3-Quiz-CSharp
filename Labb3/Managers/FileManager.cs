@@ -20,6 +20,7 @@ namespace Labb3.Managers
         private string _baseFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ViktorsQuizGame");
         private string _fileName = "AllQuizzes.json";
 
+        //TODO Gör så det är en mapp i solution istället:
         private string _imageFolderPath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ViktorsQuizGame"), "images");
         public string ImageFolderPath
         {
@@ -30,10 +31,8 @@ namespace Labb3.Managers
         {
         }
 
-        //Blir det OK om jag gör BitmapImage till Base64 sträng
         public async Task SaveAllQuizzes(ObservableCollection<Quiz> allQuizzes)
         {
-            //ASYNC
             CreateNewDirectorys();
             using FileStream createStream = File.Create(Path.Combine(_baseFolderPath, _fileName));
             await JsonSerializer.SerializeAsync(createStream, allQuizzes);

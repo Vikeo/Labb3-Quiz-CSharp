@@ -19,7 +19,6 @@ namespace Labb3.Models
         }
 
         private bool _selected;
-
         public bool Selected
         {
             get { return _selected; }

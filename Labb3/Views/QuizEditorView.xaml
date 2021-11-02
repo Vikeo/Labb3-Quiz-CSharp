@@ -31,7 +31,7 @@
         <Image
             Grid.Row="1"
             Grid.Column="1"
-            Source="{Binding ImagePath, UpdateSourceTrigger=PropertyChanged}" />
+            Source="{Binding Image, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBlock
             Grid.Row="0"
@@ -270,13 +270,18 @@
                 FontSize="8" />
             <Button
                 Margin="5,0,0,0"
-                Command="{Binding ReturnCommand}"
-                Content="Cancel"
+                Command="{Binding AddImageCommand}"
+                Content="{Binding ChooseImageText}"
                 FontSize="8" />
             <Button
                 Margin="5,0,0,0"
-                Command="{Binding AddImageCommand}"
-                Content="Add imagePath"
+                Command="{Binding RemoveImageCommand}"
+                Content="Remove image"
+                FontSize="8" />
+            <Button
+                Margin="5,0,0,0"
+                Command="{Binding ReturnCommand}"
+                Content="Cancel"
                 FontSize="8" />
 
         </StackPanel>

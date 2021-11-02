@@ -169,7 +169,7 @@ namespace Labb3.ViewModels
             _questionCounter++;
 
             QuitCommand = new RelayCommand(QuitToStart);
-            Answer1 = new RelayCommand(() => AnswerQuestion(1) );
+            Answer1 = new RelayCommand(() => AnswerQuestion(1));
             Answer2 = new RelayCommand(() => AnswerQuestion(2));
             Answer3 = new RelayCommand(() => AnswerQuestion(3));
 

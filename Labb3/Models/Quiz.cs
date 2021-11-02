@@ -34,6 +34,7 @@ namespace Labb3.Models
 
         public Quiz()
         {
+            //JsonDeserialize använder denna
         }
 
         public Question GetRandomQuestion()
@@ -47,13 +48,8 @@ namespace Labb3.Models
                 //Random foreach. Ordnar listan
                 foreach (var question in Questions.Where(q => q.Asked == false && q.Theme.Selected).OrderBy(q => r.Next()))
                 {
-                    //TODO Kolla.
-                    if (question.Asked)
-                    {
-                        GetRandomQuestion();
-                    }
                     //TODO bara 'else' borde räcka här, men vill vara säker på at Theme.Selected = true ATM.
-                    else if (question.Theme.Selected)
+                    if (question.Theme.Selected)
                     {
                         question.Asked = true;
                         return question;
@@ -70,6 +66,7 @@ namespace Labb3.Models
                 question.Asked = false;
             }
         }
+
         internal void ResetThemeSelected()
         {
             foreach (var question in Questions)
@@ -83,14 +80,11 @@ namespace Labb3.Models
             Question newQuestion = new Question(statement, theme, correctAnswer, asked, image,  answers);
             Questions.Add(newQuestion);
         }
-
-        public void RemoveQuestion(Question question)
-        {
-            Questions.Remove(question);
-        }
-
         public void RemoveQuestion(int index)
         {
+            List<Question> tempQuestionsList = Questions.ToList();
+            Question tempQuestion = tempQuestionsList[index];
+            Questions.Remove(tempQuestion);
         }
     }
 }
