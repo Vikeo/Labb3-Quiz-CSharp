@@ -31,6 +31,10 @@
         <Image
             Grid.Row="1"
             Grid.Column="1"
+            MaxHeight="200"
+            MaxWidth="200"
+            MinHeight="200"
+            MinWidth="200"
             Source="{Binding Image, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBlock

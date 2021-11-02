@@ -91,6 +91,7 @@ namespace Labb3.ViewModels
                 //TODO value blir null av någon anledning, kanske borde fixa det men det funkar "som vanligt" med if-satsen.
                 if (value != null)
                 {
+                    Image = null;
                     NewStatement = SelectedQuestion.Statement;
                     Options[1] = SelectedQuestion.Options[1];
                     Options[2] = SelectedQuestion.Options[2];
@@ -247,6 +248,7 @@ namespace Labb3.ViewModels
             CorrectAnswer = 0;
             NewStatement = "";
             NewQuizTitle = "";
+            Image = null;
 
             //TODO Gör så att Propertyn uppdateras?
             SelectedQuiz = _quizManager._allQuizzes[^1];
@@ -271,8 +273,9 @@ namespace Labb3.ViewModels
             Theme newTheme = new Theme(ThemeName.ToString(), false);
 
             //TODO Kanske göra så att när man skapar en Question så skapas sökvägen till bilden. Innan bilden visas kollar man om den existerar eller inte.
-
             SelectedQuiz.AddQuestion(NewStatement, newTheme, CorrectAnswer, false, null, Options.ToArray());
+
+            Image = null;
 
             //Gör så att Propertyn uppdateras
             var tempQuiz = SelectedQuiz;
@@ -467,20 +470,25 @@ namespace Labb3.ViewModels
                     //Kopierar filen och byter namn på den så att den har samma namn som Quiz+Question.
                     if (SelectedQuiz.Title != "TEMP" && SelectedQuestion != null)
                     {
-                        //Sparar en kopia av bilden i images mappen:
+                        //Sparar en temporär kopia av bilden i images mappen:
                         File.Copy(openFileImageDialog.FileName,
-                            Path.Combine(_fileManager.ImageFolderPath, $"{ReplaceInvalidChars(SelectedQuiz.Title)}{ReplaceInvalidChars(SelectedQuestion.Statement)}.{openFileImageDialog.FileName.Split('.')[1]}"));
+                            Path.Combine(_fileManager.ImageFolderPath, $"{ReplaceInvalidChars(SelectedQuiz.Title)}{ReplaceInvalidChars(SelectedQuestion.Statement)}.pppl"));
+                        SelectedQuestion.ImagePath =
+                            Path.Combine(_fileManager.ImageFolderPath,
+                                $"{ReplaceInvalidChars(SelectedQuiz.Title)}{ReplaceInvalidChars(SelectedQuestion.Statement)}.pppl");
+                        //Sätter bilden.. 
+                        SetImageProperty(SelectedQuestion.ImagePath);
+                        //..och sparar undan den i filformatet PNG
+                        SaveBitmapImage(Image, SelectedQuestion.ImagePath);
+                        //Tar bort den temporära kopia
+                        File.Delete(Path.Combine(_fileManager.ImageFolderPath, $"{ReplaceInvalidChars(SelectedQuiz.Title)}{ReplaceInvalidChars(SelectedQuestion.Statement)}.pppl"));
 
                         SelectedQuestion.ImagePath =
                             Path.Combine(_fileManager.ImageFolderPath,
-                                $"{ReplaceInvalidChars(SelectedQuiz.Title)}{ReplaceInvalidChars(SelectedQuestion.Statement)}.{openFileImageDialog.FileName.Split('.')[1]}");
+                                $"{ReplaceInvalidChars(SelectedQuiz.Title)}{ReplaceInvalidChars(SelectedQuestion.Statement)}.png");
 
                         //Detta gör så att Image som visas i vyn inte är kopplad till den direkt filen
-                        SetImageProperty(SelectedQuestion.ImagePath);
                         ChooseImageText = "Remove image";
-
-                        //TODO Gör så att sånt som inte är PNGs blir pngs. Denna grej tar bort.
-                        //File.Delete(Path.Combine(_fileManager.ImageFolderPath, $"{ReplaceInvalidChars(SelectedQuiz.Title)}{ReplaceInvalidChars(SelectedQuestion.Statement)}.{openFileImageDialog.FileName.Split('.')[1]}"));
                     }
                 }
             }
@@ -544,8 +552,6 @@ namespace Labb3.ViewModels
                 tempBitmapImage.UriSource = new Uri(imagePath);
                 tempBitmapImage.EndInit();
                 Image = tempBitmapImage;
-
-                SaveBitmapImage(tempBitmapImage, imagePath);
             }
             else
             {
@@ -554,13 +560,16 @@ namespace Labb3.ViewModels
         }
         public static void SaveBitmapImage(BitmapImage image, string filePath)
         {
-            filePath = filePath.Split('.')[0] + ".png";
-            BitmapEncoder encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(image));
-
-            using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create))
+            if (filePath != null)
             {
-                encoder.Save(fileStream);
+                filePath = filePath.Split('.')[0] + ".png";
+                BitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(image));
+
+                using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create))
+                {
+                    encoder.Save(fileStream);
+                }
             }
         }
 

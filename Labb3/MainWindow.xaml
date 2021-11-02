@@ -9,7 +9,7 @@
     xmlns:views="clr-namespace:Labb3.Views"
     Title="Quiz Game"
     Width="800"
-    Height="500"
+    Height="800"
     d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
     mc:Ignorable="d">
     <!--  FontSize="14"  -->
