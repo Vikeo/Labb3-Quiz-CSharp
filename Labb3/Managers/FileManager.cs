@@ -35,10 +35,12 @@ namespace Labb3.Managers
         {
             CreateNewDirectorys();
             using FileStream createStream = File.Create(Path.Combine(_baseFolderPath, _fileName));
-            await JsonSerializer.SerializeAsync(createStream, allQuizzes);
+            JsonSerializerOptions options = new JsonSerializerOptions() {WriteIndented = true};
+            await JsonSerializer.SerializeAsync(createStream, allQuizzes, options);
             await createStream.DisposeAsync();
         }
 
+        //TODO Kan inte exportera BILDER (bara ImagePath)
         public async Task ExportQuiz(Quiz quiz)
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
@@ -53,32 +55,48 @@ namespace Labb3.Managers
             {
                 //Samma som SaveAllQuizzes
                 using FileStream createStream = File.Create(saveFileDialog1.FileName);
+                JsonSerializerOptions options = new JsonSerializerOptions() { WriteIndented = true };
+                await JsonSerializer.SerializeAsync(createStream, quiz, options);
                 await createStream.DisposeAsync();
             }
         }
 
         //TODO Gör en check som kollar om alla grejer i konstruktorn kunde fylles i korrekt. Säg till att det inte gick annars och skriv ut hur den ska vara formaterad.
+        //TODO Kan inte importera BILDER
+        //TODO GÖR ASYNC??
         public async Task<Quiz> ImportQuiz(ObservableCollection<Quiz> allQuizzes)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             openFileDialog1.Title = "Import '.qff' quiz";
             openFileDialog1.Filter = "qff files (*.qff)|*.qff|All files (*.*)|*.*";
             openFileDialog1.FilterIndex = 1;
-            openFileDialog1.ShowDialog();
 
-            using FileStream openStream = File.OpenRead(openFileDialog1.FileName);
 
-            //Ser till så att filnamet och quizzens titel är samma.
-            Quiz importedQuiz = await JsonSerializer.DeserializeAsync<Quiz>(openStream);
-            importedQuiz.Title = Path.GetFileNameWithoutExtension(openFileDialog1.SafeFileName);
+            Quiz importedQuiz = new Quiz();
 
-            if (allQuizzes.Any(q => q.Title == Path.GetFileNameWithoutExtension(openFileDialog1.SafeFileName) || 
-                                    allQuizzes.Any(q => q.Title == importedQuiz.Title)))
+            if (openFileDialog1.ShowDialog() == true)
             {
-                MessageBox.Show($"Det finns redan ett quiz med namnet '{Path.GetFileNameWithoutExtension(openFileDialog1.SafeFileName)}', kunde ej importera quiz.", "Quiz finns", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
+                using FileStream openStream = File.OpenRead(openFileDialog1.FileName);
+
+                //Så fort som något Deserializesas så returneras något, men vet inte vad.. 
+
+                importedQuiz = JsonSerializer.DeserializeAsync<Quiz>(openStream).Result;
+
+                //Ser till så att filnamet och quizzens titel är samma.
+
+                importedQuiz.Title = Path.GetFileNameWithoutExtension(openFileDialog1.SafeFileName);
+
+                if (allQuizzes.Any(q => q.Title == Path.GetFileNameWithoutExtension(openFileDialog1.SafeFileName) ||
+                                        allQuizzes.Any(q => q.Title == importedQuiz.Title)))
+                {
+                    MessageBox.Show($"Det finns redan ett quiz med namnet '{Path.GetFileNameWithoutExtension(openFileDialog1.SafeFileName)}', kunde ej importera quiz.", "Quiz finns", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
+                
+                return importedQuiz;
             }
-            return importedQuiz;
+            
+            return null;
         }
 
         public async Task<ObservableCollection<Quiz>> LoadAllQuizzes()

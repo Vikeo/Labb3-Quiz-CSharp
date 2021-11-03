@@ -32,14 +32,13 @@ namespace Labb3
             _themes = new ObservableCollection<Theme>();
             _quizManager = new QuizManager();
             _fileManager = new FileManager();
+            GetQuizzes();
         }
 
         // Är det OK att ha void på OnStartup? - Flytta in
         protected override void OnStartup(StartupEventArgs e)
         {
             //TODO Tror att quizzes laddas in lite för sent.
-            GetQuizzes();
-
             base.OnStartup(e);
 
             //Där som man ska starta.
@@ -50,13 +49,11 @@ namespace Labb3
                 DataContext = new MainViewModel(_navigationStore, _quizManager)
             };
             MainWindow.Show();
-            
         }
 
         private async Task GetQuizzes()
         {
             _quizManager._allQuizzes = await _fileManager.LoadAllQuizzes();
         }
-
     }
 }

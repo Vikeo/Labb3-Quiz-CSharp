@@ -52,6 +52,7 @@ namespace Labb3.Models
         }
 
         //Readonly variabler kan man tilldela värde till i en konstruktor.
+        //TODO Ändra propertyn till readonly
         private readonly int _correctAnswer;
         public int CorrectAnswer
         {

@@ -83,7 +83,9 @@ namespace Labb3.Models
         public void RemoveQuestion(int index)
         {
             List<Question> tempQuestionsList = Questions.ToList();
+
             Question tempQuestion = tempQuestionsList[index];
+
             Questions.Remove(tempQuestion);
         }
     }

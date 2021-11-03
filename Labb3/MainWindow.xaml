@@ -9,11 +9,12 @@
     xmlns:views="clr-namespace:Labb3.Views"
     Title="Quiz Game"
     Width="800"
-    Height="800"
+    Height="600"
     d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
     mc:Ignorable="d">
     <!--  FontSize="14"  -->
-    <Grid Margin="20,10">
+    <Grid>
+
         <ContentControl Content="{Binding CurrentViewModel}">
             <ContentControl.Resources>
 

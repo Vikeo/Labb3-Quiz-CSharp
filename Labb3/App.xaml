@@ -6,6 +6,15 @@
     <Application.Resources>
         <Style TargetType="Button">
             <Setter Property="Padding" Value="10,5" />
+            <Setter Property="MaxHeight" Value="22" />
+            <Setter Property="MinHeight" Value="22" />
+            <Setter Property="FontSize" Value="8" />
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="MaxHeight" Value="30" />
+            <Setter Property="MinWidth" Value="30" />
+            <Setter Property="FontSize" Value="12" />
         </Style>
 
         <Style TargetType="TextBox">

@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:Labb3.ViewModels"
     d:DataContext="{d:DesignInstance viewmodels:QuizEditorViewModel}"
-    d:DesignHeight="450"
+    d:DesignHeight="600"
     d:DesignWidth="800"
     mc:Ignorable="d">
 
@@ -31,10 +31,10 @@
         <Image
             Grid.Row="1"
             Grid.Column="1"
-            MaxHeight="200"
-            MaxWidth="200"
-            MinHeight="200"
             MinWidth="200"
+            MinHeight="200"
+            MaxWidth="200"
+            MaxHeight="200"
             Source="{Binding Image, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBlock
@@ -47,143 +47,99 @@
         <Grid Grid.Row="1" Margin="0,25,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
 
-            <TextBlock
-                Grid.Row="0"
-                Grid.Column="1"
-                Grid.ColumnSpan="2"
-                Text="Quiz" />
+                <StackPanel Margin="100,0,0,0" Orientation="Vertical">
+                    <TextBlock Text="Quiz" />
 
-            <ComboBox
-                Grid.Row="1"
-                Grid.Column="1"
-                Grid.ColumnSpan="5"
-                Margin="0,5,89,0"
-                DisplayMemberPath="Title"
-                ItemsSource="{Binding Quizzes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                SelectedItem="{Binding SelectedQuiz, UpdateSourceTrigger=PropertyChanged}" />
+                    <ComboBox
+                        MinWidth="120"
+                        Margin="0,5,89,0"
+                        HorizontalAlignment="Left"
+                        DisplayMemberPath="Title"
+                        ItemsSource="{Binding Quizzes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                        SelectedItem="{Binding SelectedQuiz, UpdateSourceTrigger=PropertyChanged}" />
 
-            <TextBox
-                Grid.Row="2"
-                Grid.Column="1"
-                Grid.ColumnSpan="2"
-                Text="{Binding NewQuizTitle, UpdateSourceTrigger=PropertyChanged}" />
-            <Button
-                Grid.Row="2"
-                Grid.Column="3"
-                Grid.ColumnSpan="2"
-                Command="{Binding CreateQuizCommand}"
-                Content="Create new quiz" />
-            <Button
-                Grid.Row="2"
-                Grid.Column="5"
-                Grid.ColumnSpan="1"
-                Command="{Binding EditQuizTitleCommand}"
-                Content="Edit quiz title" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox MinWidth="120" Text="{Binding NewQuizTitle, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Command="{Binding CreateQuizCommand}" Content="Create new quiz" />
+                        <Button Command="{Binding EditQuizTitleCommand}" Content="Edit quiz title" />
+                    </StackPanel>
+
+
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" />
+
+                <StackPanel Orientation="Vertical" />
+
+                <StackPanel Orientation="Vertical" />
+
+            </StackPanel>
+
+
+
         </Grid>
 
         <Grid Grid.Row="2" Margin="0,10,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="20,0,20,5" Text="Statement" />
+                    <TextBox Margin="5,0,5,0" Text="{Binding NewStatement, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="20,0,20,5" Text="Theme" />
+                    <TextBox Margin="5,0,5,0" Text="{Binding ThemeName, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+            </StackPanel>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
 
-            <TextBlock
-                Grid.Row="1"
-                Grid.Column="1"
-                Grid.ColumnSpan="2"
-                Text="Statement" />
-            <!--  TODO ItemsSource="{Binding Questions, UpdateSourceTrigger=PropertyChanged}"  -->
-            <!--
-                Selected="{Binding SelectedQuestion, UpdateSourceTrigger=PropertyChanged}"
-            -->
-            <TextBox
-                Grid.Row="2"
-                Grid.Column="1"
-                Text="{Binding NewStatement, UpdateSourceTrigger=PropertyChanged}" />
 
-            <TextBlock
-                Grid.Row="1"
-                Grid.Column="3"
-                Text="Theme" />
-            <TextBox
-                Grid.Row="2"
-                Grid.Column="3"
-                Text="{Binding ThemeName, UpdateSourceTrigger=PropertyChanged}" />
 
         </Grid>
 
         <Grid Grid.Row="3" Margin="0,10,0,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="20" SharedSizeGroup="FirstColumn" />
-                <RowDefinition Height="30" SharedSizeGroup="SecondColumn" />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <TextBlock
-                Grid.Row="0"
-                Grid.Column="1"
-                HorizontalAlignment="Center"
-                Text="Option 1" />
-            <TextBox
-                Grid.Row="1"
-                Grid.Column="1"
-                Margin="5,5,5,0"
-                Text="{Binding Option1, UpdateSourceTrigger=PropertyChanged}" />
+            <StackPanel Orientation="Horizontal">
 
-            <TextBlock
-                Grid.Row="0"
-                Grid.Column="2"
-                Margin="5,0,0,0"
-                HorizontalAlignment="Center"
-                Text="Option 2" />
+                <StackPanel Orientation="Vertical">
+                    <TextBlock
+                        Margin="20,0,20,5"
+                        HorizontalAlignment="Center"
+                        Text="Option 1" />
+                    <TextBox Margin="5,0,5,0" Text="{Binding Option1, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
 
-            <TextBox
-                Grid.Row="1"
-                Grid.Column="2"
-                Margin="5,5,5,0"
-                Text="{Binding Option2, UpdateSourceTrigger=PropertyChanged}" />
+                <StackPanel Orientation="Vertical">
+                    <TextBlock
+                        Margin="20,0,20,5"
+                        HorizontalAlignment="Center"
+                        Text="Option 2" />
+                    <TextBox Margin="5,0,5,0" Text="{Binding Option2, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
 
-            <TextBlock
-                Grid.Row="0"
-                Grid.Column="3"
-                Margin="5,0,0,0"
-                HorizontalAlignment="Center"
-                Text="Option 3" />
-            <TextBox
-                Grid.Row="1"
-                Grid.Column="3"
-                Margin="5,5,5,0"
-                Text="{Binding Option3, UpdateSourceTrigger=PropertyChanged}" />
+                <StackPanel Orientation="Vertical">
+                    <TextBlock
+                        Margin="20,0,20,5"
+                        HorizontalAlignment="Center"
+                        Text="Option 3" />
+                    <TextBox Margin="5,0,5,0" Text="{Binding Option3, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+            </StackPanel>
+
+
+
+
+
+
         </Grid>
 
         <Grid Grid.Row="4" Margin="0,10,0,0">

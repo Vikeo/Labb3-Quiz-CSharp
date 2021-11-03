@@ -90,6 +90,7 @@ namespace Labb3.ViewModels
         public RelayCommand QuitApplicationCommand { get; }
         public RelayCommand ExportQuizCommand { get; }
         public RelayCommand ImportQuizCommand { get; }
+        public RelayCommand UpdateQuizzesCommand { get; }
 
         private void GoToQuizEditor()
         {
@@ -163,12 +164,23 @@ namespace Labb3.ViewModels
             return false;
         }
 
+        //TODO Det är något konstigt med async.............
         private async Task ImportQuiz()
         {
             _quizManager._allQuizzes.Add(await _fileManager.ImportQuiz(_quizManager._allQuizzes));
         }
 
+        private void UpdateQuizzes()
+        {
+            Quizzes = _quizManager._allQuizzes;
+        }
+
         #endregion
+
+        private async Task GetQuizzes()
+        {
+            _quizManager._allQuizzes = await _fileManager.LoadAllQuizzes();
+        }
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -192,6 +204,7 @@ namespace Labb3.ViewModels
             QuitApplicationCommand = new RelayCommand(QuitApplication);
             ExportQuizCommand = new RelayCommand(ExportQuiz, CanExportQuiz);
             ImportQuizCommand = new RelayCommand(() => ImportQuiz());
+            UpdateQuizzesCommand = new RelayCommand(UpdateQuizzes);
 
             PropertyChanged += OnViewModelPropertyChanged;
         }

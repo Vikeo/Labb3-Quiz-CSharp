@@ -418,7 +418,6 @@ namespace Labb3.ViewModels
             _quizManager.RemoveQuiz(SelectedQuiz);
             SelectedQuiz = DefaultSelectedQuiz();
             Image = null;
-
         }
 
         public bool CanRemoveQuiz()
@@ -435,7 +434,8 @@ namespace Labb3.ViewModels
         {
             int tempIndex = SelectedQuiz.Questions.ToList().IndexOf(SelectedQuestion);
             SelectedQuiz.RemoveQuestion(tempIndex);
-            ClearTextboxes();
+
+            //ClearTextboxes();
 
             //TODO Gör så att listan av frågor uppdateras i vyn.........
             if (Questions != null)
@@ -476,10 +476,13 @@ namespace Labb3.ViewModels
                         SelectedQuestion.ImagePath =
                             Path.Combine(_fileManager.ImageFolderPath,
                                 $"{ReplaceInvalidChars(SelectedQuiz.Title)}{ReplaceInvalidChars(SelectedQuestion.Statement)}.pppl");
+
                         //Sätter bilden.. 
                         SetImageProperty(SelectedQuestion.ImagePath);
+
                         //..och sparar undan den i filformatet PNG
                         SaveBitmapImage(Image, SelectedQuestion.ImagePath);
+
                         //Tar bort den temporära kopia
                         File.Delete(Path.Combine(_fileManager.ImageFolderPath, $"{ReplaceInvalidChars(SelectedQuiz.Title)}{ReplaceInvalidChars(SelectedQuestion.Statement)}.pppl"));
 
