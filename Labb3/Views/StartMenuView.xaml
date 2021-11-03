@@ -128,23 +128,33 @@
                     HorizontalAlignment="Center"
                     FontSize="14"
                     Text="Select themes:" />
-                <ScrollViewer
+                <Border
                     MinHeight="135"
                     MaxHeight="135"
                     Margin="20,0,20,0"
-                    CanContentScroll="False"
-                    VerticalScrollBarVisibility="Auto">
-                    <ListBox
-                        DisplayMemberPath="ThemeName"
-                        ItemsSource="{Binding ListThemes, UpdateSourceTrigger=PropertyChanged}"
-                        SelectionMode="Multiple">
-                        <ListBox.Resources>
-                            <Style TargetType="{x:Type ListBoxItem}">
-                                <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay}" />
-                            </Style>
-                        </ListBox.Resources>
-                    </ListBox>
-                </ScrollViewer>
+                    Background="White"
+                    BorderBrush="#FF807C7C"
+                    BorderThickness="1,1,1,1">
+                    <ScrollViewer CanContentScroll="False" VerticalScrollBarVisibility="Auto">
+                        <ListBox
+                            Width="150"
+                            DisplayMemberPath="ThemeName"
+                            ItemsSource="{Binding ListThemes, UpdateSourceTrigger=PropertyChanged}"
+                            SelectionMode="Multiple">
+                            <ListBox.Resources>
+                                <Style TargetType="{x:Type ListBoxItem}">
+                                    <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay}" />
+                                </Style>
+                            </ListBox.Resources>
+                            <ListBox.Template>
+                                <ControlTemplate>
+                                    <!--  Tom template gör så att ScrollViewer kan scrolla på listan.  -->
+                                    <ItemsPresenter OpacityMask="White" />
+                                </ControlTemplate>
+                            </ListBox.Template>
+                        </ListBox>
+                    </ScrollViewer>
+                </Border>
                 <StackPanel
                     Grid.Row="1"
                     Grid.RowSpan="2"

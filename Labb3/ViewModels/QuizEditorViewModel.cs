@@ -68,7 +68,6 @@ namespace Labb3.ViewModels
         }
 
         private ObservableCollection<Question> _questions = new();
-
         public ObservableCollection<Question> Questions
         {
             get { return _questions; }
@@ -322,12 +321,11 @@ namespace Labb3.ViewModels
 
         public void EditQuizTitle()
         {
+            //TODO Ändra namnet på de sparade bilderna.
+
             SelectedQuiz.Title = NewQuizTitle;
 
-            //Quizzes = new ObservableCollection<Quiz>();
-
             //TODO Combobox uppdateras inte direkt om jag inte gör såhär:
-
             int tempIndex = Quizzes.IndexOf(SelectedQuiz);
             if (Quizzes != null)
             {
@@ -354,7 +352,6 @@ namespace Labb3.ViewModels
             return false;
         }
 
-        //TODO Kan inte edita om jag ändrar på en Option
         public void EditQuestion()
         {
             SelectedQuestion.Statement = NewStatement;
@@ -540,6 +537,7 @@ namespace Labb3.ViewModels
 
         public void ReturnToStartMenu()
         {
+            _fileManager.SaveAllQuizzes(_quizManager._allQuizzes);
             _navigationStore.CurrentViewModel =
                 new StartMenuViewModel(_navigationStore, _quizManager, _themes, _fileManager);
         }
@@ -563,13 +561,14 @@ namespace Labb3.ViewModels
         }
         public static void SaveBitmapImage(BitmapImage image, string filePath)
         {
+            //TODO Om man lägger till en bild, tar bort och sen lägger till med en gång så blir det samma som den tidigare bilden.
             if (filePath != null)
             {
                 filePath = filePath.Split('.')[0] + ".png";
                 BitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(image));
 
-                using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create))
+                using (var fileStream = File.Create(filePath))
                 {
                     encoder.Save(fileStream);
                 }

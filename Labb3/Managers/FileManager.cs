@@ -31,6 +31,7 @@ namespace Labb3.Managers
         {
         }
 
+        //TODO Skriv bilder till en mapp i solutionen??.
         public async Task SaveAllQuizzes(ObservableCollection<Quiz> allQuizzes)
         {
             CreateNewDirectorys();
@@ -70,7 +71,6 @@ namespace Labb3.Managers
             openFileDialog1.Title = "Import '.qff' quiz";
             openFileDialog1.Filter = "qff files (*.qff)|*.qff|All files (*.*)|*.*";
             openFileDialog1.FilterIndex = 1;
-
 
             Quiz importedQuiz = new Quiz();
 
