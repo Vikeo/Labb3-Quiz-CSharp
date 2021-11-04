@@ -123,21 +123,21 @@
                 MinHeight="50"
                 Margin="20,0,20,0"
                 Command="{Binding Answer1}"
-                Content="{Binding CurrentQuestion.Options[1]}"
+                Content="{Binding CurrentQuestion.Options[0]}"
                 FontSize="12" />
             <Button
                 MinWidth="150"
                 MinHeight="50"
                 Margin="0,0,0,0"
                 Command="{Binding Answer2}"
-                Content="{Binding CurrentQuestion.Options[2]}"
+                Content="{Binding CurrentQuestion.Options[1]}"
                 FontSize="12" />
             <Button
                 MinWidth="150"
                 MinHeight="50"
                 Margin="20,0,20,0"
                 Command="{Binding Answer3}"
-                Content="{Binding CurrentQuestion.Options[3]}"
+                Content="{Binding CurrentQuestion.Options[2]}"
                 FontSize="12" />
         </StackPanel>
 

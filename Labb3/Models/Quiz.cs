@@ -18,7 +18,6 @@ namespace Labb3.Models
             set { _title = value; }
         }
 
-        //TODO Behöver inte tilldela ett värde?
         private ICollection<Question> _questions = new List<Question>();
         public ICollection<Question> Questions
         {
@@ -39,7 +38,6 @@ namespace Labb3.Models
 
         public Question GetRandomQuestion()
         {
-            //TODO Lägga till en check här som kolla om frågans tema är Selected?
             //Den quizen som utför GetRandomQuestion kommer åt sina egna properties här. Bara att skriva Questions så blir det rätt.
             if (Questions.Count > 0)
             {

@@ -59,7 +59,6 @@ namespace Labb3.ViewModels
             }
         }
 
-        //TODO Gör så att Themes har en bool som sätts till true när den har selectats en gång. Iterera genom themes för att hitta vilka som var selected.
         private ObservableCollection<Theme> _listThemes;
         public ObservableCollection<Theme> ListThemes
         {
@@ -100,7 +99,6 @@ namespace Labb3.ViewModels
         private void GoToPlayQuiz()
         {
             //TODO När jag kommer tillbaka till StartMenu så finns de temana man valde kvar
-            //TODO Kanske inte behöver Set:a teman länge. 
             SetThemes();
 
             if (_selectedThemes.Count == 0)
@@ -152,7 +150,6 @@ namespace Labb3.ViewModels
 
         private void ExportQuiz()
         {
-            //TODO Behöver man lägga till 'Task task = '
             _fileManager.ExportQuiz(SelectedQuiz);
         }
         private bool CanExportQuiz()
@@ -164,7 +161,6 @@ namespace Labb3.ViewModels
             return false;
         }
 
-        //TODO Det är något konstigt med async.............
         private async Task ImportQuiz()
         {
             _quizManager._allQuizzes.Add(await _fileManager.ImportQuiz(_quizManager._allQuizzes));

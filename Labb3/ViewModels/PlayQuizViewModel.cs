@@ -41,7 +41,7 @@ namespace Labb3.ViewModels
             set { SetProperty(ref _currentQuestion, value); }
         }
 
-        //TODO Fixa denna property. Kanske inte behöver eftersom CurrentQuestion.Theme.ThemeName redan finns.
+        //TODO Ta bort denna property. Kanske inte behöver eftersom CurrentQuestion.Theme.ThemeName redan finns.
         private Theme _currentQuestionTheme;
         public Theme CurrentQuestionTheme
         {
@@ -84,7 +84,6 @@ namespace Labb3.ViewModels
 
         private void QuitToStart()
         {
-            //TODO Ändra QuizManager.
             _chosenQuiz.ResetThemeSelected();
             _chosenQuiz.ResetQuestionsAsked();
             _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, _quizManager, new ObservableCollection<Theme>(_selectedThemes), _fileManager);
@@ -116,11 +115,6 @@ namespace Labb3.ViewModels
 
         #endregion
 
-        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            //TODO Tom här i PlayView, kanske inte ens behöver denna här
-        }
-
         private void ShuffleCorrectAnswerIndex()
         {
             //TODO Vill ha något som kan shuffla svaren, är tråkigt om de är på samma plats varje gång.
@@ -130,21 +124,21 @@ namespace Labb3.ViewModels
             string[] tempOptions = CurrentQuestion.Options;
 
             int r1 = r.Next(1, 4);
-            CurrentQuestion.Options[3] = tempOptions[r1];
+            CurrentQuestion.Options[2] = tempOptions[r1];
 
             int r2 = r.Next(1, 4);
             while (r2 == r1)
             {
                 r2 = r.Next(1, 4);
             }
-            CurrentQuestion.Options[1] = tempOptions[r2];
+            CurrentQuestion.Options[0] = tempOptions[r2];
 
             int r3 = r.Next(1, 4);
             while (r3 == r1 || r3 == r2)
             {
                 r3 = r.Next(1, 4);
             }
-            CurrentQuestion.Options[2] = tempOptions[r3];
+            CurrentQuestion.Options[1] = tempOptions[r3];
 
             List<string> tempStringList = CurrentQuestion.Options.ToList();
 
@@ -169,11 +163,9 @@ namespace Labb3.ViewModels
             _questionCounter++;
 
             QuitCommand = new RelayCommand(QuitToStart);
-            Answer1 = new RelayCommand(() => AnswerQuestion(1));
-            Answer2 = new RelayCommand(() => AnswerQuestion(2));
-            Answer3 = new RelayCommand(() => AnswerQuestion(3));
-
-            PropertyChanged += OnViewModelPropertyChanged;
+            Answer1 = new RelayCommand(() => AnswerQuestion(0));
+            Answer2 = new RelayCommand(() => AnswerQuestion(1));
+            Answer3 = new RelayCommand(() => AnswerQuestion(2));
         }
     }
 }

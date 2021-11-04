@@ -36,7 +36,6 @@ namespace Labb3.Models
             set { _asked = value; }
         }
 
-        //TODO Fixa imagePath.
         private string _imagePath;
         public string ImagePath
         {
@@ -52,7 +51,6 @@ namespace Labb3.Models
         }
 
         //Readonly variabler kan man tilldela värde till i en konstruktor.
-        //TODO Ändra propertyn till readonly
         private readonly int _correctAnswer;
         public int CorrectAnswer
         {
@@ -60,7 +58,6 @@ namespace Labb3.Models
         }
 
         //Konstruktor. [JsonConstructor] visar Deserializern vilken konstruktor den ska använda.
-        //TODO Ha en konstruktor för Export/Import?
         [JsonConstructor]
         public Question(string statement, Theme theme, int correctAnswer, bool asked, string imagePath, params string[] options)
         {

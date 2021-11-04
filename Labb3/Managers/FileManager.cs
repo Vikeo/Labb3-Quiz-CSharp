@@ -13,10 +13,8 @@ using Microsoft.Win32;
 
 namespace Labb3.Managers
 {
-    //TODO Gör så att filerna som skapas av programmer hamnar i en mapp i appdata. Enviroment.SpecialFolder.LocalApplicationData + foldername?
     public class FileManager
     {
-        //TODO Bättre sätt att skriva filvägarna på.
         private string _baseFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ViktorsQuizGame");
         private string _fileName = "AllQuizzes.json";
 
@@ -64,7 +62,6 @@ namespace Labb3.Managers
 
         //TODO Gör en check som kollar om alla grejer i konstruktorn kunde fylles i korrekt. Säg till att det inte gick annars och skriv ut hur den ska vara formaterad.
         //TODO Kan inte importera BILDER
-        //TODO GÖR ASYNC??
         public async Task<Quiz> ImportQuiz(ObservableCollection<Quiz> allQuizzes)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();

@@ -62,7 +62,7 @@ namespace Labb3.ViewModels
                     SelectedQuiz = DefaultSelectedQuiz();
                 }
 
-                //TODO SÅHÄR UPPDATERAT MAN TYDLIGEN VYER
+                //SÅHÄR UPPDATERAT MAN TYDLIGEN VYER (Fast det känns ändå som ett dåligt sätt att göra det på)
                 Questions = new ObservableCollection<Question>(_selectedQuiz.Questions);
             }
         }
@@ -87,17 +87,16 @@ namespace Labb3.ViewModels
             {
                 SetProperty(ref _selectedQuestion, value);
 
-                //TODO value blir null av någon anledning, kanske borde fixa det men det funkar "som vanligt" med if-satsen.
                 if (value != null)
                 {
                     Image = null;
                     NewStatement = SelectedQuestion.Statement;
+                    Options[0] = SelectedQuestion.Options[0];
                     Options[1] = SelectedQuestion.Options[1];
                     Options[2] = SelectedQuestion.Options[2];
-                    Options[3] = SelectedQuestion.Options[3];
-                    Option1 = Options[1];
-                    Option2 = Options[2];
-                    Option3 = Options[3];
+                    Option1 = Options[0];
+                    Option2 = Options[1];
+                    Option3 = Options[2];
                     if (File.Exists(SelectedQuestion.ImagePath))
                     {
                         SetImageProperty(SelectedQuestion.ImagePath);
@@ -133,7 +132,7 @@ namespace Labb3.ViewModels
             }
         }
 
-        private ObservableCollection<string> _options = new ObservableCollection<string>() {"", "", "", ""};
+        private ObservableCollection<string> _options = new ObservableCollection<string>() { "", "", "" };
 
         public ObservableCollection<string> Options
         {
@@ -150,7 +149,7 @@ namespace Labb3.ViewModels
             {
                 SetProperty(ref _option1, value);
 
-                _options[1] = _option1;
+                _options[0] = _option1;
                 EditCommand.NotifyCanExecuteChanged();
             }
         }
@@ -164,7 +163,7 @@ namespace Labb3.ViewModels
             {
                 SetProperty(ref _option2, value);
 
-                _options[2] = _option2;
+                _options[1] = _option2;
                 EditCommand.NotifyCanExecuteChanged();
             }
         }
@@ -178,19 +177,10 @@ namespace Labb3.ViewModels
             {
                 SetProperty(ref _option3, value);
 
-                _options[3] = _option3;
+                _options[2] = _option3;
                 EditCommand.NotifyCanExecuteChanged();
             }
         }
-
-        //TODO Implement
-        //private string _imagePath;
-
-        //public string ImagePath
-        //{
-        //    get { return _imagePath; }
-        //    set { SetProperty(ref _imagePath, value); }
-        //}
 
         private BitmapImage _image;
         public BitmapImage Image
@@ -249,7 +239,7 @@ namespace Labb3.ViewModels
             NewQuizTitle = "";
             Image = null;
 
-            //TODO Gör så att Propertyn uppdateras?
+            //Gör så att Propertyn uppdateras
             SelectedQuiz = _quizManager._allQuizzes[^1];
 
         }
@@ -271,7 +261,6 @@ namespace Labb3.ViewModels
         {
             Theme newTheme = new Theme(ThemeName.ToString(), false);
 
-            //TODO Kanske göra så att när man skapar en Question så skapas sökvägen till bilden. Innan bilden visas kollar man om den existerar eller inte.
             SelectedQuiz.AddQuestion(NewStatement, newTheme, CorrectAnswer, false, null, Options.ToArray());
 
             Image = null;
@@ -294,7 +283,7 @@ namespace Labb3.ViewModels
             else if (!string.IsNullOrEmpty(Option1) &&
                      !string.IsNullOrEmpty(Option2) &&
                      !string.IsNullOrEmpty(Option3) &&
-                     CorrectAnswer != 0 &&
+                     CorrectAnswer != -1 &&
                      !string.IsNullOrEmpty(NewStatement) &&
                      !string.IsNullOrEmpty(Theme.ThemeName) &&
                      SelectedQuiz.Title != "TEMP" &&
@@ -305,7 +294,6 @@ namespace Labb3.ViewModels
                      Option3 != Option1 &&
                      Option3 != Option2)
             {
-                //TODO Finns kanske ett bättre LINQ-uttryck för detta.
                 if (SelectedQuiz.Questions.All(q => q.Statement != NewStatement))
                 {
                     return true;
@@ -322,10 +310,9 @@ namespace Labb3.ViewModels
         public void EditQuizTitle()
         {
             //TODO Ändra namnet på de sparade bilderna.
-
             SelectedQuiz.Title = NewQuizTitle;
 
-            //TODO Combobox uppdateras inte direkt om jag inte gör såhär:
+            //TODO Combobox uppdateras inte direkt om jag inte gör såhär: (Hitta bättre sätt)
             int tempIndex = Quizzes.IndexOf(SelectedQuiz);
             if (Quizzes != null)
             {
@@ -343,21 +330,19 @@ namespace Labb3.ViewModels
 
         public bool CanEditQuizTitle()
         {
-            //TODO NÄSTAN Exakt samma kod som CanAddQuiz
             if (_quizManager._allQuizzes.All(q => q.Title != NewQuizTitle) && _quizManager._allQuizzes.Count > 0)
             {
                 return !string.IsNullOrEmpty(NewQuizTitle);
             }
-
             return false;
         }
 
         public void EditQuestion()
         {
             SelectedQuestion.Statement = NewStatement;
+            SelectedQuestion.Options[0] = Options[0];
             SelectedQuestion.Options[1] = Options[1];
             SelectedQuestion.Options[2] = Options[2];
-            SelectedQuestion.Options[3] = Options[3];
             Question.ChangeCorrectAnswer(SelectedQuestion, CorrectAnswer);
             SelectedQuestion.Theme.ThemeName = ThemeName;
 
@@ -370,17 +355,16 @@ namespace Labb3.ViewModels
         public bool CanEditQuestion()
         {
             bool tempBool = false;
-            //TODO Bättre sätt att göra detta på??????
             if (SelectedQuestion != null)
             {
                 if (NewStatement != SelectedQuestion.Statement ||
                     SelectedQuestion.Theme.ThemeName != ThemeName ||
+                    SelectedQuestion.Options[0] != Options[0] ||
                     SelectedQuestion.Options[1] != Options[1] ||
                     SelectedQuestion.Options[2] != Options[2] ||
-                    SelectedQuestion.Options[3] != Options[3] ||
                     SelectedQuestion.CorrectAnswer != CorrectAnswer)
                 {
-                    if (CorrectAnswer > 0 &&
+                    if (CorrectAnswer > -1 &&
                         !string.IsNullOrEmpty(Option1) &&
                         !string.IsNullOrEmpty(Option2) &&
                         !string.IsNullOrEmpty(Option3) &&
@@ -434,7 +418,7 @@ namespace Labb3.ViewModels
 
             //ClearTextboxes();
 
-            //TODO Gör så att listan av frågor uppdateras i vyn.........
+            //Gör så att listan av frågor uppdateras i vyn.........
             if (Questions != null)
             {
                 Questions = new ObservableCollection<Question>(SelectedQuiz.Questions);
@@ -451,7 +435,6 @@ namespace Labb3.ViewModels
         }
 
         //TODO Kanske ska göra så att bilderna lagras i en mapp i applikationen. 
-        //TODO Kanske slå samman AddImage och RemoveImage, med en ifsats och en binding till content som ändras beroende på om det finns en bild eller inte.
         public void AddImageToQuestion()
         {
             if (!File.Exists(SelectedQuestion.ImagePath))
@@ -463,7 +446,6 @@ namespace Labb3.ViewModels
 
                 if (openFileImageDialog.ShowDialog() == true)
                 {
-                    //TODO ändra så att det är path istället för en fil.
                     //Kopierar filen och byter namn på den så att den har samma namn som Quiz+Question.
                     if (SelectedQuiz.Title != "TEMP" && SelectedQuestion != null)
                     {
@@ -492,7 +474,6 @@ namespace Labb3.ViewModels
                     }
                 }
             }
-            //TODO MÅSTE TA BORT FRÅGAN INNAN MAN LÄGGER TILL EN NY
             else if (File.Exists(SelectedQuestion.ImagePath))
             {
                 ChooseImageText = "Choose image";
@@ -509,10 +490,9 @@ namespace Labb3.ViewModels
             return false;
         }
 
-        
+
         private void RemoveImage()
         {
-            //TODO Bilden används av programmet, så kan inte ta bort
             string tempPath = SelectedQuestion.ImagePath;
             SelectedQuestion.ImagePath = null;
             Image = null;

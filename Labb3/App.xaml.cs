@@ -38,7 +38,6 @@ namespace Labb3
         // Är det OK att ha void på OnStartup? - Flytta in
         protected override void OnStartup(StartupEventArgs e)
         {
-            //TODO Tror att quizzes laddas in lite för sent.
             base.OnStartup(e);
 
             //Där som man ska starta.
