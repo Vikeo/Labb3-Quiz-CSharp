@@ -46,7 +46,7 @@ namespace Labb3.ViewModels
         #endregion
 
         #region RelayCommands
-        public RelayCommand QuitCommand { get; }
+        public RelayCommand ReturnCommand { get; }
         public RelayCommand Answer1 { get; }
         public RelayCommand Answer2 { get; }
         public RelayCommand Answer3 { get; }
@@ -54,7 +54,7 @@ namespace Labb3.ViewModels
         #endregion
 
         #region Actions/Functions
-        private void QuitToStart()
+        private void ReturnToStart()
         {
             ChosenQuiz.ResetThemeSelected();
             ChosenQuiz.ResetQuestionsAsked();
@@ -79,10 +79,11 @@ namespace Labb3.ViewModels
             if (CurrentQuestion == null)
             {
                 MessageBox.Show($"Score {Score}", "Score", MessageBoxButton.OK);
-                QuitToStart();
+                ReturnToStart();
             }
             OnPropertyChanged(nameof(CurrentQuestion));
         }
+
         private void ShuffleCorrectAnswerIndex()
         {
             //TODO Vill ha något som kan shuffla svaren, är tråkigt om de är på samma plats varje gång.
@@ -130,7 +131,7 @@ namespace Labb3.ViewModels
 
             QuestionCounter++;
 
-            QuitCommand = new RelayCommand(QuitToStart);
+            ReturnCommand = new RelayCommand(ReturnToStart);
             Answer1 = new RelayCommand(() => AnswerQuestion(0));
             Answer2 = new RelayCommand(() => AnswerQuestion(1));
             Answer3 = new RelayCommand(() => AnswerQuestion(2));

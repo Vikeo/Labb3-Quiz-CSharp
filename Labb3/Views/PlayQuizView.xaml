@@ -141,5 +141,15 @@
                 FontSize="12" />
         </StackPanel>
 
+        <Button
+            Grid.Row="7"
+            Grid.ColumnSpan="2"
+            MaxWidth="80"
+            MaxHeight="30"
+            Margin="5,0,70,0"
+            Command="{Binding ReturnCommand}"
+            Content="Go back"
+            FontSize="14" />
+
     </Grid>
 </UserControl>
