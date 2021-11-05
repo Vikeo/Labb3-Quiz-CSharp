@@ -10,3 +10,5 @@ Det finns en del saker som jag skulle vilja fixa men som jag inte hann med:
 - Några små problem som att när man kommer ut från PlayQuiz så finns de teman man valde kvar i listan, men det verkar bara vara en visuell bugg.
 
 Temporära testfiler, placera i 'AppData\Local\ViktorsQuizGame' (Mappen skapas på första körning): https://drive.google.com/file/d/186rl4s3ITjN8osY9Oqi3L9AipvhX9vUu/view?usp=sharing
+
+Klassdiagram: 
