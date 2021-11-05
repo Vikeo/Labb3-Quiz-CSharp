@@ -30,10 +30,8 @@ namespace Labb3.Managers
         {
         }
 
-        //TODO Skriv bilder till en mapp i solutionen??.
         public async Task SaveAllQuizzes(ObservableCollection<Quiz> allQuizzes)
         {
-            CreateNewDirectorys();
             using FileStream createStream = File.Create(Path.Combine(_baseFolderPath, _fileName));
             JsonSerializerOptions options = new JsonSerializerOptions() {WriteIndented = true};
             await JsonSerializer.SerializeAsync(createStream, allQuizzes, options);

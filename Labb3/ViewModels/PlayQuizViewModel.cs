@@ -33,14 +33,6 @@ namespace Labb3.ViewModels
             set { SetProperty(ref _currentQuestion, value); }
         }
 
-        //TODO Ta bort denna property. Kanske inte behöver eftersom CurrentQuestion.Theme.ThemeName redan finns.
-        private Theme _currentQuestionTheme;
-        public Theme CurrentQuestionTheme
-        {
-            get { return _currentQuestionTheme = CurrentQuestion.Theme; }
-            set { SetProperty(ref _currentQuestionTheme, value); }
-        }
-
         private int _score;
         public int Score
         {

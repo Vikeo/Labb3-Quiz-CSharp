@@ -33,6 +33,7 @@ namespace Labb3
             _quizManager = new QuizManager();
             _fileManager = new FileManager();
             GetQuizzes();
+            _fileManager.CreateNewDirectorys();
         }
 
         protected override void OnStartup(StartupEventArgs e)

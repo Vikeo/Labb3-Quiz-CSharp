@@ -45,6 +45,7 @@ namespace Labb3.Models
             }
             return null;
         }
+
         internal void ResetQuestionsAsked()
         {
             foreach (var question in Questions)

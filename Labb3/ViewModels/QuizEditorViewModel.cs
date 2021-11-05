@@ -57,9 +57,9 @@ namespace Labb3.ViewModels
 
                 if (_selectedQuiz == null)
                 {
-                    //TODO Rekursivtanrop, kanske blir en stackoverflow??
                     SelectedQuiz = DefaultSelectedQuiz();
                 }
+                ClearTextboxes();
 
                 //Ett sätt att uppdatera vyernas information på
                 Questions = new ObservableCollection<Question>(_selectedQuiz.Questions);
@@ -218,13 +218,7 @@ namespace Labb3.ViewModels
         {
             _quizManager.CreateNewQuiz(NewQuizTitle, new List<Question>());
 
-            Option1 = "";
-            Option2 = "";
-            Option3 = "";
-            CorrectAnswer = 0;
-            NewStatement = "";
-            NewQuizTitle = "";
-            Image = null;
+            ClearTextboxes();
 
             //Gör så att Propertyn uppdateras
             SelectedQuiz = _quizManager.AllQuizzes[^1];
@@ -236,7 +230,6 @@ namespace Labb3.ViewModels
             //Kollar först det finns en quiz med samma Titel.
             if (_quizManager.AllQuizzes.All(q => q.Title != NewQuizTitle))
             {
-                //TODO Redundant: Sen om NewQuizTitle är tom eller inte
                 return !string.IsNullOrEmpty(NewQuizTitle);
             }
             return false;
@@ -351,10 +344,6 @@ namespace Labb3.ViewModels
             int tempIndex = SelectedQuiz.Questions.ToList().IndexOf(SelectedQuestion);
             SelectedQuiz.ChangeCorrectAnswer(tempIndex, CorrectAnswer);
 
-            //TODO Ta bort, funkade inte för att man inte ändrar frågan i Quizens Questions-listan?.
-            //Question tempNewQuestion = SelectedQuestion.ChangeCorrectAnswer(CorrectAnswer);
-            //SelectedQuestion = tempNewQuestion;
-
             if (SelectedQuestion.ImagePath != null)
             {
                 string oldPath = SelectedQuestion.ImagePath;
@@ -401,22 +390,9 @@ namespace Labb3.ViewModels
                         Option3 != Option1 &&
                         Option3 != Option2)
                     {
-                        //Har denna här så att jag kan sätta det jag vill returnera till True här, men sen kolla ett till vilkor.
-
-                        
-                        var tempBool = true;
-
-                        if (NewStatement != SelectedQuestion.Statement &&
-                            SelectedQuiz.Questions.Any(q => q.Statement == NewStatement))
-                        {
-                            tempBool = false;
-                        }
-
-                        //TODO Vad är skillnaden?
-                        //bool tempBool = !(NewStatement != SelectedQuestion.Statement &&
-                        //                  SelectedQuiz.Questions.Any(q => q.Statement == NewStatement));
-
-                        return tempBool;
+                        //Kollar om det finns någon fråga som har samma Statement som det man har skrivit in
+                        return !(NewStatement != SelectedQuestion.Statement &&
+                                 SelectedQuiz.Questions.Any(q => q.Statement == NewStatement));
                     }
                 }
             }
@@ -467,7 +443,6 @@ namespace Labb3.ViewModels
             return false;
         }
 
-        //TODO Kanske ska göra så att bilderna lagras i en mapp i applikationen. 
         public void AddImageToQuestion()
         {
             if (!File.Exists(SelectedQuestion.ImagePath))
@@ -597,14 +572,14 @@ namespace Labb3.ViewModels
 
         private void ClearTextboxes()
         {
-            //TODO Implement and use better
-
-            //Option1 = "";
-            //Option2 = "";
-            //Option3 = "";
-            //CorrectAnswer = 0;
-            //NewStatement = "";
-            //ThemeName = null;
+            Option1 = "";
+            Option2 = "";
+            Option3 = "";
+            CorrectAnswer = 0;
+            NewStatement = "";
+            NewQuizTitle = "";
+            ThemeName = "";
+            Image = null;
         }
 
         private Quiz DefaultSelectedQuiz()

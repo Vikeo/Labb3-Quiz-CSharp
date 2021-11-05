@@ -39,19 +39,6 @@ namespace Labb3.Models
             ImagePath = imagePath;
         }
 
-        //TODO Ta bort, flyttade till Quiz-modellen istället.
-        public Question ChangeCorrectAnswer(int newCorrectAnswer)
-        {
-            //TODO Mutera inte den förra frågan, använd data från den och skapa en ny.
-            //Detta gör det möjligt att ändra värdet på ett readonly-fält.
-
-            Question tempNewQuestion = new Question(Statement, Theme, newCorrectAnswer, Asked, ImagePath, Options);
-            return tempNewQuestion;
-
-            //Fick bort detta fula ur koden.
-            //typeof(Question).GetField("_correctAnswer", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(this, newCorrectAnswer);
-        }
-
         public Question()
         {
 

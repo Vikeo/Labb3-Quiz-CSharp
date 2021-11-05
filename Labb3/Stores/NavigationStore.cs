@@ -29,20 +29,5 @@ namespace Labb3.Stores
         {
             CurrentViewModelChanged?.Invoke();
         }
-
-        //TODO Skapa metoder för att gå till olika ställen här istället för att ha egna i varje vymodell?
-        private void GoToQuizEditor()
-        {
-        }
-        private void GoToPlay()
-        {
-        }
-        public void GoToStart()
-        {
-        }
-
-        
-
-
     }
 }
