@@ -137,6 +137,7 @@ namespace Labb3.ViewModels
             set { SetProperty(ref _options, value); }
         }
 
+        //Har option1,2,3 för att det inte kopplade på tänkt sätt om jag används Options[0],[1],[2]..
         private string _option1;
         public string Option1
         {
@@ -180,13 +181,6 @@ namespace Labb3.ViewModels
             set { SetProperty(ref _image, value); }
         }
 
-        private Theme _theme = new Theme("TEMP", false);
-        public Theme Theme
-        {
-            get { return _theme; }
-            set { SetProperty(ref _theme, value); }
-        }
-
         private string _themeName;
         public string ThemeName
         {
@@ -210,7 +204,7 @@ namespace Labb3.ViewModels
         public RelayCommand RemoveCommand { get; }
         public RelayCommand RemoveQuizCommand { get; }
         public RelayCommand ReturnCommand { get; }
-        public RelayCommand AddImageCommand { get; }
+        public RelayCommand AddRemoveImageCommand { get; }
         public RelayCommand CreateQuizCommand { get; }
         public RelayCommand EditQuizTitleCommand { get; }
 
@@ -262,7 +256,7 @@ namespace Labb3.ViewModels
                      !string.IsNullOrEmpty(Option3) &&
                      CorrectAnswer != -1 &&
                      !string.IsNullOrEmpty(NewStatement) &&
-                     !string.IsNullOrEmpty(Theme.ThemeName) &&
+                     !string.IsNullOrEmpty(ThemeName) &&
                      SelectedQuiz.Title != "TEMP" &&
                      Option1 != Option2 &&
                      Option1 != Option3 &&
@@ -358,14 +352,6 @@ namespace Labb3.ViewModels
             EditCommand.NotifyCanExecuteChanged();
         }
 
-        private void ChangeImagePathName(string oldPath, string newPath, Question question)
-        {
-            SaveBitmapImage(Image, newPath);
-            RemoveImage(oldPath, question);
-            SetImageProperty(newPath);
-            question.ImagePath = newPath;
-        }
-
         public bool CanEditQuestion()
         {
             if (SelectedQuestion != null)
@@ -382,7 +368,7 @@ namespace Labb3.ViewModels
                         !string.IsNullOrEmpty(Option2) &&
                         !string.IsNullOrEmpty(Option3) &&
                         !string.IsNullOrEmpty(NewStatement) &&
-                        !string.IsNullOrEmpty(Theme.ThemeName) &&
+                        !string.IsNullOrEmpty(ThemeName) &&
                         Option1 != Option2 &&
                         Option1 != Option3 &&
                         Option2 != Option1 &&
@@ -488,14 +474,6 @@ namespace Labb3.ViewModels
                 RemoveImage(SelectedQuestion.ImagePath, SelectedQuestion);
             }
         }
-
-        public void ReturnToStartMenu()
-        {
-            _fileManager.SaveAllQuizzes(_quizManager.AllQuizzes);
-            _navigationStore.CurrentViewModel =
-                new StartMenuViewModel(_navigationStore, _quizManager, _themes, _fileManager);
-        }
-
         public bool CanAddImage()
         {
             if (SelectedQuestion != null)
@@ -504,7 +482,6 @@ namespace Labb3.ViewModels
             }
             return false;
         }
-
 
         private void RemoveImage(string path, Question question)
         {
@@ -515,6 +492,7 @@ namespace Labb3.ViewModels
                 File.Delete(path);
             }
         }
+
         private void RemoveQuizImages(Quiz quiz)
         {
             foreach (var question in quiz.Questions)
@@ -528,9 +506,25 @@ namespace Labb3.ViewModels
                 }
             }
         }
+
+        public void ReturnToStartMenu()
+        {
+            _fileManager.SaveAllQuizzes(_quizManager.AllQuizzes);
+            _navigationStore.CurrentViewModel =
+                new StartMenuViewModel(_navigationStore, _quizManager, _themes, _fileManager);
+        }
+
+
         #endregion
 
         #region Other Methods
+        private void ChangeImagePathName(string oldPath, string newPath, Question question)
+        {
+            SaveBitmapImage(Image, newPath);
+            RemoveImage(oldPath, question);
+            SetImageProperty(newPath);
+            question.ImagePath = newPath;
+        }
 
         //Detta gör så att Image som visas i vyn inte är kopplad till den direkt filen
         private void SetImageProperty(string imagePath)
@@ -604,7 +598,7 @@ namespace Labb3.ViewModels
                 e.PropertyName == nameof(CorrectAnswer) ||
                 e.PropertyName == nameof(NewQuizTitle) ||
                 e.PropertyName == nameof(NewStatement) ||
-                e.PropertyName == nameof(Theme.ThemeName))
+                e.PropertyName == nameof(ThemeName))
             {
                 CreateQuizCommand.NotifyCanExecuteChanged();
                 AddCommand.NotifyCanExecuteChanged();
@@ -612,7 +606,7 @@ namespace Labb3.ViewModels
                 EditQuizTitleCommand.NotifyCanExecuteChanged();
                 RemoveCommand.NotifyCanExecuteChanged();
                 RemoveQuizCommand.NotifyCanExecuteChanged();
-                AddImageCommand.NotifyCanExecuteChanged();
+                AddRemoveImageCommand.NotifyCanExecuteChanged();
             }
 
             _fileManager.SaveAllQuizzes(_quizManager.AllQuizzes);
@@ -630,17 +624,14 @@ namespace Labb3.ViewModels
 
             ChooseImageText = "Choose image";
 
-            //CreateQuizCommand = new CreateQuizCommand(this, quizzes, quiz);
-
             AddCommand = new RelayCommand(AddQuestionToQuiz, CanAddQuestionToQuiz);
-            CreateQuizCommand = new RelayCommand(AddQuiz, CanAddQuiz);
             EditCommand = new RelayCommand(EditQuestion, CanEditQuestion);
-            RemoveCommand = new RelayCommand(RemoveQuestion, CanRemoveQuestion);
-            AddImageCommand = new RelayCommand(AddImageToQuestion, CanAddImage);
+            CreateQuizCommand = new RelayCommand(AddQuiz, CanAddQuiz);
             RemoveQuizCommand = new RelayCommand(RemoveQuiz, CanRemoveQuiz);
+            RemoveCommand = new RelayCommand(RemoveQuestion, CanRemoveQuestion);
+            AddRemoveImageCommand = new RelayCommand(AddImageToQuestion, CanAddImage);
             ReturnCommand = new RelayCommand(ReturnToStartMenu);
             EditQuizTitleCommand = new RelayCommand(EditQuizTitle, CanEditQuizTitle);
-
             PropertyChanged += OnViewModelPropertyChanged;
         }
     }

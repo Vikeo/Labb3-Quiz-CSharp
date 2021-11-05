@@ -159,11 +159,6 @@ namespace Labb3.ViewModels
             _quizManager.AllQuizzes.Add(await _fileManager.ImportQuiz(_quizManager.AllQuizzes));
         }
 
-        private void UpdateQuizzes()
-        {
-            Quizzes = _quizManager.AllQuizzes;
-        }
-
         #endregion
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -188,7 +183,6 @@ namespace Labb3.ViewModels
             QuitApplicationCommand = new RelayCommand(QuitApplication);
             ExportQuizCommand = new RelayCommand(ExportQuiz, CanExportQuiz);
             ImportQuizCommand = new RelayCommand(() => ImportQuiz());
-            UpdateQuizzesCommand = new RelayCommand(UpdateQuizzes);
 
             PropertyChanged += OnViewModelPropertyChanged;
         }
