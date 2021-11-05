@@ -11,4 +11,4 @@ Det finns en del saker som jag skulle vilja fixa men som jag inte hann med:
 
 Temporära testfiler, placera i 'AppData\Local\ViktorsQuizGame' (Mappen skapas på första körning): https://drive.google.com/file/d/186rl4s3ITjN8osY9Oqi3L9AipvhX9vUu/view?usp=sharing
 
-Klassdiagram: https://i.imgur.com/eVgK2WH.png
+Klassdiagram: https://i.imgur.com/cdmBKJm.png
