@@ -1,3 +1,11 @@
 # Labb3
 Labb 3 - Quiz game!
-Inte klar än.
+
+Det finns en del saker som jag skulle vilja fixa men som jag inte hann med:
+
+- Import/Export har just nu inget sätt att ta spara undan/ladda in bilder. Applikationen förlitar sig på att bilderna finns i 'AppData\Local\ViktorsQuizGame'.
+- Implementation av ShuffleCorrectAnswerIndex-metoden
+- Hitta bättre sätt att updatera värdena som visas i QuizEditor-vyn.
+- Några små problem som att när man kommer ut från PlayQuiz så finns de teman man valde kvar i listan, men det verkar bara vara en visuell bugg.
+
+Temporära testfiler, placera i 'AppData\Local\ViktorsQuizGame' (Mappen skapas på första körning): https://drive.google.com/file/d/186rl4s3ITjN8osY9Oqi3L9AipvhX9vUu/view?usp=sharing
