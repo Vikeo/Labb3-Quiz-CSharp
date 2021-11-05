@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Labb3.Managers;
+using Labb3.Models;
+using Labb3.ViewModels;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Labb3.Stores
@@ -26,12 +30,19 @@ namespace Labb3.Stores
             CurrentViewModelChanged?.Invoke();
         }
 
-        //Skapa metoder för att gå till olika ställen här i
-
+        //TODO Skapa metoder för att gå till olika ställen här istället för att ha egna i varje vymodell?
+        private void GoToQuizEditor()
+        {
+        }
+        private void GoToPlay()
+        {
+        }
         public void GoToStart()
         {
-
         }
+
+        
+
 
     }
 }

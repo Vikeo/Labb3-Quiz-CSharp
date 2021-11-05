@@ -23,9 +23,6 @@ namespace Labb3
         public MainWindow()
         {
             InitializeComponent();
-
-
         }
-        
     }
 }

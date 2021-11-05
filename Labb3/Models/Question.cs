@@ -14,41 +14,11 @@ namespace Labb3.Models
 {
     public class Question
     {
-        //Fullprops
-        private string _statement;
-        public string Statement
-        {
-            get { return _statement; }
-            set { _statement = value; }
-        }
-
-        private string[] _options;
-        public string[] Options
-        {
-            get { return _options; }
-            set { _options = value; }
-        }
-
-        private bool _asked;
-        public bool Asked
-        {
-            get { return _asked; }
-            set { _asked = value; }
-        }
-
-        private string _imagePath;
-        public string ImagePath
-        {
-            get { return _imagePath; }
-            set { _imagePath = value; }
-        }
-
-        private Theme _theme;
-        public Theme Theme
-        {
-            get { return _theme;  }
-            set { _theme = value; }
-        }
+        public string Statement { get; set; }
+        public string[] Options { get; set; }
+        public bool Asked { get; set; }
+        public string ImagePath { get; set; }
+        public Theme Theme { get; set; }
 
         //Readonly variabler kan man tilldela värde till i en konstruktor.
         private readonly int _correctAnswer;
@@ -61,34 +31,30 @@ namespace Labb3.Models
         [JsonConstructor]
         public Question(string statement, Theme theme, int correctAnswer, bool asked, string imagePath, params string[] options)
         {
-            _statement = statement;
-            _options = options;
-            _theme = theme;
+            Statement = statement;
+            Options = options;
+            Theme = theme;
             _correctAnswer = correctAnswer;
-            _asked = asked;
-            _imagePath = imagePath;
+            Asked = asked;
+            ImagePath = imagePath;
         }
 
-        public static void ChangeCorrectAnswer(Question question, int newCorrectAnswer)
+        //TODO Ta bort, flyttade till Quiz-modellen istället.
+        public Question ChangeCorrectAnswer(int newCorrectAnswer)
         {
             //TODO Mutera inte den förra frågan, använd data från den och skapa en ny.
             //Detta gör det möjligt att ändra värdet på ett readonly-fält.
-            typeof(Question).GetField("_correctAnswer", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(question, newCorrectAnswer);
+
+            Question tempNewQuestion = new Question(Statement, Theme, newCorrectAnswer, Asked, ImagePath, Options);
+            return tempNewQuestion;
+
+            //Fick bort detta fula ur koden.
+            //typeof(Question).GetField("_correctAnswer", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(this, newCorrectAnswer);
         }
 
-        public Question(int newCorrectAnswer)
-        {
-            _correctAnswer = newCorrectAnswer;
-        }
         public Question()
         {
 
         }
-
-
-
-
-
-
     }
 }

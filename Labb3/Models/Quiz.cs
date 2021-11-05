@@ -11,29 +11,18 @@ namespace Labb3.Models
 {
     public class Quiz
     {
-        private string _title;
-        public string Title
-        {
-            get { return _title; }
-            set { _title = value; }
-        }
-
-        private ICollection<Question> _questions = new List<Question>();
-        public ICollection<Question> Questions
-        {
-            get { return _questions; }
-            set { _questions = value; }
-        }
+        public string Title { get; set; }
+        public ICollection<Question> Questions { get; set; } = new List<Question>();
 
         public Quiz(string title, ICollection<Question> questions)
         {
-            _title = title;
-            _questions = questions;
+            Title = title;
+            Questions = questions;
         }
 
+        [JsonConstructor]
         public Quiz()
         {
-            //JsonDeserialize använder denna
         }
 
         public Question GetRandomQuestion()
@@ -56,7 +45,6 @@ namespace Labb3.Models
             }
             return null;
         }
-
         internal void ResetQuestionsAsked()
         {
             foreach (var question in Questions)
@@ -85,6 +73,16 @@ namespace Labb3.Models
             Question tempQuestion = tempQuestionsList[index];
 
             Questions.Remove(tempQuestion);
+        }
+        public void ChangeCorrectAnswer(int index, int newCorrectAnswer)
+        {
+            //Detta gör det möjligt att ändra värdet på ett readonly-fält.
+
+            List<Question> tempQuestionsList = Questions.ToList();
+            Question tempNewQuestion = new Question(tempQuestionsList[index].Statement, tempQuestionsList[index].Theme, newCorrectAnswer, tempQuestionsList[index].Asked, tempQuestionsList[index].ImagePath, tempQuestionsList[index].Options);
+
+            tempQuestionsList[index] = tempNewQuestion;
+            Questions = tempQuestionsList;
         }
     }
 }

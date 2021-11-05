@@ -33,7 +33,6 @@ namespace Labb3.ViewModels
         #region Properties
 
         private string _newStatement;
-
         public string NewStatement
         {
             get { return _newStatement; }
@@ -44,7 +43,7 @@ namespace Labb3.ViewModels
         private ObservableCollection<Quiz> _quizzes;
         public ObservableCollection<Quiz> Quizzes
         {
-            get { return _quizzes = _quizManager._allQuizzes; }
+            get { return _quizzes = _quizManager.AllQuizzes; }
             set { SetProperty(ref _quizzes, value); }
         }
 
@@ -62,7 +61,7 @@ namespace Labb3.ViewModels
                     SelectedQuiz = DefaultSelectedQuiz();
                 }
 
-                //SÅHÄR UPPDATERAT MAN TYDLIGEN VYER (Fast det känns ändå som ett dåligt sätt att göra det på)
+                //Ett sätt att uppdatera vyernas information på
                 Questions = new ObservableCollection<Question>(_selectedQuiz.Questions);
             }
         }
@@ -79,7 +78,6 @@ namespace Labb3.ViewModels
         }
 
         private Question _selectedQuestion;
-
         public Question SelectedQuestion
         {
             get { return _selectedQuestion; }
@@ -133,7 +131,6 @@ namespace Labb3.ViewModels
         }
 
         private ObservableCollection<string> _options = new ObservableCollection<string>() { "", "", "" };
-
         public ObservableCollection<string> Options
         {
             get { return _options; }
@@ -141,42 +138,36 @@ namespace Labb3.ViewModels
         }
 
         private string _option1;
-
         public string Option1
         {
             get { return _option1; }
             set
             {
                 SetProperty(ref _option1, value);
-
                 _options[0] = _option1;
                 EditCommand.NotifyCanExecuteChanged();
             }
         }
 
         private string _option2;
-
         public string Option2
         {
             get { return _option2; }
             set
             {
                 SetProperty(ref _option2, value);
-
                 _options[1] = _option2;
                 EditCommand.NotifyCanExecuteChanged();
             }
         }
 
         private string _option3;
-
         public string Option3
         {
             get { return _option3; }
             set
             {
                 SetProperty(ref _option3, value);
-
                 _options[2] = _option3;
                 EditCommand.NotifyCanExecuteChanged();
             }
@@ -190,7 +181,6 @@ namespace Labb3.ViewModels
         }
 
         private Theme _theme = new Theme("TEMP", false);
-
         public Theme Theme
         {
             get { return _theme; }
@@ -198,7 +188,6 @@ namespace Labb3.ViewModels
         }
 
         private string _themeName;
-
         public string ThemeName
         {
             get { return _themeName; }
@@ -214,7 +203,7 @@ namespace Labb3.ViewModels
 
         #endregion
 
-        #region RelayCommand
+        #region RelayCommands + Related Methods
 
         public RelayCommand AddCommand { get; }
         public RelayCommand EditCommand { get; }
@@ -222,8 +211,6 @@ namespace Labb3.ViewModels
         public RelayCommand RemoveQuizCommand { get; }
         public RelayCommand ReturnCommand { get; }
         public RelayCommand AddImageCommand { get; }
-        public RelayCommand RemoveImageCommand { get; }
-        public RelayCommand DeleteImageCommand { get; }
         public RelayCommand CreateQuizCommand { get; }
         public RelayCommand EditQuizTitleCommand { get; }
 
@@ -240,26 +227,24 @@ namespace Labb3.ViewModels
             Image = null;
 
             //Gör så att Propertyn uppdateras
-            SelectedQuiz = _quizManager._allQuizzes[^1];
+            SelectedQuiz = _quizManager.AllQuizzes[^1];
 
         }
 
         public bool CanAddQuiz()
         {
-            //Om man vill lägga till en ny quiz.
             //Kollar först det finns en quiz med samma Titel.
-            if (_quizManager._allQuizzes.All(q => q.Title != NewQuizTitle))
+            if (_quizManager.AllQuizzes.All(q => q.Title != NewQuizTitle))
             {
+                //TODO Redundant: Sen om NewQuizTitle är tom eller inte
                 return !string.IsNullOrEmpty(NewQuizTitle);
             }
-
             return false;
         }
 
-        //Det som sker när man trycker på AddCommand
         public void AddQuestionToQuiz()
         {
-            Theme newTheme = new Theme(ThemeName.ToString(), false);
+            Theme newTheme = new Theme(ThemeName, false);
 
             SelectedQuiz.AddQuestion(NewStatement, newTheme, CorrectAnswer, false, null, Options.ToArray());
 
@@ -270,10 +255,9 @@ namespace Labb3.ViewModels
             SelectedQuiz = tempQuiz;
             SelectedQuestion = SelectedQuiz.Questions.ToList()[^1];
 
-            _fileManager.SaveAllQuizzes(_quizManager._allQuizzes);
+            _fileManager.SaveAllQuizzes(_quizManager.AllQuizzes);
         }
 
-        //Kollar om man kan lägga till frågor till quizen.
         public bool CanAddQuestionToQuiz()
         {
             if (SelectedQuiz == null)
@@ -298,7 +282,6 @@ namespace Labb3.ViewModels
                 {
                     return true;
                 }
-
                 return false;
             }
             else
@@ -309,8 +292,28 @@ namespace Labb3.ViewModels
 
         public void EditQuizTitle()
         {
-            //TODO Ändra namnet på de sparade bilderna.
+            //Visar en MessageBox asynkront
+            Task.Run(() =>
+            {
+                var dialogResult = MessageBox.Show("Updating quiz title", "Message", MessageBoxButton.OK, MessageBoxImage.Information);
+            });
+
             SelectedQuiz.Title = NewQuizTitle;
+
+            //Ändrar namnet på de sparade bilderna
+            foreach (var question in SelectedQuiz.Questions)
+            {
+                string oldPath = question.ImagePath;
+                string newPath = Path.Combine(_fileManager.ImageFolderPath,
+                    $"{ReplaceInvalidChars(SelectedQuiz.Title)}{ReplaceInvalidChars(question.Statement)}.png");
+
+                SetImageProperty(oldPath);
+                SaveBitmapImage(Image, newPath);
+                RemoveImage(oldPath, question);
+                SetImageProperty(newPath);
+
+                ChangeImagePathName(oldPath, newPath, question);
+            }
 
             //TODO Combobox uppdateras inte direkt om jag inte gör såhär: (Hitta bättre sätt)
             int tempIndex = Quizzes.IndexOf(SelectedQuiz);
@@ -324,13 +327,12 @@ namespace Labb3.ViewModels
                     Quizzes.Add(quiz);
                 }
             }
-
             SelectedQuiz = Quizzes[tempIndex];
         }
 
         public bool CanEditQuizTitle()
         {
-            if (_quizManager._allQuizzes.All(q => q.Title != NewQuizTitle) && _quizManager._allQuizzes.Count > 0)
+            if (_quizManager.AllQuizzes.All(q => q.Title != NewQuizTitle) && _quizManager.AllQuizzes.Count > 0)
             {
                 return !string.IsNullOrEmpty(NewQuizTitle);
             }
@@ -343,18 +345,40 @@ namespace Labb3.ViewModels
             SelectedQuestion.Options[0] = Options[0];
             SelectedQuestion.Options[1] = Options[1];
             SelectedQuestion.Options[2] = Options[2];
-            Question.ChangeCorrectAnswer(SelectedQuestion, CorrectAnswer);
             SelectedQuestion.Theme.ThemeName = ThemeName;
 
+            //Gör så att jag kan ändra CorrectAnswer
+            int tempIndex = SelectedQuiz.Questions.ToList().IndexOf(SelectedQuestion);
+            SelectedQuiz.ChangeCorrectAnswer(tempIndex, CorrectAnswer);
+
+            //TODO Ta bort, funkade inte för att man inte ändrar frågan i Quizens Questions-listan?.
+            //Question tempNewQuestion = SelectedQuestion.ChangeCorrectAnswer(CorrectAnswer);
+            //SelectedQuestion = tempNewQuestion;
+
+            if (SelectedQuestion.ImagePath != null)
+            {
+                string oldPath = SelectedQuestion.ImagePath;
+                string newPath = Path.Combine(_fileManager.ImageFolderPath,
+                    $"{ReplaceInvalidChars(SelectedQuiz.Title)}{ReplaceInvalidChars(SelectedQuestion.Statement)}.png");
+                ChangeImagePathName(oldPath, newPath, SelectedQuestion);
+            }
+            
             //Gör så att listan i vyn uppdateras.
             Questions = new ObservableCollection<Question>(SelectedQuiz.Questions);
 
             EditCommand.NotifyCanExecuteChanged();
         }
 
+        private void ChangeImagePathName(string oldPath, string newPath, Question question)
+        {
+            SaveBitmapImage(Image, newPath);
+            RemoveImage(oldPath, question);
+            SetImageProperty(newPath);
+            question.ImagePath = newPath;
+        }
+
         public bool CanEditQuestion()
         {
-            bool tempBool = false;
             if (SelectedQuestion != null)
             {
                 if (NewStatement != SelectedQuestion.Statement ||
@@ -378,13 +402,19 @@ namespace Labb3.ViewModels
                         Option3 != Option2)
                     {
                         //Har denna här så att jag kan sätta det jag vill returnera till True här, men sen kolla ett till vilkor.
-                        tempBool = true;
+
+                        
+                        var tempBool = true;
 
                         if (NewStatement != SelectedQuestion.Statement &&
                             SelectedQuiz.Questions.Any(q => q.Statement == NewStatement))
                         {
                             tempBool = false;
                         }
+
+                        //TODO Vad är skillnaden?
+                        //bool tempBool = !(NewStatement != SelectedQuestion.Statement &&
+                        //                  SelectedQuiz.Questions.Any(q => q.Statement == NewStatement));
 
                         return tempBool;
                     }
@@ -395,10 +425,14 @@ namespace Labb3.ViewModels
 
         public void RemoveQuiz()
         {
-            //TODO Popup-Är du säker?
-            _quizManager.RemoveQuiz(SelectedQuiz);
-            SelectedQuiz = DefaultSelectedQuiz();
-            Image = null;
+            var messageBox = MessageBox.Show($"Are you sure you want to delete {SelectedQuiz.Title}?", "Message", MessageBoxButton.YesNo);
+            if (messageBox == MessageBoxResult.Yes)
+            {
+                RemoveQuizImages(SelectedQuiz);
+                Image = null;
+                _quizManager.RemoveQuiz(SelectedQuiz);
+                SelectedQuiz = DefaultSelectedQuiz();
+            }
         }
 
         public bool CanRemoveQuiz()
@@ -407,7 +441,6 @@ namespace Labb3.ViewModels
             {
                 return true;
             }
-
             return false;
         }
 
@@ -477,8 +510,15 @@ namespace Labb3.ViewModels
             else if (File.Exists(SelectedQuestion.ImagePath))
             {
                 ChooseImageText = "Choose image";
-                RemoveImage();
+                RemoveImage(SelectedQuestion.ImagePath, SelectedQuestion);
             }
+        }
+
+        public void ReturnToStartMenu()
+        {
+            _fileManager.SaveAllQuizzes(_quizManager.AllQuizzes);
+            _navigationStore.CurrentViewModel =
+                new StartMenuViewModel(_navigationStore, _quizManager, _themes, _fileManager);
         }
 
         public bool CanAddImage()
@@ -491,36 +531,31 @@ namespace Labb3.ViewModels
         }
 
 
-        private void RemoveImage()
+        private void RemoveImage(string path, Question question)
         {
-            string tempPath = SelectedQuestion.ImagePath;
-            SelectedQuestion.ImagePath = null;
+            question.ImagePath = null;
             Image = null;
-            if (tempPath != null)
+            if (path != null)
             {
-                File.Delete(tempPath);
+                File.Delete(path);
             }
         }
-
-        private bool CanRemoveImage()
+        private void RemoveQuizImages(Quiz quiz)
         {
-            if (SelectedQuestion != null)
+            foreach (var question in quiz.Questions)
             {
-                if (string.IsNullOrEmpty(SelectedQuestion.ImagePath))
+                string tempPath = question.ImagePath;
+                question.ImagePath = null;
+                Image = null;
+                if (tempPath != null)
                 {
-                    return true;
+                    File.Delete(tempPath);
                 }
-                return true;
             }
-            return false;
         }
+        #endregion
 
-        public void ReturnToStartMenu()
-        {
-            _fileManager.SaveAllQuizzes(_quizManager._allQuizzes);
-            _navigationStore.CurrentViewModel =
-                new StartMenuViewModel(_navigationStore, _quizManager, _themes, _fileManager);
-        }
+        #region Other Methods
 
         //Detta gör så att Image som visas i vyn inte är kopplad till den direkt filen
         private void SetImageProperty(string imagePath)
@@ -539,7 +574,7 @@ namespace Labb3.ViewModels
                 Image = null;
             }
         }
-        public static void SaveBitmapImage(BitmapImage image, string filePath)
+        public void SaveBitmapImage(BitmapImage image, string filePath)
         {
             //TODO Om man lägger till en bild, tar bort och sen lägger till med en gång så blir det samma som den tidigare bilden.
             if (filePath != null)
@@ -554,7 +589,6 @@ namespace Labb3.ViewModels
                 }
             }
         }
-
         public string ReplaceInvalidChars(string filename)
         {
             filename = string.Join("_", filename.Split(" "));
@@ -563,6 +597,8 @@ namespace Labb3.ViewModels
 
         private void ClearTextboxes()
         {
+            //TODO Implement and use better
+
             //Option1 = "";
             //Option2 = "";
             //Option3 = "";
@@ -583,8 +619,6 @@ namespace Labb3.ViewModels
             }
         }
 
-        #endregion
-
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(SelectedQuiz) ||
@@ -604,11 +638,11 @@ namespace Labb3.ViewModels
                 RemoveCommand.NotifyCanExecuteChanged();
                 RemoveQuizCommand.NotifyCanExecuteChanged();
                 AddImageCommand.NotifyCanExecuteChanged();
-                RemoveImageCommand.NotifyCanExecuteChanged();
             }
 
-            _fileManager.SaveAllQuizzes(_quizManager._allQuizzes);
+            _fileManager.SaveAllQuizzes(_quizManager.AllQuizzes);
         }
+        #endregion
 
         //Konstruktor
         public QuizEditorViewModel(NavigationStore navigationStore, QuizManager quizManager,
@@ -627,14 +661,12 @@ namespace Labb3.ViewModels
             CreateQuizCommand = new RelayCommand(AddQuiz, CanAddQuiz);
             EditCommand = new RelayCommand(EditQuestion, CanEditQuestion);
             RemoveCommand = new RelayCommand(RemoveQuestion, CanRemoveQuestion);
-            AddImageCommand = new RelayCommand(() => AddImageToQuestion(), CanAddImage);
-            RemoveImageCommand = new RelayCommand(RemoveImage, CanRemoveImage);
+            AddImageCommand = new RelayCommand(AddImageToQuestion, CanAddImage);
             RemoveQuizCommand = new RelayCommand(RemoveQuiz, CanRemoveQuiz);
             ReturnCommand = new RelayCommand(ReturnToStartMenu);
             EditQuizTitleCommand = new RelayCommand(EditQuizTitle, CanEditQuizTitle);
 
             PropertyChanged += OnViewModelPropertyChanged;
         }
-
     }
 }

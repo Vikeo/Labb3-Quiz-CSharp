@@ -35,12 +35,11 @@ namespace Labb3
             GetQuizzes();
         }
 
-        // Är det OK att ha void på OnStartup? - Flytta in
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            //Där som man ska starta.
+            //Den vy/vymodellamn man ska starta vid.
             _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, _quizManager, _themes, _fileManager);
 
             MainWindow = new MainWindow()
@@ -52,7 +51,7 @@ namespace Labb3
 
         private async Task GetQuizzes()
         {
-            _quizManager._allQuizzes = await _fileManager.LoadAllQuizzes();
+            _quizManager.AllQuizzes = await _fileManager.LoadAllQuizzes();
         }
     }
 }

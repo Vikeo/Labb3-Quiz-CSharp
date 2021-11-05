@@ -22,22 +22,14 @@ namespace Labb3.ViewModels
 
         #region Properties
 
-        private List<Theme> _themes;
-        public List<Theme> Themes
-        {
-            get { return _themes; }
-        }
+        public List<Theme> Themes { get; set; }
 
-        private Quiz _chosenQuiz;
-        public Quiz ChosenQuiz
-        {
-            get { return _chosenQuiz; }
-        }
+        public Quiz ChosenQuiz { get; }
 
         private Question _currentQuestion;
         public Question CurrentQuestion
         {
-            get { return _currentQuestion; }
+            get => _currentQuestion;
             set { SetProperty(ref _currentQuestion, value); }
         }
 
@@ -52,27 +44,16 @@ namespace Labb3.ViewModels
         private int _score;
         public int Score
         {
-            get { return _score; }
+            get => _score;
             set { SetProperty(ref _score, value); }
         }
 
-        private readonly int _questionsCount;
-        public int QuestionsCount
-        {
-            get { return _questionsCount; }
-        }
-
-        private int _questionCounter;
-        public int QuestionCounter
-        {
-            get { return _questionCounter; }
-        }
+        public int QuestionsCount { get; }
+        public int QuestionCounter { get; private set; }
 
         #endregion
 
         #region RelayCommands
-
-        public RelayCommand CheckCommand { get; }
         public RelayCommand QuitCommand { get; }
         public RelayCommand Answer1 { get; }
         public RelayCommand Answer2 { get; }
@@ -81,29 +62,27 @@ namespace Labb3.ViewModels
         #endregion
 
         #region Actions/Functions
-
         private void QuitToStart()
         {
-            _chosenQuiz.ResetThemeSelected();
-            _chosenQuiz.ResetQuestionsAsked();
+            ChosenQuiz.ResetThemeSelected();
+            ChosenQuiz.ResetQuestionsAsked();
             _navigationStore.CurrentViewModel = new StartMenuViewModel(_navigationStore, _quizManager, new ObservableCollection<Theme>(_selectedThemes), _fileManager);
         }
 
         //Kollar om svaret är rätt, om nästa fråga är == null så avslutas spelet.
-        private void AnswerQuestion(int Option)
+        private void AnswerQuestion(int option)
         {
-            if (CurrentQuestion.CorrectAnswer == Option)
+            if (CurrentQuestion.CorrectAnswer == option)
             {
                 Score++;
             }
-            if (_questionCounter < _questionsCount)
+            if (QuestionCounter < QuestionsCount)
             {
-                _questionCounter++;
+                QuestionCounter++;
             }
 
             OnPropertyChanged(nameof(QuestionCounter));
-
-            CurrentQuestion = _chosenQuiz.GetRandomQuestion();
+            CurrentQuestion = ChosenQuiz.GetRandomQuestion();
 
             if (CurrentQuestion == null)
             {
@@ -112,9 +91,6 @@ namespace Labb3.ViewModels
             }
             OnPropertyChanged(nameof(CurrentQuestion));
         }
-
-        #endregion
-
         private void ShuffleCorrectAnswerIndex()
         {
             //TODO Vill ha något som kan shuffla svaren, är tråkigt om de är på samma plats varje gång.
@@ -141,26 +117,26 @@ namespace Labb3.ViewModels
             CurrentQuestion.Options[1] = tempOptions[r3];
 
             List<string> tempStringList = CurrentQuestion.Options.ToList();
-
         }
+        #endregion
 
         public PlayQuizViewModel(NavigationStore navigationStore, QuizManager quizManager,  Quiz selectedQuiz, List<Theme> selectedThemes, FileManager fileManager)
         {
-            //TODO Behöver jag TVÅ selectedQuiz och themes??
             _selectedQuiz = selectedQuiz;
-            _chosenQuiz = selectedQuiz;
+            ChosenQuiz = selectedQuiz;
             _selectedThemes = selectedThemes;
-            _themes = selectedThemes;
+            Themes = selectedThemes; 
             _navigationStore = navigationStore;
             _quizManager = quizManager;
             _fileManager = fileManager;
 
-            _questionCounter = 0;
-            _questionsCount = _chosenQuiz.Questions.Count();
+            QuestionCounter = 0;
 
-            _currentQuestion = _chosenQuiz.GetRandomQuestion();
+            QuestionsCount = ChosenQuiz.Questions.Count();
 
-            _questionCounter++;
+            _currentQuestion = ChosenQuiz.GetRandomQuestion();
+
+            QuestionCounter++;
 
             QuitCommand = new RelayCommand(QuitToStart);
             Answer1 = new RelayCommand(() => AnswerQuestion(0));

@@ -27,7 +27,7 @@ namespace Labb3.ViewModels
         private ObservableCollection<Quiz> _quizzes;
         public ObservableCollection<Quiz> Quizzes
         {
-            get { return _quizzes = _quizManager._allQuizzes; }
+            get { return _quizzes = _quizManager.AllQuizzes; }
             set
             {
                 SetProperty(ref _quizzes, value);
@@ -50,7 +50,7 @@ namespace Labb3.ViewModels
                     _selectedThemes.Clear();
                     _themes.Clear();
 
-                    foreach (var theme in QuizManager.GetUniqueThemes(SelectedQuiz))
+                    foreach (var theme in _quizManager.GetUniqueThemes(SelectedQuiz))
                     {
                         Theme tempTheme = new Theme(theme, false);
                         _themes.Add(tempTheme);
@@ -63,21 +63,14 @@ namespace Labb3.ViewModels
         public ObservableCollection<Theme> ListThemes
         {
             get { return _listThemes = _themes; }
-            set
-            {
-                SetProperty(ref _listThemes, value);
-            }
+            set => SetProperty(ref _listThemes, value);
         }
 
         private ObservableCollection<Theme> _selectedThemes = new ObservableCollection<Theme>();
         public ObservableCollection<Theme> SelectedThemes
         {
-            get
-            { return _selectedThemes; }
-            set
-            {
-                SetProperty(ref _selectedThemes, value);
-            }
+            get { return _selectedThemes; }
+            set => SetProperty(ref _selectedThemes, value);
         }
 
         #endregion
@@ -144,7 +137,7 @@ namespace Labb3.ViewModels
 
         private void QuitApplication()
         {
-            _fileManager.SaveAllQuizzes(_quizManager._allQuizzes);
+            _fileManager.SaveAllQuizzes(_quizManager.AllQuizzes);
             Application.Current.Shutdown();
         }
 
@@ -163,20 +156,15 @@ namespace Labb3.ViewModels
 
         private async Task ImportQuiz()
         {
-            _quizManager._allQuizzes.Add(await _fileManager.ImportQuiz(_quizManager._allQuizzes));
+            _quizManager.AllQuizzes.Add(await _fileManager.ImportQuiz(_quizManager.AllQuizzes));
         }
 
         private void UpdateQuizzes()
         {
-            Quizzes = _quizManager._allQuizzes;
+            Quizzes = _quizManager.AllQuizzes;
         }
 
         #endregion
-
-        private async Task GetQuizzes()
-        {
-            _quizManager._allQuizzes = await _fileManager.LoadAllQuizzes();
-        }
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -204,7 +192,5 @@ namespace Labb3.ViewModels
 
             PropertyChanged += OnViewModelPropertyChanged;
         }
-
-        
     }
 }
