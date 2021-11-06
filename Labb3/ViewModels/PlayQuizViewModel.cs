@@ -128,8 +128,11 @@ namespace Labb3.ViewModels
             _fileManager = fileManager;
 
             QuestionCounter = 0;
-
-            QuestionsCount = ChosenQuiz.Questions.Count();
+            QuestionsCount = 0;
+            foreach (var question in ChosenQuiz.Questions.Where(q => q.Asked == false && q.Theme.Selected))
+            {
+                QuestionsCount++;
+            }
 
             _currentQuestion = ChosenQuiz.GetRandomQuestion();
 
