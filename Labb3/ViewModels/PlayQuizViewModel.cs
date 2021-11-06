@@ -68,6 +68,10 @@ namespace Labb3.ViewModels
             {
                 Score++;
             }
+            else
+            {
+                MessageBox.Show($"Ojdå, det var fel..! Rätt svar är '{CurrentQuestion.Options[CurrentQuestion.CorrectAnswer]}'", "Score", MessageBoxButton.OK);
+            }
             if (QuestionCounter < QuestionsCount)
             {
                 QuestionCounter++;

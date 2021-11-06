@@ -334,18 +334,20 @@ namespace Labb3.ViewModels
             SelectedQuestion.Options[2] = Options[2];
             SelectedQuestion.Theme.ThemeName = ThemeName;
 
+            string oldPath = SelectedQuestion.ImagePath;
+            string newPath = Path.Combine(_fileManager.ImageFolderPath,
+                $"{ReplaceInvalidChars(SelectedQuiz.Title)}{ReplaceInvalidChars(SelectedQuestion.Statement)}.png");
+
+            if (SelectedQuestion.ImagePath != null && oldPath != newPath)
+            {
+                ChangeImagePathName(oldPath, newPath, SelectedQuestion);
+                SelectedQuestion.ImagePath = newPath;
+            }
+
             //Gör så att jag kan ändra CorrectAnswer
             int tempIndex = SelectedQuiz.Questions.ToList().IndexOf(SelectedQuestion);
             SelectedQuiz.ChangeCorrectAnswer(tempIndex, CorrectAnswer);
 
-            if (SelectedQuestion.ImagePath != null)
-            {
-                string oldPath = SelectedQuestion.ImagePath;
-                string newPath = Path.Combine(_fileManager.ImageFolderPath,
-                    $"{ReplaceInvalidChars(SelectedQuiz.Title)}{ReplaceInvalidChars(SelectedQuestion.Statement)}.png");
-                ChangeImagePathName(oldPath, newPath, SelectedQuestion);
-            }
-            
             //Gör så att listan i vyn uppdateras.
             Questions = new ObservableCollection<Question>(SelectedQuiz.Questions);
 
@@ -523,7 +525,6 @@ namespace Labb3.ViewModels
             SaveBitmapImage(Image, newPath);
             RemoveImage(oldPath, question);
             SetImageProperty(newPath);
-            question.ImagePath = newPath;
         }
 
         //Detta gör så att Image som visas i vyn inte är kopplad till den direkt filen
@@ -548,13 +549,16 @@ namespace Labb3.ViewModels
             //TODO Om man lägger till en bild, tar bort och sen lägger till med en gång så blir det samma som den tidigare bilden.
             if (filePath != null)
             {
-                filePath = filePath.Split('.')[0] + ".png";
-                BitmapEncoder encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(image));
-
-                using (var fileStream = File.Create(filePath))
+                if (image != null)
                 {
-                    encoder.Save(fileStream);
+                    filePath = filePath.Split('.')[0] + ".png";
+                    BitmapEncoder encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(image));
+
+                    using (var fileStream = File.Create(filePath))
+                    {
+                        encoder.Save(fileStream);
+                    }
                 }
             }
         }
